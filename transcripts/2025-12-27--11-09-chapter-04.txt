@@ -1,0 +1,231 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Pro
+ *  ▘▘ ▝▝  *   ~/Projects/ruby-oop-exercises
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> add a chapter 4 
+
+⏺ I'll add Chapter 04 on Modules and Mixins as suggested in the project roadmap. Let me first explore the existing structure to follow the conventions.
+
+⏺ Explore(Explore project structure)
+  ⎿  Done (25 tool uses · 27.3k tokens · 38s)                              
+
+⏺ Now I'll create Chapter 04 on Modules and Mixins with 5 progressive exercises.
+
+⏺ Bash(mkdir -p /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_04_modules
+      _and_mixins /Users/jordan/Projects/ruby-oop-exercises/spec/chapter_04_modu
+      les_and_mixin…)
+  ⎿  (No content)
+
+⏺ Write(lib/chapter_04_modules_and_mixins/01_greetable.rb)
+  ⎿  Wrote 23 lines to lib/chapter_04_modules_and_mixins/01_greetable.rb
+      1 # frozen_string_literal: true
+      2 # Implement the Greetable module and the Person class here
+      3 #
+      4 # The Greetable module should:
+      5 # - Define a `greet` method that returns "Hello, I'm #{name}!"
+      6 # - Be usable by any class that has a `name` method
+      7 #
+      8 # The Person class should:
+      9 # - Include the Greetable module
+     … +13 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_04_modules_and_mixins/02_loggable.rb)
+  ⎿  Wrote 26 lines to lib/chapter_04_modules_and_mixins/02_loggable.rb  
+      1 # frozen_string_literal: true
+      2 # Implement the Loggable module and the Application class here
+      3 #
+      4 # The Loggable module should:
+      5 # - Define a `log(message)` method that adds timestamped entries 
+        to a log
+      6 # - Define a `log_history` method that returns all logged message
+        s
+      7 # - Store logs as "[TIMESTAMP] message" where TIMESTAMP is Time.n
+        ow
+      8 #
+      9 # The Application class should:
+     … +16 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_04_modules_and_mixins/03_math_utils.rb)
+  ⎿  Wrote 26 lines to lib/chapter_04_modules_and_mixins/03_math_utils.rb
+      1 # frozen_string_literal: true
+      2 # Implement the MathUtils module and Calculator class here
+      3 #
+      4 # The MathUtils module should:
+      5 # - Be a namespace containing mathematical utility methods
+      6 # - Define `MathUtils.square(n)` that returns n * n
+      7 # - Define `MathUtils.cube(n)` that returns n * n * n
+      8 # - Define `MathUtils.factorial(n)` that returns n! (factorial)
+      9 #   - factorial(0) and factorial(1) should return 1
+     … +16 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_04_modules_and_mixins/04_taggable.rb)
+  ⎿  Wrote 36 lines to lib/chapter_04_modules_and_mixins/04_taggable.rb  
+      1 # frozen_string_literal: true
+      2 # Implement the Taggable module, Article, and Photo classes here
+      3 #
+      4 # The Taggable module should:
+      5 # - Define an `add_tag(tag)` method that adds a tag (no duplicate
+        s allowed)
+      6 # - Define a `remove_tag(tag)` method that removes a tag
+      7 # - Define a `tags` method that returns all tags as an array
+      8 # - Define a `tagged_with?(tag)` method that returns true if the 
+        tag exists
+      9 # - Define a `clear_tags` method that removes all tags
+     … +26 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_04_modules_and_mixins/05_serializable.rb)
+  ⎿  Wrote 47 lines to lib/chapter_04_modules_and_mixins/05_serializable.rb
+      1 # frozen_string_literal: true
+      2 # Implement the Serializable module and the User, Product classes
+         here
+      3 #
+      4 # The Serializable module should:
+      5 # - Define `to_hash` that returns a hash of all serializable attr
+        ibutes
+      6 # - Define `to_json` that returns a JSON string representation
+      7 # - Define a class method `serializable_attributes(*attrs)` that 
+        specifies
+      8 #   which attributes should be included in serialization
+      9 # - Use `self.class.serializable_attrs` to access the attribute l
+        ist
+     … +37 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_04_modules_and_mixins/01_greetable_spec.rb)
+  ⎿  Wrote 44 lines to                                                     
+     spec/chapter_04_modules_and_mixins/01_greetable_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_04_modules_and_mixins/01_greetable'
+      3 RSpec.describe Greetable do
+      4   describe '#greet' do
+      5     it 'returns a greeting with the name' do
+      6       person = Person.new('Alice')
+      7       expect(person.greet).to eq("Hello, I'm Alice!")
+     … +34 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_04_modules_and_mixins/02_loggable_spec.rb)
+  ⎿  Wrote 83 lines to                                                     
+     spec/chapter_04_modules_and_mixins/02_loggable_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_04_modules_and_mixins/02_loggable'
+      3 RSpec.describe Loggable do
+      4   describe '#log' do
+      5     it 'adds a timestamped message to the log history' do
+      6       app = Application.new('TestApp')
+      7       app.log('Test message')
+     … +73 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_04_modules_and_mixins/03_math_utils_spec.rb)
+  ⎿  Wrote 80 lines to                                                     
+     spec/chapter_04_modules_and_mixins/03_math_utils_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_04_modules_and_mixins/03_math_utils'
+      3 RSpec.describe MathUtils do
+      4   describe '.square' do
+      5     it 'returns the square of a number' do
+      6       expect(MathUtils.square(4)).to eq(16)
+      7     end
+     … +70 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_04_modules_and_mixins/04_taggable_spec.rb)
+  ⎿  Wrote 122 lines to                                                    
+     spec/chapter_04_modules_and_mixins/04_taggable_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_04_modules_and_mixins/04_taggable'
+      3 RSpec.describe Taggable do
+      4   describe '#add_tag' do
+      5     it 'adds a tag' do
+      6       article = Article.new('Ruby Tips')
+      7       article.add_tag('ruby')
+     … +112 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_04_modules_and_mixins/05_serializable_spec.rb)
+  ⎿  Wrote 86 lines to                                                
+     spec/chapter_04_modules_and_mixins/05_serializable_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_04_modules_and_mixins/05_serializable'
+      3 RSpec.describe Serializable do
+      4   describe '#to_hash' do
+      5     it 'returns a hash of serializable attributes for User' do
+      6       user = User.new('Alice', 'alice@example.com')
+      7       result = user.to_hash
+     … +76 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rspec spec/chapter_04_modules_and_mixins/ --format progress
+      2>&1 | tail -20)
+  ⎿ rspec ./spec/chapter_04_modules_and_mixins/02_loggable_spec.rb:58 # App
+    lication#start logs that the application started
+    rspec ./spec/chapter_04_modules_and_mixins/02_loggable_spec.rb:50 # App
+    … +36 lines (ctrl+o to expand)
+
+
+
+⏺ Bash(bundle exec rake lint 2>&1 | tail -10)
+  ⎿  Running RuboCop...                          
+     Inspecting 44 files
+     ............................................
+     … +2 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rspec spec/chapter_04_modules_and_mixins/ --format summary
+      2>&1)
+  ⎿  Error: Exit code 1
+     bundler: failed to load command: rspec 
+     (/Users/jordan/.local/share/mise/installs/ruby/4.0.0/bin/rspec)
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/gems
+     /rspec-core-3.13.6/lib/rspec/core/formatters.rb:184:in 
+     'RSpec::Core::Formatters::Loader#find_formatter': Formatter 'summary' 
+     unknown - maybe you meant 'documentation' or 'progress'?. (ArgumentError)
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/formatters.rb:152:in 
+     'RSpec::Core::Formatters::Loader#add'
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/configuration.rb:997:in 
+     'RSpec::Core::Configuration#add_formatter'
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/configuration_options.rb:122:in 
+     'block in RSpec::Core::ConfigurationOptions#load_formatters_into'
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/configuration_options.rb:122:in 
+     'Array#each'
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/configuration_options.rb:122:in 
+     'RSpec::Core::ConfigurationOptions#load_formatters_into'
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/configuration_options.rb:24:in 
+     'RSpec::Core::ConfigurationOptions#configure'
+     	from /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0
+     /gems/rspec-core-3.13.6/lib/rspec/core/runner.rb:132:in 
+     'RSpec::Core::Runner#configure'
+
+
+
+
+     … +25 lines (ctrl+o to see all)
+
+⏺ Bash(bundle exec rspec spec/chapter_04_modules_and_mixins/ 2>&1 | grep -E
+      "^[0-9]+ example|Finished")
+  ⎿  Finished in 0.00987 seconds (files took 0.03578 seconds to load)
+     50 examples, 50 failures
+
+⏺ Chapter 04 on Modules and Mixins has been added with 5 exercises:
+
+  | #   | Exercise     | Concept                                         |
+  |-----|--------------|-------------------------------------------------|
+  | 01  | greetable    | Basic module inclusion with include             |
+  | 02  | loggable     | Module that accesses instance state             |
+  | 03  | math_utils   | Module methods & extend for class methods       |
+  | 04  | taggable     | Practical mixin with state management           |
+  | 05  | serializable | extend ClassMethods pattern for class-level DSL |
+
+  Test results: 50 examples, 50 failures (as expected for empty stubs)
+
+  Run the tests:
+  bundle exec rspec spec/chapter_04_modules_and_mixins/
+
+  The exercises progress from simple module inclusion to the more advanced included callback pattern used in real-world Ruby gems.
+
+
+

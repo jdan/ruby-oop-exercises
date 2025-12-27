@@ -1,0 +1,121 @@
+# frozen_string_literal: true
+
+require 'chapter_04_modules_and_mixins/04_taggable'
+
+RSpec.describe Taggable do
+  describe '#add_tag' do
+    it 'adds a tag' do
+      article = Article.new('Ruby Tips')
+
+      article.add_tag('ruby')
+
+      expect(article.tags).to include('ruby')
+    end
+
+    it 'does not add duplicate tags' do
+      article = Article.new('Ruby Tips')
+
+      article.add_tag('ruby')
+      article.add_tag('ruby')
+
+      expect(article.tags.count('ruby')).to eq(1)
+    end
+  end
+
+  describe '#remove_tag' do
+    it 'removes a tag' do
+      article = Article.new('Ruby Tips')
+      article.add_tag('ruby')
+      article.add_tag('programming')
+
+      article.remove_tag('ruby')
+
+      expect(article.tags).not_to include('ruby')
+      expect(article.tags).to include('programming')
+    end
+  end
+
+  describe '#tags' do
+    it 'returns an empty array initially' do
+      article = Article.new('Empty Article')
+
+      expect(article.tags).to eq([])
+    end
+
+    it 'returns all tags' do
+      article = Article.new('Tagged Article')
+      article.add_tag('tech')
+      article.add_tag('news')
+
+      expect(article.tags).to contain_exactly('tech', 'news')
+    end
+  end
+
+  describe '#tagged_with?' do
+    it 'returns true if the tag exists' do
+      article = Article.new('Test')
+      article.add_tag('important')
+
+      expect(article.tagged_with?('important')).to be true
+    end
+
+    it 'returns false if the tag does not exist' do
+      article = Article.new('Test')
+
+      expect(article.tagged_with?('missing')).to be false
+    end
+  end
+
+  describe '#clear_tags' do
+    it 'removes all tags' do
+      article = Article.new('Test')
+      article.add_tag('one')
+      article.add_tag('two')
+      article.add_tag('three')
+
+      article.clear_tags
+
+      expect(article.tags).to eq([])
+    end
+  end
+end
+
+RSpec.describe Article do
+  describe '#initialize' do
+    it 'accepts a title' do
+      article = Article.new('My Article')
+
+      expect(article.title).to eq('My Article')
+    end
+  end
+
+  describe 'module inclusion' do
+    it 'includes the Taggable module' do
+      expect(Article.included_modules).to include(Taggable)
+    end
+  end
+end
+
+RSpec.describe Photo do
+  describe '#initialize' do
+    it 'accepts a filename' do
+      photo = Photo.new('sunset.jpg')
+
+      expect(photo.filename).to eq('sunset.jpg')
+    end
+  end
+
+  describe 'module inclusion' do
+    it 'includes the Taggable module' do
+      expect(Photo.included_modules).to include(Taggable)
+    end
+
+    it 'can use tagging functionality' do
+      photo = Photo.new('beach.png')
+      photo.add_tag('vacation')
+      photo.add_tag('summer')
+
+      expect(photo.tags).to contain_exactly('vacation', 'summer')
+    end
+  end
+end
