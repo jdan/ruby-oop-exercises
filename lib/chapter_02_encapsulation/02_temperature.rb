@@ -12,5 +12,20 @@
 # - Fahrenheit = (Celsius * 9/5) + 32
 # - Kelvin = Celsius + 273.15
 
+##
+# A utility for converting temperatures
 class Temperature
+  attr_accessor :celsius
+
+  def initialize(celsius)
+    @celsius = celsius
+  end
+
+  def fahrenheit
+    (@celsius * 9.0 / 5) + 32
+  end
+
+  def kelvin
+    @celsius + 273.15
+  end
 end

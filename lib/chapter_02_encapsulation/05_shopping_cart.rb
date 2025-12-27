@@ -11,5 +11,31 @@
 # - Items should NOT be directly accessible from outside
 # - Have a apply_discount(percent) method that reduces total (use private helper)
 
+##
+# A shopping cart which keeps track of its items and discount
 class ShoppingCart
+  def initialize
+    @items = []
+    @discount = 0
+  end
+
+  def item_count
+    @items.count
+  end
+
+  def add_item(name, price)
+    @items << [name, price]
+  end
+
+  def remove_item(name)
+    @items.reject! { |item| item[0] == name }
+  end
+
+  def total
+    @items.sum { |item| item[1] } * (1 - (@discount / 100.0))
+  end
+
+  def apply_discount(percent)
+    @discount = percent
+  end
 end
