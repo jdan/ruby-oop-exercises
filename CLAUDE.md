@@ -24,6 +24,15 @@ bundle exec rspec spec/chapter_03_inheritance/
 bundle exec rspec spec/chapter_01_classes_and_objects/01_dog_spec.rb
 ```
 
+## Linting
+
+```bash
+rake lint              # Check for style issues
+rake lint:autocorrect  # Auto-fix issues
+```
+
+RuboCop config is in `.rubocop.yml`.
+
 ## Project Structure
 
 ```
