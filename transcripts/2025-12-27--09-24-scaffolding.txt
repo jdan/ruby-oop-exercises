@@ -1,0 +1,1011 @@
+
+╭─── Claude Code v2.0.76 ──────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                Welcome back Jordan!                │ started                 │
+│                                                    │ ✔ Run /init to create … │
+│                     * ▐▛███▜▌ *                    │ ─────────────────────── │
+│                    * ▝▜█████▛▘ *                   │ Recent activity         │
+│                     *  ▘▘ ▝▝  *                    │ No recent activity      │
+│                                                    │                         │
+│  Opus 4.5 · Claude Pro · scalesjordan@gmail.com's  │                         │
+│  Organization                                      │                         │
+│            ~/Projects/ruby-oop-exercises           │                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> /model 
+  ⎿  Set model to opus (claude-opus-4-5-20251101)
+
+> I am interested in (1) writing more ruby (2) learning Object oriented 
+programming best practices and design patterns. As such I'd like this repo 
+to be a "gym" where I learn object oriented in ruby with a TDD approach. 
+
+I'd like to run `rake spec` and see tests fail.
+
+I'd like to start with maybe 3 "chapters" about OOP basics
+
+I'd also like a CLAUDE.md in this repo so I can come back and generate more 
+chapters. 
+
+⏺ I'll help you set up a Ruby OOP learning gym with TDD! Let me first explore what currently exists in the directory and then plan out the structure.
+
+⏺ Bash(ls -la /Users/jordan/Projects/ruby-oop-exercises)
+  ⎿  total 0                                         
+     drwxr-xr-x@ 2 jordan  staff   64 Dec 27 09:12 .
+     drwxr-xr-x@ 6 jordan  staff  192 Dec 27 09:12 ..
+
+⏺ The directory is empty - perfect for a fresh start. Let me plan out the structure for your Ruby OOP gym.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ Before I finalize the plan, I have a few questions:
+                                                                         
+⏺ User answered Claude's questions:
+  ⎿  · Are these three chapter topics what you'd like to start with? 
+     (Classes/Objects, Encapsulation, Inheritance) → Yes, those are great
+     · How many exercises per chapter would you like? → 5-6 exercises
+     · What difficulty level should the exercises target? → Mix of both
+
+⏺ Now let me update the plan with the specific exercises for each chapter:
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ The plan is complete. Here's a summary:
+
+  Plan Summary
+
+  Structure: Standard Ruby project with RSpec and Rake
+
+  3 Chapters, 5 exercises each (15 total, progressing easy → harder):
+
+  | Chapter | Topic             | Exercises                                                       |
+  |---------|-------------------|-----------------------------------------------------------------|
+  | 1       | Classes & Objects | Dog, Book, Rectangle, Counter, Playlist                         |
+  | 2       | Encapsulation     | Person, Temperature, BankAccount, PasswordManager, ShoppingCart |
+  | 3       | Inheritance       | Animal, Vehicle, Employee, Shape, GameCharacter                 |
+
+  Files to create:
+  - Gemfile, Rakefile, .rspec, spec/spec_helper.rb
+  - 15 spec files with failing tests
+  - 15 lib files with empty class stubs
+  - CLAUDE.md with instructions for generating future chapters
+
+  After setup, rake spec will show ~50+ failing tests ready for you to implement.
+                                                                           
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/linear-tumbling-cupcake.md · /plan to 
+     edit
+     Ruby OOP Exercises Gym - Setup Plan
+
+     Overview
+
+     Create a TDD-based Ruby learning repository for practicing 
+     Object-Oriented Programming concepts. Each chapter has 5-6 exercises
+     progressing from simple to more challenging.
+
+     Project Structure
+
+     ruby-oop-exercises/
+     ├── CLAUDE.md                 # Context for future sessions
+     ├── Gemfile                   # Dependencies (rspec, rake)
+     ├── Rakefile                  # rake spec task
+     ├── lib/
+     │   ├── chapter_01_classes_and_objects/
+     │   │   ├── 01_dog.rb
+     │   │   ├── 02_book.rb
+     │   │   ├── 03_rectangle.rb
+     │   │   ├── 04_counter.rb
+     │   │   └── 05_playlist.rb
+     │   ├── chapter_02_encapsulation/
+     │   │   ├── 01_person.rb
+     │   │   ├── 02_temperature.rb
+     │   │   ├── 03_bank_account.rb
+     │   │   ├── 04_password_manager.rb
+     │   │   └── 05_shopping_cart.rb
+     │   └── chapter_03_inheritance/
+     │       ├── 01_animal.rb
+     │       ├── 02_vehicle.rb
+     │       ├── 03_employee.rb
+     │       ├── 04_shape.rb
+     │       └── 05_game_character.rb
+     └── spec/
+         ├── spec_helper.rb
+         ├── chapter_01_classes_and_objects/
+         ├── chapter_02_encapsulation/
+         └── chapter_03_inheritance/
+
+     ---
+     Chapter 1: Classes and Objects
+
+     Exercises (Beginner → Intermediate)
+
+     1. Dog - Basic class with initialize, instance variables, simple 
+     methods
+       - initialize(name, breed), bark, describe
+     2. Book - More instance variables, string formatting
+       - initialize(title, author, pages), summary, long_read?
+     3. Rectangle - Methods with calculations
+       - initialize(width, height), area, perimeter, square?
+     4. Counter - State-changing methods
+       - initialize(start_value), increment, decrement, reset, value
+     5. Playlist - Working with collections inside objects
+       - initialize(name), add_song(song), total_songs, includes?(song), 
+     first_song
+
+     ---
+     Chapter 2: Encapsulation
+
+     Exercises (Beginner → Intermediate)
+
+     1. Person - Basic attr_accessor/reader/writer
+       - name (read/write), age (read/write), email (read-only after set)
+     2. Temperature - Computed getters, validation
+       - celsius, fahrenheit, kelvin - convertible between scales
+     3. BankAccount - Private methods, protected data
+       - deposit, withdraw, balance read-only, private log_transaction
+     4. PasswordManager - Strong encapsulation
+       - Store password privately, authenticate(attempt), 
+     change_password(old, new)
+     5. ShoppingCart - Complex internal state
+       - add_item, remove_item, total, items not directly accessible, 
+     apply_discount (private helper)
+
+     ---
+     Chapter 3: Inheritance
+
+     Exercises (Beginner → Intermediate)
+
+     1. Animal - Basic inheritance
+       - Animal base class, Dog and Cat subclasses with speak method 
+     override
+     2. Vehicle - Using super
+       - Vehicle with initialize, Car and Motorcycle call super and add 
+     attributes
+     3. Employee - Method overriding with extension
+       - Employee base, Manager and Intern with different salary_info 
+     implementations
+     4. Shape - Abstract-style base class
+       - Shape with area and perimeter, Circle, Square implement 
+     calculations
+     5. GameCharacter - Complex inheritance chain
+       - Character base, Warrior/Mage with unique abilities, attack, defend,
+      special_move
+
+     ---
+     Files to Create
+
+     Configuration Files
+
+     - Gemfile - rspec (~> 3.12), rake
+     - Rakefile - default task: spec
+     - spec/spec_helper.rb - require lib files, RSpec config
+     - .rspec - format options
+
+     CLAUDE.md Content
+
+     - Project purpose and structure
+     - How to add new chapters
+     - Conventions (file naming, exercise structure)
+     - Example of a good exercise spec
+
+     Per-Exercise Files
+
+     - lib/chapter_XX/NN_name.rb - Empty class stub
+     - spec/chapter_XX/NN_name_spec.rb - Failing tests
+
+     ---
+     TDD Approach
+
+     - All specs written with clear describe/context/it blocks
+     - Lib files contain only empty class definitions
+     - Running rake spec shows all tests failing (red)
+     - User implements code to make tests pass (green)
+
+⏺ Let me set up the todo list and start creating the project:
+
+⏺ Write(Gemfile)
+  ⎿  Wrote 7 lines to Gemfile        
+      1 # frozen_string_literal: true
+      2 source 'https://rubygems.org'
+      3 gem 'rake', '~> 13.0'
+      4 gem 'rspec', '~> 3.12'
+
+⏺ Write(Rakefile)
+  ⎿  Wrote 8 lines to Rakefile          
+      1 # frozen_string_literal: true
+      2 require 'rspec/core/rake_task'
+      3 RSpec::Core::RakeTask.new(:spec)
+      4 task default: :spec
+
+⏺ Write(.rspec)
+  ⎿  Wrote 4 lines to .rspec  
+      1 --require spec_helper
+      2 --format documentation
+      3 --color
+
+⏺ Write(spec/spec_helper.rb)
+  ⎿  Wrote 19 lines to spec/spec_helper.rb                               
+      1 # frozen_string_literal: true
+      2 # Add lib directory to load path
+      3 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+      4 RSpec.configure do |config|
+      5   config.expect_with :rspec do |expectations|
+      6     expectations.include_chain_clauses_in_custom_matcher_descript
+        ions = true
+      7   end
+     … +9 lines (ctrl+o to expand)
+
+⏺ Write(CLAUDE.md)
+  ⎿  Wrote 56 lines to CLAUDE.md                                         
+      1 # Ruby OOP Exercises
+      2 A TDD-based learning repository for practicing Object-Oriented Pr
+        ogramming in Ruby.
+      3 ## How to Use
+      4 1. Run `bundle install` to install dependencies
+      5 2. Run `rake spec` to see failing tests
+      6 3. Implement the classes in `lib/` to make tests pass
+      7 4. Work through chapters in order (01 → 02 → 03)
+     … +46 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_01_classes_and_objects/01_dog.rb)
+  ⎿  Wrote 9 lines to lib/chapter_01_classes_and_objects/01_dog.rb   
+      1 # frozen_string_literal: true
+      2 # Implement the Dog class here
+      3 #
+      4 # A Dog should:
+      5 # - Be initialized with a name and breed
+      6 # - Have a bark method that returns "Woof!"
+      7 # - Have a describe method that returns "{name} is a {breed}"
+
+⏺ Write(lib/chapter_01_classes_and_objects/02_book.rb)
+  ⎿  Wrote 9 lines to lib/chapter_01_classes_and_objects/02_book.rb  
+      1 # frozen_string_literal: true
+      2 # Implement the Book class here
+      3 #
+      4 # A Book should:
+      5 # - Be initialized with a title, author, and number of pages
+      6 # - Have a summary method that returns "{title} by {author}"
+      7 # - Have a long_read? method that returns true if pages > 300
+
+⏺ Write(lib/chapter_01_classes_and_objects/03_rectangle.rb)
+  ⎿  Wrote 10 lines to lib/chapter_01_classes_and_objects/03_rectangle.rb
+      1 # frozen_string_literal: true
+      2 # Implement the Rectangle class here
+      3 #
+      4 # A Rectangle should:
+      5 # - Be initialized with width and height
+      6 # - Have an area method that returns width * height
+      7 # - Have a perimeter method that returns 2 * (width + height)
+      8 # - Have a square? method that returns true if width equals heigh
+        t
+
+⏺ Write(lib/chapter_01_classes_and_objects/04_counter.rb)
+  ⎿  Wrote 11 lines to lib/chapter_01_classes_and_objects/04_counter.rb  
+      1 # frozen_string_literal: true
+      2 # Implement the Counter class here
+      3 #
+      4 # A Counter should:
+      5 # - Be initialized with an optional start value (default 0)
+      6 # - Have a value method that returns the current count
+      7 # - Have an increment method that increases count by 1
+      8 # - Have a decrement method that decreases count by 1
+      9 # - Have a reset method that sets count back to the initial value
+     … +1 line (ctrl+o to expand)
+
+⏺ Write(lib/chapter_01_classes_and_objects/05_playlist.rb)
+  ⎿  Wrote 11 lines to lib/chapter_01_classes_and_objects/05_playlist.rb 
+      1 # frozen_string_literal: true
+      2 # Implement the Playlist class here
+      3 #
+      4 # A Playlist should:
+      5 # - Be initialized with a name (starts with no songs)
+      6 # - Have an add_song method that adds a song to the playlist
+      7 # - Have a total_songs method that returns the number of songs
+      8 # - Have an includes? method that checks if a song is in the play
+        list
+      9 # - Have a first_song method that returns the first song (or nil 
+        if empty)
+     … +1 line (ctrl+o to expand)
+
+⏺ Write(spec/chapter_01_classes_and_objects/01_dog_spec.rb)
+  ⎿  Wrote 32 lines to spec/chapter_01_classes_and_objects/01_dog_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_01_classes_and_objects/01_dog'
+      3 RSpec.describe Dog do
+      4   describe '#initialize' do
+      5     it 'creates a dog with a name and breed' do
+      6       dog = Dog.new('Buddy', 'Golden Retriever')
+      7       expect(dog).to be_a(Dog)
+      8     end
+     … +22 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_01_classes_and_objects/02_book_spec.rb)
+  ⎿  Wrote 42 lines to spec/chapter_01_classes_and_objects/02_book_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_01_classes_and_objects/02_book'
+      3 RSpec.describe Book do
+      4   describe '#initialize' do
+      5     it 'creates a book with title, author, and pages' do
+      6       book = Book.new('1984', 'George Orwell', 328)
+      7       expect(book).to be_a(Book)
+      8     end
+     … +32 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_01_classes_and_objects/03_rectangle_spec.rb)
+  ⎿  Wrote 54 lines to                                                     
+     spec/chapter_01_classes_and_objects/03_rectangle_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_01_classes_and_objects/03_rectangle'
+      3 RSpec.describe Rectangle do
+      4   describe '#initialize' do
+      5     it 'creates a rectangle with width and height' do
+      6       rect = Rectangle.new(10, 5)
+      7       expect(rect).to be_a(Rectangle)
+      8     end
+     … +44 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_01_classes_and_objects/04_counter_spec.rb)
+  ⎿  Wrote 66 lines to                                                     
+     spec/chapter_01_classes_and_objects/04_counter_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_01_classes_and_objects/04_counter'
+      3 RSpec.describe Counter do
+      4   describe '#initialize' do
+      5     it 'starts at 0 by default' do
+      6       counter = Counter.new
+      7       expect(counter.value).to eq(0)
+      8     end
+     … +56 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_01_classes_and_objects/05_playlist_spec.rb)
+  ⎿  Wrote 71 lines to                                                     
+     spec/chapter_01_classes_and_objects/05_playlist_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_01_classes_and_objects/05_playlist'
+      3 RSpec.describe Playlist do
+      4   describe '#initialize' do
+      5     it 'creates a playlist with a name' do
+      6       playlist = Playlist.new('Road Trip')
+      7       expect(playlist).to be_a(Playlist)
+      8     end
+     … +61 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_02_encapsulation/01_person.rb)
+  ⎿  Wrote 9 lines to lib/chapter_02_encapsulation/01_person.rb          
+      1 # frozen_string_literal: true
+      2 # Implement the Person class here
+      3 #
+      4 # A Person should:
+      5 # - Be initialized with a name, age, and email
+      6 # - Have name and age that can be read and written (attr_accessor
+        )
+      7 # - Have email that can only be read after initialization (attr_r
+        eader)
+
+⏺ Write(lib/chapter_02_encapsulation/02_temperature.rb)
+  ⎿  Wrote 14 lines to lib/chapter_02_encapsulation/02_temperature.rb    
+      1 # frozen_string_literal: true
+      2 # Implement the Temperature class here
+      3 #
+      4 # A Temperature should:
+      5 # - Be initialized with a Celsius value
+      6 # - Have a celsius method to get/set the temperature in Celsius
+      7 # - Have a fahrenheit method that returns the temperature in Fahr
+        enheit
+      8 # - Have a kelvin method that returns the temperature in Kelvin
+      9 #
+     … +4 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_02_encapsulation/03_bank_account.rb)
+  ⎿  Wrote 12 lines to lib/chapter_02_encapsulation/03_bank_account.rb   
+      1 # frozen_string_literal: true
+      2 # Implement the BankAccount class here
+      3 #
+      4 # A BankAccount should:
+      5 # - Be initialized with an owner name and optional starting balan
+        ce (default 0)
+      6 # - Have a balance method that returns the current balance (read-
+        only)
+      7 # - Have a deposit method that adds money to the balance
+      8 # - Have a withdraw method that removes money (if sufficient fund
+        s)
+      9 # - Have a transaction_history method that returns all transactio
+        ns
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_02_encapsulation/04_password_manager.rb)
+  ⎿  Wrote 12 lines to lib/chapter_02_encapsulation/04_password_manager.rb
+      1 # frozen_string_literal: true
+      2 # Implement the PasswordManager class here
+      3 #
+      4 # A PasswordManager should:
+      5 # - Be initialized with a password (stored privately, never expos
+        ed)
+      6 # - Have an authenticate(attempt) method that returns true/false
+      7 # - Have a change_password(old_password, new_password) method
+      8 #   - Returns true and changes password if old_password is correc
+        t
+      9 #   - Returns false and keeps old password if old_password is wro
+        ng
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_02_encapsulation/05_shopping_cart.rb)
+  ⎿  Wrote 13 lines to lib/chapter_02_encapsulation/05_shopping_cart.rb
+      1 # frozen_string_literal: true
+      2 # Implement the ShoppingCart class here
+      3 #
+      4 # A ShoppingCart should:
+      5 # - Be initialized empty
+      6 # - Have add_item(name, price) to add items
+      7 # - Have remove_item(name) to remove items
+      8 # - Have total method that returns the sum of all item prices
+      9 # - Have item_count method that returns number of items
+     … +3 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_02_encapsulation/01_person_spec.rb)
+  ⎿  Wrote 51 lines to spec/chapter_02_encapsulation/01_person_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_02_encapsulation/01_person'
+      3 RSpec.describe Person do
+      4   describe '#initialize' do
+      5     it 'creates a person with name, age, and email' do
+      6       person = Person.new('Alice', 30, 'alice@example.com')
+      7       expect(person).to be_a(Person)
+      8     end
+     … +41 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_02_encapsulation/02_temperature_spec.rb)
+  ⎿  Wrote 60 lines to spec/chapter_02_encapsulation/02_temperature_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_02_encapsulation/02_temperature'
+      3 RSpec.describe Temperature do
+      4   describe '#initialize' do
+      5     it 'creates a temperature with Celsius value' do
+      6       temp = Temperature.new(25)
+      7       expect(temp).to be_a(Temperature)
+      8     end
+     … +50 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_02_encapsulation/03_bank_account_spec.rb)
+  ⎿  Wrote 98 lines to spec/chapter_02_encapsulation/03_bank_account_spec.r
+
+      1 # frozen_string_literal: true
+      2 require 'chapter_02_encapsulation/03_bank_account'
+      3 RSpec.describe BankAccount do
+      4   describe '#initialize' do
+      5     it 'creates an account with owner and default balance of 0' d
+        o
+      6       account = BankAccount.new('Alice')
+      7       expect(account.balance).to eq(0)
+      8     end
+     … +88 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_02_encapsulation/04_password_manager_spec.rb)
+  ⎿  Wrote 71 lines to                                                     
+     spec/chapter_02_encapsulation/04_password_manager_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_02_encapsulation/04_password_manager'
+      3 RSpec.describe PasswordManager do
+      4   describe '#initialize' do
+      5     it 'creates a password manager with a password' do
+      6       pm = PasswordManager.new('secret123')
+      7       expect(pm).to be_a(PasswordManager)
+      8     end
+     … +61 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_02_encapsulation/05_shopping_cart_spec.rb)
+  ⎿  Wrote 102 lines to                                                    
+     spec/chapter_02_encapsulation/05_shopping_cart_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_02_encapsulation/05_shopping_cart'
+      3 RSpec.describe ShoppingCart do
+      4   describe '#initialize' do
+      5     it 'creates an empty shopping cart' do
+      6       cart = ShoppingCart.new
+      7       expect(cart.item_count).to eq(0)
+      8     end
+     … +92 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_03_inheritance/01_animal.rb)
+  ⎿  Wrote 15 lines to lib/chapter_03_inheritance/01_animal.rb
+      1 # frozen_string_literal: true
+      2 # Implement the Animal class hierarchy here
+      3 #
+      4 # Animal (base class):
+      5 # - initialize(name)
+      6 # - speak method that returns "Some sound"
+      7 # - name reader
+      8 #
+      9 # Dog (inherits from Animal):
+     … +5 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_03_inheritance/02_vehicle.rb)
+  ⎿  Wrote 19 lines to lib/chapter_03_inheritance/02_vehicle.rb
+      1 # frozen_string_literal: true
+      2 # Implement the Vehicle class hierarchy here
+      3 #
+      4 # Vehicle (base class):
+      5 # - initialize(make, model, year)
+      6 # - info method returns "{year} {make} {model}"
+      7 # - readers for make, model, year
+      8 #
+      9 # Car (inherits from Vehicle):
+     … +9 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_03_inheritance/03_employee.rb)
+  ⎿  Wrote 19 lines to lib/chapter_03_inheritance/03_employee.rb      
+      1 # frozen_string_literal: true
+      2 # Implement the Employee class hierarchy here
+      3 #
+      4 # Employee (base class):
+      5 # - initialize(name, base_salary)
+      6 # - name reader
+      7 # - salary_info returns "Name: {name}, Salary: ${base_salary}"
+      8 #
+      9 # Manager (inherits from Employee):
+     … +9 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_03_inheritance/04_shape.rb)
+  ⎿  Wrote 19 lines to lib/chapter_03_inheritance/04_shape.rb
+      1 # frozen_string_literal: true
+      2 # Implement the Shape class hierarchy here
+      3 #
+      4 # Shape (base class):
+      5 # - area method (raises NotImplementedError)
+      6 # - perimeter method (raises NotImplementedError)
+      7 #
+      8 # Circle (inherits from Shape):
+      9 # - initialize(radius)
+     … +9 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_03_inheritance/05_game_character.rb)
+  ⎿  Wrote 25 lines to lib/chapter_03_inheritance/05_game_character.rb
+      1 # frozen_string_literal: true
+      2 # Implement the GameCharacter class hierarchy here
+      3 #
+      4 # Character (base class):
+      5 # - initialize(name, health)
+      6 # - name, health readers
+      7 # - attack returns "#{name} attacks!"
+      8 # - defend returns "#{name} defends!"
+      9 # - take_damage(amount) reduces health by amount (min 0)
+     … +15 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_03_inheritance/01_animal_spec.rb)
+  ⎿  Wrote 60 lines to spec/chapter_03_inheritance/01_animal_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_03_inheritance/01_animal'
+      3 RSpec.describe 'Animal hierarchy' do
+      4   describe Animal do
+      5     it 'can be created with a name' do
+      6       animal = Animal.new('Generic')
+      7       expect(animal.name).to eq('Generic')
+      8     end
+     … +50 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_03_inheritance/02_vehicle_spec.rb)
+  ⎿  Wrote 69 lines to spec/chapter_03_inheritance/02_vehicle_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_03_inheritance/02_vehicle'
+      3 RSpec.describe 'Vehicle hierarchy' do
+      4   describe Vehicle do
+      5     it 'can be created with make, model, and year' do
+      6       vehicle = Vehicle.new('Toyota', 'Camry', 2020)
+      7       expect(vehicle.make).to eq('Toyota')
+      8       expect(vehicle.model).to eq('Camry')
+     … +59 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_03_inheritance/03_employee_spec.rb)
+  ⎿  Wrote 66 lines to spec/chapter_03_inheritance/03_employee_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_03_inheritance/03_employee'
+      3 RSpec.describe 'Employee hierarchy' do
+      4   describe Employee do
+      5     it 'can be created with name and base salary' do
+      6       emp = Employee.new('John', 50_000)
+      7       expect(emp.name).to eq('John')
+      8     end
+     … +56 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_03_inheritance/04_shape_spec.rb)
+  ⎿  Wrote 72 lines to spec/chapter_03_inheritance/04_shape_spec.rb    
+      1 # frozen_string_literal: true
+      2 require 'chapter_03_inheritance/04_shape'
+      3 RSpec.describe 'Shape hierarchy' do
+      4   describe Shape do
+      5     it 'raises NotImplementedError for area' do
+      6       shape = Shape.new
+      7       expect { shape.area }.to raise_error(NotImplementedError)
+      8     end
+     … +62 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_03_inheritance/05_game_character_spec.rb)
+  ⎿  Wrote 116 lines to                                                    
+     spec/chapter_03_inheritance/05_game_character_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_03_inheritance/05_game_character'
+      3 RSpec.describe 'GameCharacter hierarchy' do
+      4   describe Character do
+      5     it 'can be created with name and health' do
+      6       char = Character.new('Hero', 100)
+      7       expect(char.name).to eq('Hero')
+      8       expect(char.health).to eq(100)
+     … +106 lines (ctrl+o to expand)
+
+⏺ Bash(bundle install)
+  ⎿  Fetching gem metadata from https://rubygems.org/...
+     Resolving dependencies...
+     Fetching diff-lcs 1.6.2
+     … +13 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rake spec 2>&1 | head -100)
+  ⎿ /Users/jordan/.local/share/mise/installs/ruby/4.0.0/bin/ruby -I/Users/j
+    ordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/gems/rs
+    pec-core-3.13.6/lib:/Users/jordan/.local/share/mise/installs/ruby/4.0.0
+    … +112 lines (ctrl+o to expand)
+
+
+
+
+⏺ The tests fail because classes aren't defined yet. Let me add empty class stubs so the failures are more informative (method not found vs constant not found):
+
+⏺ Update(lib/chapter_01_classes_and_objects/01_dog.rb)
+  ⎿  Added 3 lines                                                       
+       6  # - Be initialized with a name and breed
+       7  # - Have a bark method that returns "Woof!"
+       8  # - Have a describe method that returns "{name} is a {breed}"
+       9 +                                                               
+      10 +class Dog                                                      
+      11 +end                                                            
+
+⏺ Update(lib/chapter_01_classes_and_objects/02_book.rb)
+  ⎿  Added 3 lines                                                       
+       6  # - Be initialized with a title, author, and number of pages
+       7  # - Have a summary method that returns "{title} by {author}"
+       8  # - Have a long_read? method that returns true if pages > 300
+       9 +                                                               
+      10 +class Book                                                     
+      11 +end                                                            
+
+⏺ Update(lib/chapter_01_classes_and_objects/03_rectangle.rb)
+  ⎿  Added 3 lines                                                       
+       7  # - Have an area method that returns width * height
+       8  # - Have a perimeter method that returns 2 * (width + height)
+       9  # - Have a square? method that returns true if width equals hei
+          ght
+      10 +                                                               
+      11 +class Rectangle                                                
+      12 +end                                                            
+
+⏺ Update(lib/chapter_01_classes_and_objects/04_counter.rb)
+  ⎿  Added 3 lines                                                       
+       8  # - Have an increment method that increases count by 1
+       9  # - Have a decrement method that decreases count by 1
+      10  # - Have a reset method that sets count back to the initial val
+          ue
+      11 +                                                               
+      12 +class Counter                                                  
+      13 +end                                                            
+
+⏺ Update(lib/chapter_01_classes_and_objects/05_playlist.rb)
+  ⎿  Added 3 lines                                                       
+       8  # - Have a total_songs method that returns the number of songs
+       9  # - Have an includes? method that checks if a song is in the pl
+          aylist
+      10  # - Have a first_song method that returns the first song (or ni
+          l if empty)
+      11 +                                                               
+      12 +class Playlist                                                 
+      13 +end                                                            
+
+⏺ Update(lib/chapter_02_encapsulation/01_person.rb)
+  ⎿  Added 3 lines                                                       
+       6  # - Be initialized with a name, age, and email
+       7  # - Have name and age that can be read and written (attr_access
+          or)
+       8  # - Have email that can only be read after initialization (attr
+          _reader)
+       9 +                                                               
+      10 +class Person                                                   
+      11 +end                                                            
+
+⏺ Update(lib/chapter_02_encapsulation/02_temperature.rb)
+  ⎿  Added 3 lines                                                       
+      11  # Formulas:
+      12  # - Fahrenheit = (Celsius * 9/5) + 32
+      13  # - Kelvin = Celsius + 273.15
+      14 +                                                               
+      15 +class Temperature                                              
+      16 +end                                                            
+
+⏺ Update(lib/chapter_02_encapsulation/03_bank_account.rb)
+  ⎿  Added 3 lines                                                       
+       9  # - Have a withdraw method that removes money (if sufficient fu
+          nds)
+      10  # - Have a transaction_history method that returns all transact
+          ions
+      11  # - Use a private log_transaction method to record each transac
+          tion
+      12 +                                                               
+      13 +class BankAccount                                              
+      14 +end                                                            
+
+⏺ Update(lib/chapter_02_encapsulation/04_password_manager.rb)
+  ⎿  Added 3 lines                                                       
+       9  #   - Returns true and changes password if old_password is corr
+          ect
+      10  #   - Returns false and keeps old password if old_password is w
+          rong
+      11  # - The password should NEVER be accessible from outside the cl
+          ass
+      12 +                                                               
+      13 +class PasswordManager                                          
+      14 +end                                                            
+
+⏺ Update(lib/chapter_02_encapsulation/05_shopping_cart.rb)
+  ⎿  Added 3 lines                                                       
+      10  # - Have item_count method that returns number of items
+      11  # - Items should NOT be directly accessible from outside
+      12  # - Have a apply_discount(percent) method that reduces total (u
+          se private helper)
+      13 +                                                               
+      14 +class ShoppingCart                                             
+      15 +end                                                            
+
+⏺ Update(lib/chapter_03_inheritance/01_animal.rb)
+  ⎿  Added 9 lines                                                       
+      12  #
+      13  # Cat (inherits from Animal):
+      14  # - speak method returns "Meow!"
+      15 +                                                               
+      16 +class Animal                                                   
+      17 +end                                                            
+      18 +                                                               
+      19 +class Dog < Animal                                             
+      20 +end                                                            
+      21 +                                                               
+      22 +class Cat < Animal                                             
+      23 +end                                                            
+
+⏺ Update(lib/chapter_03_inheritance/02_vehicle.rb)
+  ⎿  Added 9 lines                                                       
+      16  # - initialize(make, model, year, has_sidecar)
+      17  # - calls super for base attributes
+      18  # - has_sidecar? method
+      19 +                                                               
+      20 +class Vehicle                                                  
+      21 +end                                                            
+      22 +                                                               
+      23 +class Car < Vehicle                                            
+      24 +end                                                            
+      25 +                                                               
+      26 +class Motorcycle < Vehicle                                     
+      27 +end                                                            
+
+⏺ Update(lib/chapter_03_inheritance/03_employee.rb)
+  ⎿  Added 9 lines                                                       
+      16  # - initialize(name, base_salary, school)
+      17  # - salary_info returns "Name: {name}, Salary: ${base_salary}, 
+          School: {school}"
+      18  # - school reader
+      19 +                                                               
+      20 +class Employee                                                 
+      21 +end                                                            
+      22 +                                                               
+      23 +class Manager < Employee                                       
+      24 +end                                                            
+      25 +                                                               
+      26 +class Intern < Employee                                        
+      27 +end                                                            
+
+⏺ Update(lib/chapter_03_inheritance/04_shape.rb)
+  ⎿  Added 9 lines                                                       
+      16  # - initialize(side)
+      17  # - area returns side^2
+      18  # - perimeter returns 4 * side
+      19 +                                                               
+      20 +class Shape                                                    
+      21 +end                                                            
+      22 +                                                               
+      23 +class Circle < Shape                                           
+      24 +end                                                            
+      25 +                                                               
+      26 +class Square < Shape                                           
+      27 +end                                                            
+
+⏺ Update(lib/chapter_03_inheritance/05_game_character.rb)
+  ⎿  Added 9 lines                                                       
+      22  # - attack returns "#{name} casts fireball!"
+      23  # - special_move returns "#{name} casts Arcane Blast!" (costs 1
+          0 mana)
+      24  # - special_move returns "#{name} is out of mana!" if mana < 10
+      25 +                                                               
+      26 +class Character                                                
+      27 +end                                                            
+      28 +                                                               
+      29 +class Warrior < Character                                      
+      30 +end                                                            
+      31 +                                                               
+      32 +class Mage < Character                                         
+      33 +end                                                            
+
+⏺ Now let me run rake spec to verify the tests fail properly:
+
+⏺ Bash(bundle exec rake spec 2>&1) timeout: 1m 0s
+  ⎿  Error: Exit code 1
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/bin/ruby 
+     -I/Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/ge
+     ms/rspec-core-3.13.6/lib:/Users/jordan/.local/share/mise/installs/ruby/4.0.0
+     /lib/ruby/gems/4.0.0/gems/rspec-support-3.13.6/lib 
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/gems
+     /rspec-core-3.13.6/exe/rspec --pattern spec/\*\*\{,/\*/\*\*\}/\*_spec.rb
+
+     An error occurred while loading 
+     ./spec/chapter_03_inheritance/01_animal_spec.rb.
+     Failure/Error: class Dog < Animal
+
+     TypeError:
+       superclass mismatch for class Dog
+     # ./lib/chapter_03_inheritance/01_animal.rb:19:in '<top (required)>'
+     # ./spec/chapter_03_inheritance/01_animal_spec.rb:3:in '<top (required)>'
+     … +5 lines (ctrl+o to see all)
+
+⏺ There's a conflict - Dog class exists in both Chapter 1 and Chapter 3. Let me fix this by using module namespacing:
+
+⏺ Read(lib/chapter_01_classes_and_objects/01_dog.rb)
+  ⎿  Read 12 lines
+
+⏺ I'll change Chapter 3's animal names to avoid the conflict (Wolf and Tiger instead of Dog and Cat):
+
+⏺ Update(lib/chapter_03_inheritance/01_animal.rb)
+  ⎿  Added 6 lines, removed 6 lines                                      
+       7  # - speak method that returns "Some sound"
+       8  # - name reader
+       9  #
+      10 -# Dog (inherits from Animal):                                  
+      11 -# - speak method returns "Woof!"                               
+      10 +# Wolf (inherits from Animal):                                 
+      11 +# - speak method returns "Howl!"                               
+      12  #
+      13 -# Cat (inherits from Animal):                                  
+      14 -# - speak method returns "Meow!"                               
+      13 +# Tiger (inherits from Animal):                                
+      14 +# - speak method returns "Roar!"                               
+      15  
+      16  class Animal
+      17  end
+      18  
+      19 -class Dog < Animal                                             
+      19 +class Wolf < Animal                                            
+      20  end
+      21  
+      22 -class Cat < Animal                                             
+      22 +class Tiger < Animal                                           
+      23  end
+
+⏺ Update(spec/chapter_03_inheritance/01_animal_spec.rb)
+  ⎿  Added 18 lines, removed 18 lines                                    
+      15      end
+      16    end
+      17  
+      18 -  describe Dog do                                              
+      18 +  describe Wolf do                                             
+      19      it 'inherits from Animal' do
+      20 -      expect(Dog.superclass).to eq(Animal)                     
+      20 +      expect(Wolf.superclass).to eq(Animal)                    
+      21      end
+      22  
+      23      it 'can be created with a name' do
+      24 -      dog = Dog.new('Buddy')                                   
+      25 -      expect(dog.name).to eq('Buddy')                          
+      24 +      wolf = Wolf.new('Grey')                                  
+      25 +      expect(wolf.name).to eq('Grey')                          
+      26      end
+      27  
+      28 -    it 'overrides speak to return "Woof!"' do                  
+      29 -      dog = Dog.new('Buddy')                                   
+      30 -      expect(dog.speak).to eq('Woof!')                         
+      28 +    it 'overrides speak to return "Howl!"' do                  
+      29 +      wolf = Wolf.new('Grey')                                  
+      30 +      expect(wolf.speak).to eq('Howl!')                        
+      31      end
+      32  
+      33      it 'is an Animal' do
+      34 -      dog = Dog.new('Buddy')                                   
+      35 -      expect(dog).to be_a(Animal)                              
+      34 +      wolf = Wolf.new('Grey')                                  
+      35 +      expect(wolf).to be_a(Animal)                             
+      36      end
+      37    end
+      38  
+      39 -  describe Cat do                                              
+      39 +  describe Tiger do                                            
+      40      it 'inherits from Animal' do
+      41 -      expect(Cat.superclass).to eq(Animal)                     
+      41 +      expect(Tiger.superclass).to eq(Animal)                   
+      42      end
+      43  
+      44      it 'can be created with a name' do
+      45 -      cat = Cat.new('Whiskers')                                
+      46 -      expect(cat.name).to eq('Whiskers')                       
+      45 +      tiger = Tiger.new('Stripes')                             
+      46 +      expect(tiger.name).to eq('Stripes')                      
+      47      end
+      48  
+      49 -    it 'overrides speak to return "Meow!"' do                  
+      50 -      cat = Cat.new('Whiskers')                                
+      51 -      expect(cat.speak).to eq('Meow!')                         
+      49 +    it 'overrides speak to return "Roar!"' do                  
+      50 +      tiger = Tiger.new('Stripes')                             
+      51 +      expect(tiger.speak).to eq('Roar!')                       
+      52      end
+      53  
+      54      it 'is an Animal' do
+      55 -      cat = Cat.new('Whiskers')                                
+      56 -      expect(cat).to be_a(Animal)                              
+      55 +      tiger = Tiger.new('Stripes')                             
+      56 +      expect(tiger).to be_a(Animal)                            
+      57      end
+      58    end
+      59  end
+
+⏺ Bash(bundle exec rake spec 2>&1) timeout: 1m 0s
+  ⎿  Error: Exit code 1
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/bin/ruby 
+     -I/Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/ge
+     ms/rspec-core-3.13.6/lib:/Users/jordan/.local/share/mise/installs/ruby/4.0.0
+     /lib/ruby/gems/4.0.0/gems/rspec-support-3.13.6/lib 
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/gems
+     /rspec-core-3.13.6/exe/rspec --pattern spec/\*\*\{,/\*/\*\*\}/\*_spec.rb
+
+     Randomized with seed 35440
+
+     ShoppingCart
+       #initialize
+         creates an empty shopping cart (FAILED - 1)
+       #add_item
+         can add multiple items (FAILED - 2)
+     … +176 lines (ctrl+o to see all)
+
+⏺ All tests are now running with proper failures. Let me complete the todo and summarize:
+
+⏺ Your Ruby OOP gym is ready. Here's what was created:
+
+  Project Structure
+
+  ruby-oop-exercises/
+  ├── CLAUDE.md            # Instructions for generating more chapters
+  ├── Gemfile              # RSpec + Rake
+  ├── Rakefile             # `rake spec` runs tests
+  ├── .rspec               # Test formatting config
+  ├── lib/                 # Your code goes here (stubs provided)
+  │   ├── chapter_01_classes_and_objects/  (5 exercises)
+  │   ├── chapter_02_encapsulation/        (5 exercises)
+  │   └── chapter_03_inheritance/          (5 exercises)
+  └── spec/                # Failing tests to guide you
+
+  Test Results
+
+  110 examples, 104 failures
+
+  Get Started
+
+  bundle install          # Already done
+  rake spec               # See failing tests
+
+  Chapters
+
+  | #   | Topic             | Exercises                                                                                                       |
+  |-----|-------------------|-----------------------------------------------------------------------------------------------------------------|
+  | 1   | Classes & Objects | Dog, Book, Rectangle, Counter, Playlist                                                                         |
+  | 2   | Encapsulation     | Person, Temperature, BankAccount, PasswordManager, ShoppingCart                                                 |
+  | 3   | Inheritance       | Animal/Wolf/Tiger, Vehicle/Car/Motorcycle, Employee/Manager/Intern, Shape/Circle/Square, Character/Warrior/Mage |
+
+  Each lib file has comments explaining what to implement. Work through them in order - edit the class stubs in lib/ until rake spec passes!
+
+
+
