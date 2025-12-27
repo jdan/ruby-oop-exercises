@@ -9,6 +9,21 @@ A TDD-based learning repository for practicing Object-Oriented Programming in Ru
 3. Implement the classes in `lib/` to make tests pass
 4. Work through chapters in order (01 → 02 → 03)
 
+## Running Tests
+
+```bash
+# Run all tests
+rake spec
+
+# Run tests for a specific chapter
+bundle exec rspec spec/chapter_01_classes_and_objects/
+bundle exec rspec spec/chapter_02_encapsulation/
+bundle exec rspec spec/chapter_03_inheritance/
+
+# Run tests for a single exercise
+bundle exec rspec spec/chapter_01_classes_and_objects/01_dog_spec.rb
+```
+
 ## Project Structure
 
 ```

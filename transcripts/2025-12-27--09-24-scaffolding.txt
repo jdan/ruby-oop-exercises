@@ -1007,5 +1007,87 @@ chapters.
 
   Each lib file has comments explaining what to implement. Work through them in order - edit the class stubs in lib/ until rake spec passes!
 
+> /export 
+  ⎿  Conversation exported to: 2025-12-27--09-24-am-scaffolding.txt
+
+> How do I run just the tests for chapter 1? 
+
+⏺ Run tests for just Chapter 1 with:
+
+  bundle exec rspec spec/chapter_01_classes_and_objects/
+
+  Or a single exercise:
+
+  bundle exec rspec spec/chapter_01_classes_and_objects/01_dog_spec.rb
+
+> add that info to the readme and claude.md 
+
+⏺ Read(CLAUDE.md)
+  ⎿  Read 56 lines
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 15 lines                                                      
+       9  3. Implement the classes in `lib/` to make tests pass
+      10  4. Work through chapters in order (01 → 02 → 03)
+      11  
+      12 +## Running Tests                                               
+      13 +                                                               
+      14 +```bash                                                        
+      15 +# Run all tests                                                
+      16 +rake spec                                                      
+      17 +                                                               
+      18 +# Run tests for a specific chapter                             
+      19 +bundle exec rspec spec/chapter_01_classes_and_objects/         
+      20 +bundle exec rspec spec/chapter_02_encapsulation/               
+      21 +bundle exec rspec spec/chapter_03_inheritance/                 
+      22 +                                                               
+      23 +# Run tests for a single exercise                              
+      24 +bundle exec rspec spec/chapter_01_classes_and_objects/01_dog_sp
+         +ec.rb                                                          
+      25 +```                                                            
+      26 +                                                               
+      27  ## Project Structure
+      28  
+      29  ```
+
+⏺ There's no README.md yet - should I create one, or is CLAUDE.md sufficient? (CLAUDE.md serves as both project docs and Claude context.)
+
+> there is one 
+
+⏺ Search(pattern: "**/README*")
+  ⎿  Found 2 files (ctrl+o to expand)
+
+⏺ Read(README.md)
+  ⎿  Read 11 lines
+
+⏺ Update(README.md)
+  ⎿  Added 13 lines, removed 1 line                                      
+       4  
+       5  ### Running
+       6  
+       7 -```                                                            
+       7 +```bash                                                        
+       8  bundle install
+       9  bundle exec rake spec
+      10  ```
+      11 +                                                               
+      12 +### Running Specific Tests                                     
+      13 +                                                               
+      14 +```bash                                                        
+      15 +# Run tests for a specific chapter                             
+      16 +bundle exec rspec spec/chapter_01_classes_and_objects/         
+      17 +bundle exec rspec spec/chapter_02_encapsulation/               
+      18 +bundle exec rspec spec/chapter_03_inheritance/                 
+      19 +                                                               
+      20 +# Run tests for a single exercise                              
+      21 +bundle exec rspec spec/chapter_01_classes_and_objects/01_dog_sp
+         +ec.rb                                                          
+      22 +```                                                            
+
+⏺ Done - updated both README.md and CLAUDE.md with test running instructions.
+
+> /export 
+  ⎿  Conversation copied to clipboard
+
 
 
