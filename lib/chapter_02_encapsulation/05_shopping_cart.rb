@@ -24,18 +24,34 @@ class ShoppingCart
   end
 
   def add_item(name, price)
-    @items << [name, price]
+    @items << Item.new(name, price)
   end
 
   def remove_item(name)
-    @items.reject! { |item| item[0] == name }
+    @items.reject! { |item| item.is? name }
   end
 
   def total
-    @items.sum { |item| item[1] } * (1 - (@discount / 100.0))
+    mult = 1 - (@discount / 100.0)
+    @items.sum(&:price) * mult
   end
 
   def apply_discount(percent)
     @discount = percent
+  end
+end
+
+##
+# An item with a name and a price
+class Item
+  attr_reader :name, :price
+
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+
+  def is?(name)
+    @name == name
   end
 end
