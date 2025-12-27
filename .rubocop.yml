@@ -13,3 +13,6 @@ Lint/EmptyClass:
 
 Naming/PredicateMethod:
   Enabled: false
+
+Naming/PredicatePrefix:
+  Enabled: false
