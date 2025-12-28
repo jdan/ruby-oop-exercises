@@ -36,6 +36,20 @@ module Serializable
   def to_json(*_args)
     to_hash.to_json
   end
+
+  def self.included(base)
+    base.extend(ClassMethods)
+  end
+
+  ##
+  # Class methods to enable the serializable_attributes DSL
+  module ClassMethods
+    attr_reader :serializable_attrs
+
+    def serializable_attributes(*attrs)
+      @serializable_attrs = attrs
+    end
+  end
 end
 
 ##
@@ -44,6 +58,8 @@ class User
   include Serializable
 
   attr_reader :name, :email
+
+  serializable_attributes :name, :email
 
   def initialize(name, email)
     @name = name
@@ -62,12 +78,10 @@ class Product
 
   attr_reader :name, :price
 
+  serializable_attributes :name, :price
+
   def initialize(name, price)
     @name = name
     @price = price
-  end
-
-  def self.serializable_attrs
-    %i[name price]
   end
 end
