@@ -22,14 +22,57 @@
 ##
 # A module that provides tagging functionality
 module Taggable
+  # NOTE: These methods are wrapped in #tap so they do not
+  # expose the underlying set
+  def add_tag(tag)
+    tap { tag_set.add(tag) }
+  end
+
+  def remove_tag(tag)
+    tap { tag_set.delete(tag) }
+  end
+
+  def clear_tags
+    tap { tag_set.clear }
+  end
+
+  def tags
+    tag_set.to_a
+  end
+
+  def tagged_with?(tag)
+    tag_set.include? tag
+  end
+
+  private
+
+  ##
+  # Store the tags as a set internally
+  def tag_set
+    @tag_set ||= Set.new
+  end
 end
 
 ##
 # An article that can be tagged
 class Article
+  include Taggable
+
+  attr_reader :title
+
+  def initialize(title)
+    @title = title
+  end
 end
 
 ##
 # A photo that can be tagged
 class Photo
+  include Taggable
+
+  attr_reader :filename
+
+  def initialize(filename)
+    @filename = filename
+  end
 end

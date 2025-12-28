@@ -29,18 +29,45 @@ require 'json'
 ##
 # A module that provides serialization functionality
 module Serializable
-  ##
-  # Class methods added when Serializable is included
-  module ClassMethods
+  def to_hash
+    self.class.serializable_attrs.to_h { |sym| [sym, send(sym)] }
+  end
+
+  def to_json(*_args)
+    to_hash.to_json
   end
 end
 
 ##
 # A user that can be serialized
 class User
+  include Serializable
+
+  attr_reader :name, :email
+
+  def initialize(name, email)
+    @name = name
+    @email = email
+  end
+
+  def self.serializable_attrs
+    %i[name email]
+  end
 end
 
 ##
 # A product that can be serialized
 class Product
+  include Serializable
+
+  attr_reader :name, :price
+
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+
+  def self.serializable_attrs
+    %i[name price]
+  end
 end

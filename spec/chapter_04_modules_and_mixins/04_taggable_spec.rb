@@ -78,6 +78,49 @@ RSpec.describe Taggable do
       expect(article.tags).to eq([])
     end
   end
+
+  describe 'encapsulation' do
+    it 'does not expose tag_set publicly' do
+      article = Article.new('Test')
+
+      expect { article.tag_set }.to raise_error(NoMethodError, /private method/)
+    end
+
+    it 'returns a copy from tags so internal state cannot be mutated' do
+      article = Article.new('Test')
+      article.add_tag('original')
+
+      article.tags << 'injected'
+
+      expect(article.tags).to eq(['original'])
+    end
+
+    it 'does not leak internal state from add_tag' do
+      article = Article.new('Test')
+
+      result = article.add_tag('ruby')
+
+      expect(result).to be(article)
+    end
+
+    it 'does not leak internal state from remove_tag' do
+      article = Article.new('Test')
+      article.add_tag('ruby')
+
+      result = article.remove_tag('ruby')
+
+      expect(result).to be(article)
+    end
+
+    it 'does not leak internal state from clear_tags' do
+      article = Article.new('Test')
+      article.add_tag('ruby')
+
+      result = article.clear_tags
+
+      expect(result).to be(article)
+    end
+  end
 end
 
 RSpec.describe Article do

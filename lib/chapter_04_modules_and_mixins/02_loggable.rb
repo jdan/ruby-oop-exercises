@@ -17,9 +17,39 @@
 ##
 # A module that provides logging functionality
 module Loggable
+  def log(message)
+    # NOTE: We utilize #tap to not expose the internal messages
+    # array to callers
+    tap { log_messages << "[#{Time.now}] #{message}" }
+  end
+
+  def log_history
+    log_messages.dup
+  end
+
+  private
+
+  def log_messages
+    @log_messages ||= []
+  end
 end
 
 ##
 # An application that can log its activity
 class Application
+  include Loggable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def start
+    log("Application #{name} started")
+  end
+
+  def stop
+    log("Application #{name} stopped")
+  end
 end

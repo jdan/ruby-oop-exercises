@@ -79,4 +79,23 @@ RSpec.describe Application do
       expect(Application.included_modules).to include(Loggable)
     end
   end
+
+  describe 'encapsulation' do
+    it 'returns a copy from log_history so internal state cannot be mutated' do
+      app = Application.new('TestApp')
+      app.log('original')
+
+      app.log_history << '[INJECTED] sneaky message'
+
+      expect(app.log_history.size).to eq(1)
+    end
+
+    it 'does not leak internal state from log' do
+      app = Application.new('TestApp')
+
+      result = app.log('test message')
+
+      expect(result).to be(app)
+    end
+  end
 end

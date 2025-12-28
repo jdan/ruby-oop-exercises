@@ -14,9 +14,20 @@
 ##
 # A module that provides greeting functionality
 module Greetable
+  def greet
+    # NOTE: Delegates to the #name method
+    "Hello, I'm #{name}!"
+  end
 end
 
 ##
 # A person who can greet others
 class Person
+  include Greetable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
 end
