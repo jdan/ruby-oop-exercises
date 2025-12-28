@@ -7,8 +7,8 @@ RSpec.describe AggressiveStrategy do
     it 'always returns attack' do
       strategy = AggressiveStrategy.new
 
-      expect(strategy.choose_action(100, 50)).to eq(:attack)
-      expect(strategy.choose_action(10, 100)).to eq(:attack)
+      expect(strategy.choose_action(100)).to eq(:attack)
+      expect(strategy.choose_action(10)).to eq(:attack)
     end
   end
 
@@ -24,15 +24,15 @@ RSpec.describe DefensiveStrategy do
     it 'returns defend when health is low (below 30)' do
       strategy = DefensiveStrategy.new
 
-      expect(strategy.choose_action(20, 100)).to eq(:defend)
-      expect(strategy.choose_action(29, 50)).to eq(:defend)
+      expect(strategy.choose_action(20)).to eq(:defend)
+      expect(strategy.choose_action(29)).to eq(:defend)
     end
 
     it 'returns attack when health is 30 or above' do
       strategy = DefensiveStrategy.new
 
-      expect(strategy.choose_action(30, 100)).to eq(:attack)
-      expect(strategy.choose_action(100, 50)).to eq(:attack)
+      expect(strategy.choose_action(30)).to eq(:attack)
+      expect(strategy.choose_action(100)).to eq(:attack)
     end
   end
 
@@ -48,15 +48,15 @@ RSpec.describe BalancedStrategy do
     it 'returns heal when health is below 50' do
       strategy = BalancedStrategy.new
 
-      expect(strategy.choose_action(30, 100)).to eq(:heal)
-      expect(strategy.choose_action(49, 50)).to eq(:heal)
+      expect(strategy.choose_action(30)).to eq(:heal)
+      expect(strategy.choose_action(49)).to eq(:heal)
     end
 
     it 'returns attack when health is 50 or above' do
       strategy = BalancedStrategy.new
 
-      expect(strategy.choose_action(50, 100)).to eq(:attack)
-      expect(strategy.choose_action(100, 50)).to eq(:attack)
+      expect(strategy.choose_action(50)).to eq(:attack)
+      expect(strategy.choose_action(100)).to eq(:attack)
     end
   end
 
@@ -83,21 +83,21 @@ RSpec.describe GameCharacter do
       strategy = AggressiveStrategy.new
       character = GameCharacter.new('Warrior', 100, strategy)
 
-      expect(character.take_turn(50)).to eq(:attack)
+      expect(character.take_turn).to eq(:attack)
     end
 
     it 'uses defensive strategy when configured' do
       strategy = DefensiveStrategy.new
       character = GameCharacter.new('Knight', 25, strategy)
 
-      expect(character.take_turn(100)).to eq(:defend)
+      expect(character.take_turn).to eq(:defend)
     end
 
     it 'uses balanced strategy when configured' do
       strategy = BalancedStrategy.new
       character = GameCharacter.new('Paladin', 40, strategy)
 
-      expect(character.take_turn(100)).to eq(:heal)
+      expect(character.take_turn).to eq(:heal)
     end
   end
 
@@ -107,10 +107,10 @@ RSpec.describe GameCharacter do
       defensive = DefensiveStrategy.new
       character = GameCharacter.new('Fighter', 20, aggressive)
 
-      expect(character.take_turn(100)).to eq(:attack)
+      expect(character.take_turn).to eq(:attack)
 
       character.change_strategy(defensive)
-      expect(character.take_turn(100)).to eq(:defend)
+      expect(character.take_turn).to eq(:defend)
     end
   end
 

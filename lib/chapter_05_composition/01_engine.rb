@@ -12,6 +12,29 @@
 # - start method (sets running to true)
 # - stop method (sets running to false)
 
+##
+# An engine with horsepower
+class Engine
+  attr_reader :horsepower
+
+  def initialize(horsepower)
+    @horsepower = horsepower
+    @running = false
+  end
+
+  def running?
+    @running
+  end
+
+  def start
+    @running = true
+  end
+
+  def stop
+    @running = false
+  end
+end
+
 # Car class:
 # - initialize(model, engine)
 # - model reader
@@ -20,3 +43,30 @@
 # - stop method (delegates to engine)
 # - running? method (delegates to engine)
 # - specs method (returns "#{model} with #{horsepower}hp engine")
+
+##
+# A car with an engine
+class Car
+  attr_reader :model, :engine
+
+  def initialize(model, engine)
+    @model = model
+    @engine = engine
+  end
+
+  def start
+    @engine.start
+  end
+
+  def stop
+    @engine.stop
+  end
+
+  def running?
+    @engine.running?
+  end
+
+  def specs
+    "#{model} with #{engine.horsepower}hp engine"
+  end
+end
