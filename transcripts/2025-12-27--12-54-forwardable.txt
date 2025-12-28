@@ -1,0 +1,80 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Pro
+ *  ▘▘ ▝▝  *   ~/Projects/ruby-oop-exercises
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> how is my 01_engine solution 
+
+⏺ Read(lib/chapter_05_composition/01_engine.rb)
+  ⎿  Read 73 lines
+
+⏺ Read(spec/chapter_05_composition/01_engine_spec.rb)
+  ⎿  Read 94 lines
+
+⏺ Let me run the tests to verify:
+
+⏺ Bash(bundle exec rspec spec/chapter_05_composition/01_engine_spec.rb)
+  ⎿  Randomized with seed 65446    
+
+     Engine
+     … +25 lines (ctrl+o to expand)
+
+⏺ All 10 tests pass. Your solution is clean and correct.
+
+  What you did well:
+
+  1. Clear composition pattern - Car has-a Engine rather than inheriting from it
+  2. Proper delegation - start, stop, and running? all delegate to the engine
+  3. Encapsulation - @running is private, only accessible via running?
+  4. Idiomatic Ruby - using attr_reader appropriately, predicate method naming (running?)
+
+  Minor style note:
+
+  The comments at lines 38-45 are the spec hints that were there before your implementation. You could remove them now that the code is complete, but it doesn't affect functionality.
+
+  Overall, this is a solid demonstration of composition. The Car doesn't need to know how an engine starts - it just asks the engine to start. This is the core benefit of composition: you can swap in a different engine implementation without changing Car.
+
+> is there a less boiler-plate-y way to do delegation in ruby? 
+
+⏺ Yes! Ruby's standard library has Forwardable for exactly this:
+
+  require 'forwardable'
+
+  class Car
+    extend Forwardable
+
+    attr_reader :model, :engine
+
+    def_delegators :@engine, :start, :stop, :running?
+
+    def initialize(model, engine)
+      @model = model
+      @engine = engine
+    end
+
+    def specs
+      "#{model} with #{engine.horsepower}hp engine"
+    end
+  end
+
+  def_delegators takes the target (:@engine) and a list of methods to forward. This eliminates the three wrapper methods you wrote manually.
+
+  There's also def_delegator (singular) when you need to rename:
+
+  def_delegator :@engine, :running?, :engine_running?
+
+  This would create engine_running? that calls @engine.running?.
+
+  ---
+  Rails/ActiveSupport has an even cleaner syntax if you ever use it:
+
+  delegate :start, :stop, :running?, to: :engine
+
+  ---
+  For your exercise, either approach works. The manual delegation you wrote is fine for learning since it makes the pattern explicit. Forwardable is what you'd use in production to reduce boilerplate.
+
+
+

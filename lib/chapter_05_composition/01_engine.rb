@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 # Implement the Engine and Car classes here
 #
 # This exercise demonstrates basic composition: a Car "has-a" Engine.
@@ -49,21 +51,13 @@ end
 class Car
   attr_reader :model, :engine
 
+  extend Forwardable
+
+  def_delegators :@engine, :start, :stop, :running?
+
   def initialize(model, engine)
     @model = model
     @engine = engine
-  end
-
-  def start
-    @engine.start
-  end
-
-  def stop
-    @engine.stop
-  end
-
-  def running?
-    @engine.running?
   end
 
   def specs
