@@ -10,21 +10,35 @@
 # - initialize(name)
 # - name reader
 # - speak method returns "Woof!"
+Dog = Struct.new(:name) do
+  def speak = 'Woof!'
+end
+
 #
 # Cat class:
 # - initialize(name)
 # - name reader
 # - speak method returns "Meow!"
+Cat = Struct.new(:name) do
+  def speak = 'Meow!'
+end
+
 #
 # Robot class:
 # - initialize(name)
 # - name reader
 # - speak method returns "Beep boop!"
+Robot = Struct.new(:name) do
+  def speak = 'Beep boop!'
+end
+
 #
 # SilentObject class:
 # - initialize(name)
 # - name reader
 # - does NOT have a speak method
+SilentObject = Struct.new(:name)
+
 #
 # make_them_speak(objects) function:
 # - Takes an array of objects
@@ -32,3 +46,8 @@
 # - Skip objects that don't respond to :speak
 # - Return array of strings
 # - Hint: use respond_to?(:speak) to check if object can speak
+def make_them_speak(objects)
+  objects
+    .filter { |o| o.respond_to?(:speak) }
+    .map { |speaker| "#{speaker.name} says: #{speaker.speak}" }
+end

@@ -174,8 +174,8 @@ RSpec.describe ShapeCalculator do
 
       result = calculator.shapes_report([circle, rect])
 
-      expect(result).to include('circle: area = ')
-      expect(result).to include('rectangle: area = 12')
+      expect(result[0]).to include('circle: area = ')
+      expect(result[1]).to include('rectangle: area = 12')
     end
   end
 end

@@ -1,34 +1,85 @@
 # frozen_string_literal: true
 
+require 'json'
+
 # Implement the exporter classes and ReportGenerator here
 #
 # This exercise demonstrates polymorphism with different export formats.
 # All exporters share the same interface: export(data) and file_extension.
-#
-# CsvExporter class:
-# - export(data) converts array of hashes to CSV string
-#   - First line: keys as comma-separated headers
-#   - Following lines: values as comma-separated rows
-#   - Returns empty string for empty array
-# - file_extension returns "csv"
-#
-# JsonExporter class:
-# - export(data) converts array of hashes to JSON string
-#   - Hint: require 'json' and use .to_json
-# - file_extension returns "json"
-#
-# XmlExporter class:
-# - export(data) converts array of hashes to XML string
-#   - Wrap all records in <records>...</records>
-#   - Each hash becomes <record><key>value</key>...</record>
-#   - Empty data returns "<records>\n</records>"
-# - file_extension returns "xml"
-#
-# ReportGenerator class:
-# - initialize(exporter)
-# - exporter reader
-# - generate(data) delegates to exporter.export(data)
-# - suggested_filename(base_name) returns "#{base_name}.#{exporter.file_extension}"
-# - change_exporter(new_exporter) swaps the exporter
 
-require 'json'
+##
+# A CSV exporter
+class CsvExporter
+  def export(data)
+    return '' if data.empty?
+
+    [keys(data), *values(data)].join("\n")
+  end
+
+  def keys(data)
+    data.first.keys.join(',')
+  end
+
+  def values(data)
+    data.map { |hash| hash.values.join(',') }.join("\n")
+  end
+
+  def file_extension = 'csv'
+end
+
+##
+# A JSON exporter
+class JsonExporter
+  def export(data)
+    data.to_json
+  end
+
+  def file_extension = 'json'
+end
+
+##
+# An XML exporter
+class XmlExporter
+  def export(data)
+    return "<records>\n</records>" if data.empty?
+
+    <<~XML.chomp
+      <records>
+      #{records_to_xml(data)}
+      </records>
+    XML
+  end
+
+  def records_to_xml(data)
+    data.map { |record| record_to_xml(record) }.join "\n"
+  end
+
+  def record_to_xml(record)
+    key_value = record.map { |key, value| "<#{key}>#{value}</#{key}>" }.join
+    "<record>#{key_value}</record>"
+  end
+
+  def file_extension = 'xml'
+end
+
+##
+# A generator that is given an exporter to delegate to
+class ReportGenerator
+  attr_reader :exporter
+
+  def initialize(exporter)
+    @exporter = exporter
+  end
+
+  def generate(data)
+    @exporter.export(data)
+  end
+
+  def suggested_filename(base_name)
+    "#{base_name}.#{exporter.file_extension}"
+  end
+
+  def change_exporter(new_exporter)
+    @exporter = new_exporter
+  end
+end
