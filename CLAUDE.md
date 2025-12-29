@@ -7,7 +7,7 @@ A TDD-based learning repository for practicing Object-Oriented Programming in Ru
 1. Run `bundle install` to install dependencies
 2. Run `rake spec` to see failing tests
 3. Implement the classes in `lib/` to make tests pass
-4. Work through chapters in order (01 → 02 → 03)
+4. Work through chapters in order (01 → 07)
 
 ## Running Tests
 
@@ -37,13 +37,21 @@ RuboCop config is in `.rubocop.yml`.
 
 ```
 lib/
-  chapter_01_classes_and_objects/   # Basic class creation
-  chapter_02_encapsulation/         # Data hiding, accessors
-  chapter_03_inheritance/           # Subclasses, super, overriding
+  chapter_01_classes_and_objects/      # Basic class creation
+  chapter_02_encapsulation/            # Data hiding, accessors
+  chapter_03_inheritance/              # Subclasses, super, overriding
+  chapter_04_modules_and_mixins/       # Modules, include, extend
+  chapter_05_composition/              # Has-a relationships, delegation
+  chapter_06_polymorphism_and_duck_typing/  # Interface compatibility
+  chapter_07_solid_principles/         # SRP, OCP, LSP, ISP, DIP
 spec/
-  chapter_01_classes_and_objects/   # Tests for chapter 1
-  chapter_02_encapsulation/         # Tests for chapter 2
-  chapter_03_inheritance/           # Tests for chapter 3
+  chapter_01_classes_and_objects/      # Tests for chapter 1
+  chapter_02_encapsulation/            # Tests for chapter 2
+  chapter_03_inheritance/              # Tests for chapter 3
+  chapter_04_modules_and_mixins/       # Tests for chapter 4
+  chapter_05_composition/              # Tests for chapter 5
+  chapter_06_polymorphism_and_duck_typing/  # Tests for chapter 6
+  chapter_07_solid_principles/         # Tests for chapter 7
 ```
 
 ## Conventions
@@ -72,8 +80,6 @@ Follow the existing project conventions.
 
 ## Chapter Ideas for Future
 
-- Chapter 04: Modules and Mixins
-- Chapter 05: Composition over Inheritance
-- Chapter 06: Polymorphism and Duck Typing
-- Chapter 07: SOLID Principles
 - Chapter 08: Design Patterns (Factory, Singleton, Observer)
+- Chapter 09: Metaprogramming Basics
+- Chapter 10: Testing and TDD Patterns

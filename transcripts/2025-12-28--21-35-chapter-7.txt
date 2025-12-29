@@ -1,0 +1,465 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Pro
+ *  ▘▘ ▝▝  *   ~/Projects/ruby-oop-exercises
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> determine if there should be a chapter 7 for these exercises. if so, 
+generate it 
+
+⏺ I'll explore the codebase to understand what chapters already exist and their structure, then determine if a Chapter 7 on SOLID Principles would be appropriate.
+
+⏺ Explore(Explore existing chapter structure)
+  ⎿  Done (35 tool uses · 31.9k tokens · 1m 2s)                            
+
+⏺ The codebase has 6 chapters covering progressive OOP topics. According to CLAUDE.md, Chapter 7 should cover SOLID Principles. This is a logical next step as it builds on the foundation already established (inheritance, composition, polymorphism).
+
+  Let me design the chapter content:
+
+⏺ Plan(Design Chapter 7 SOLID exercises)
+  ⎿  Done (18 tool uses · 37.5k tokens · 2m 15s)                           
+
+⏺ Excellent! Based on my exploration, Chapter 7 on SOLID Principles is definitely appropriate. It's the natural next step after chapters 1-6 and is listed in the CLAUDE.md roadmap. Let me write the implementation plan.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ I've analyzed the codebase and designed Chapter 7. Here's the summary:
+
+  Recommendation: Yes, add Chapter 7
+
+  Topic: SOLID Principles (as specified in CLAUDE.md roadmap)
+
+  5 Exercises:
+  1. Single Responsibility - Report generator with separated concerns (SalesData, ReportFormatter, FileWriter)
+  2. Open/Closed - Discount calculator extensible via new classes (PercentageDiscount, FlatDiscount, etc.)
+  3. Liskov Substitution - Media player where all subtypes are interchangeable (MediaFile → AudioFile → PodcastEpisode)
+  4. Interface Segregation - Worker system with focused modules (Workable, Feedable, Sleepable)
+  5. Dependency Inversion - Notification system with injected senders (EmailSender, SmsSender, MockSender)
+
+  Why this fits:
+  - Natural progression after polymorphism/duck typing (Ch 6)
+  - Builds on composition (Ch 5) and modules (Ch 4)
+  - Listed in CLAUDE.md as the next chapter
+  - Follows all existing conventions (5 exercises, TDD, frozen_string_literal)
+                                                                           
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/warm-napping-beacon.md · /plan to edit
+     Chapter 7: SOLID Principles - Implementation Plan
+
+     Summary
+
+     Create Chapter 7 covering all 5 SOLID principles with 5 exercises, 
+     following existing project conventions.
+
+     Files to Create
+
+     Lib Files
+
+     - lib/chapter_07_solid_principles/01_report_generator.rb
+     - lib/chapter_07_solid_principles/02_discount_calculator.rb
+     - lib/chapter_07_solid_principles/03_media_player.rb
+     - lib/chapter_07_solid_principles/04_worker_system.rb
+     - lib/chapter_07_solid_principles/05_notification_system.rb
+
+     Spec Files
+
+     - spec/chapter_07_solid_principles/01_report_generator_spec.rb
+     - spec/chapter_07_solid_principles/02_discount_calculator_spec.rb
+     - spec/chapter_07_solid_principles/03_media_player_spec.rb
+     - spec/chapter_07_solid_principles/04_worker_system_spec.rb
+     - spec/chapter_07_solid_principles/05_notification_system_spec.rb
+
+     ---
+     Exercise Details
+
+     01 - Single Responsibility Principle (SRP)
+
+     File: 01_report_generator.rb
+
+     Scenario: Sales report system with separated concerns
+
+     Classes:
+     - SalesData - data storage only (records, total_revenue, top_seller)
+     - ReportFormatter - formatting only (format, format_summary)
+     - FileWriter - file operations only (write)
+     - SalesReportGenerator - orchestrates the three via composition
+
+     Key Learning: Each class has ONE reason to change
+
+     ---
+     02 - Open/Closed Principle (OCP)
+
+     File: 02_discount_calculator.rb
+
+     Scenario: E-commerce discount system extensible without modification
+
+     Classes:
+     - PercentageDiscount - percentage off (initialize(percent), apply, 
+     name)
+     - FlatDiscount - fixed amount off (initialize(amount), apply, name)
+     - BuyOneGetOneFree - 50% off (apply, name)
+     - SeasonalDiscount - month-based (initialize(percent, valid_months), 
+     apply, applicable?)
+     - PriceCalculator - works with any discount via duck typing
+
+     Key Learning: Add new discount types by creating classes, not modifying
+      existing code
+
+     ---
+     03 - Liskov Substitution Principle (LSP)
+
+     File: 03_media_player.rb
+
+     Scenario: Media player where all media types are interchangeable
+
+     Classes:
+     - MediaFile - base class (play, pause, stop, formatted_duration)
+     - AudioFile < MediaFile - adds artist
+     - VideoFile < MediaFile - adds resolution
+     - PodcastEpisode < AudioFile - adds episode_number
+     - Playlist - works with ANY MediaFile subtype identically
+
+     Key Learning: Subtypes honor base type contract; Playlist works 
+     regardless of media type
+
+     ---
+     04 - Interface Segregation Principle (ISP)
+
+     File: 04_worker_system.rb
+
+     Scenario: Worker system with focused, composable interfaces (modules)
+
+     Modules:
+     - Workable - work capability
+     - Feedable - eat, take_break capabilities
+     - Sleepable - sleep capability
+
+     Classes:
+     - HumanWorker - includes all three modules
+     - RobotWorker - includes only Workable
+     - ContractWorker - includes Workable, Feedable
+     - WorkScheduler - works with any Workable
+     - BreakScheduler - works only with Feedable entities
+
+     Key Learning: Robots don't implement eat/sleep; small focused 
+     interfaces
+
+     ---
+     05 - Dependency Inversion Principle (DIP)
+
+     File: 05_notification_system.rb
+
+     Scenario: Notification system with injected dependencies
+
+     Module:
+     - MessageSender - abstract interface (send_message raises 
+     NotImplementedError)
+
+     Classes:
+     - EmailSender - concrete implementation (smtp_server)
+     - SmsSender - concrete implementation (api_key)
+     - PushSender - concrete implementation (app_id)
+     - MockSender - test double (stores messages in array)
+     - NotificationService - receives sender via constructor injection
+     - UserAlertSystem - receives NotificationService via injection
+
+     Key Learning: High-level modules depend on abstractions, not 
+     concretions; easy testing
+
+     ---
+     Implementation Steps
+
+     1. Create directory lib/chapter_07_solid_principles/
+     2. Create directory spec/chapter_07_solid_principles/
+     3. For each exercise (01-05):
+       - Write spec file first (TDD approach)
+       - Write lib file with minimal implementation to pass specs
+       - Run bundle exec rspec spec/chapter_07_solid_principles/0X_* to 
+     verify
+     4. Run bundle exec rubocop to check style
+     5. Run full test suite to ensure nothing broken
+
+     Conventions to Follow
+
+     - # frozen_string_literal: true header
+     - Implementation hints as comments in lib files
+     - require_relative for loading lib files in specs
+     - Use Forwardable for delegation where appropriate
+     - Test private method inaccessibility where relevant
+     - ~80-180 lines per spec file
+
+⏺ Let me set up the todo list and start implementing Chapter 7.
+
+⏺ Bash(mkdir -p
+      /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_07_solid_principles
+      /Users/jordan/Projects/ruby-oop-exercises/spec/chapter_07_solid_principles
+      )
+  ⎿  (No content)
+
+⏺ Read(spec/chapter_05_composition/01_engine_spec.rb)
+  ⎿  Read 94 lines
+
+⏺ Read(lib/chapter_05_composition/01_engine.rb)
+  ⎿  Read 67 lines
+
+⏺ Write(spec/chapter_07_solid_principles/01_report_generator_spec.rb)
+  ⎿  Wrote 134 lines to                                          
+     spec/chapter_07_solid_principles/01_report_generator_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_07_solid_principles/01_report_generator'
+      3 RSpec.describe SalesData do
+      4   let(:records) do
+      5     [
+      6       { product: 'Widget', quantity: 10, price: 5.00 },
+      7       { product: 'Gadget', quantity: 5, price: 20.00 },
+      8       { product: 'Gizmo', quantity: 8, price: 12.50 }
+     … +124 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_07_solid_principles/01_report_generator.rb)
+  ⎿  Wrote 49 lines to                                                     
+     lib/chapter_07_solid_principles/01_report_generator.rb
+      1 # frozen_string_literal: true
+      2 # Single Responsibility Principle (SRP)
+      3 #
+      4 # Each class should have only ONE reason to change.
+      5 # This exercise demonstrates separating concerns:
+      6 # - SalesData: handles data storage and calculations
+      7 # - ReportFormatter: handles formatting data into text
+      8 # - FileWriter: handles file operations
+      9 # - SalesReportGenerator: orchestrates the components
+     … +39 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_07_solid_principles/02_discount_calculator_spec.rb)
+  ⎿  Wrote 182 lines to                                             
+     spec/chapter_07_solid_principles/02_discount_calculator_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_07_solid_principles/02_discount_calculator'
+      3 RSpec.describe PercentageDiscount do
+      4   describe '#initialize' do
+      5     it 'creates a discount with a percentage' do
+      6       discount = PercentageDiscount.new(10)
+      7       expect(discount.percent).to eq(10)
+      8     end
+     … +172 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_07_solid_principles/02_discount_calculator.rb)
+  ⎿  Wrote 65 lines to                                                     
+     lib/chapter_07_solid_principles/02_discount_calculator.rb
+      1 # frozen_string_literal: true
+      2 # Open/Closed Principle (OCP)
+      3 #
+      4 # Software entities should be open for extension but closed for m
+        odification.
+      5 # New discount types can be added by creating new classes, not by
+         modifying
+      6 # existing code. The PriceCalculator works with any object that r
+        esponds to #apply.
+      7 # PercentageDiscount class:
+      8 # - initialize(percent)
+     … +55 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_07_solid_principles/03_media_player_spec.rb)
+  ⎿  Wrote 211 lines to                                                    
+     spec/chapter_07_solid_principles/03_media_player_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_07_solid_principles/03_media_player'
+      3 RSpec.describe MediaFile do
+      4   describe '#initialize' do
+      5     it 'creates a media file with filename and duration' do
+      6       media = MediaFile.new('song.mp3', 180)
+      7       expect(media.filename).to eq('song.mp3')
+      8       expect(media.duration).to eq(180)
+     … +201 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_07_solid_principles/03_media_player.rb)
+  ⎿  Wrote 69 lines to lib/chapter_07_solid_principles/03_media_player.rb
+      1 # frozen_string_literal: true
+      2 # Liskov Substitution Principle (LSP)
+      3 #
+      4 # Objects of a superclass should be replaceable with objects of i
+        ts subclasses
+      5 # without affecting the correctness of the program.
+      6 #
+      7 # All MediaFile subtypes can be used interchangeably in a Playlis
+        t because
+      8 # they all honor the same contract (play, pause, stop, duration).
+     … +59 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_07_solid_principles/04_worker_system_spec.rb)
+  ⎿  Wrote 229 lines to                                                  
+     spec/chapter_07_solid_principles/04_worker_system_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_07_solid_principles/04_worker_system'
+      3 RSpec.describe Workable do
+      4   it 'defines a work method that raises NotImplementedError' do
+      5     klass = Class.new { include Workable }
+      6     expect { klass.new.work }.to raise_error(NotImplementedError)
+      7   end
+      8 end
+     … +219 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_07_solid_principles/04_worker_system.rb)
+  ⎿  Wrote 108 lines to lib/chapter_07_solid_principles/04_worker_system.rb
+      1 # frozen_string_literal: true
+      2 # Interface Segregation Principle (ISP)
+      3 #
+      4 # Clients should not be forced to depend on interfaces they do no
+        t use.
+      5 # Instead of one large interface, we use small, focused modules t
+        hat
+      6 # classes can mix in selectively.
+      7 #
+      8 # RobotWorker only includes Workable - it doesn't need eat, take_
+        break, or sleep.
+     … +98 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_07_solid_principles/05_notification_system_spec.rb)
+  ⎿  Wrote 257 lines to                                                  
+     spec/chapter_07_solid_principles/05_notification_system_spec.rb
+      1 # frozen_string_literal: true
+      2 require 'chapter_07_solid_principles/05_notification_system'
+      3 RSpec.describe MessageSender do
+      4   it 'defines send_message that raises NotImplementedError' do
+      5     klass = Class.new { include MessageSender }
+      6     expect { klass.new.send_message('user', 'hello') }.to raise_e
+        rror(NotImplementedError)
+      7   end
+      8 end
+     … +247 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_07_solid_principles/05_notification_system.rb)
+  ⎿  Wrote 89 lines to                                                     
+     lib/chapter_07_solid_principles/05_notification_system.rb
+      1 # frozen_string_literal: true
+      2 # Dependency Inversion Principle (DIP)
+      3 #
+      4 # High-level modules should not depend on low-level modules.
+      5 # Both should depend on abstractions.
+      6 #
+      7 # NotificationService depends on the MessageSender abstraction,
+      8 # not on concrete EmailSender, SmsSender, etc. implementations.
+      9 # Dependencies are injected, not instantiated internally.
+     … +79 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rspec spec/chapter_07_solid_principles/ --format
+      documentation 2>&1 | head -100)
+  ⎿  Randomized with seed 9519     
+
+     UserAlertSystem
+     … +99 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rubocop lib/chapter_07_solid_principles/
+      spec/chapter_07_solid_principles/ 2>&1)
+  ⎿  Inspecting 10 files                     
+     ..........
+
+     10 files inspected, no offenses detected
+
+⏺ Tests are failing as expected (empty implementations), and linting passes. Let me verify the test structure with a quick count:
+
+⏺ Bash(bundle exec rspec spec/chapter_07_solid_principles/ --format
+      documentation 2>&1 | tail -20)
+  ⎿ rspec ./spec/chapter_07_solid_principles/05_notification_system_spec.rb
+    :90 # PushSender#send_message returns confirmation with app info
+    rspec ./spec/chapter_07_solid_principles/05_notification_system_spec.rb
+    … +38 lines (ctrl+o to expand)
+
+
+
+⏺ Bash(bundle exec rspec spec/chapter_07_solid_principles/ 2>&1 | grep -E
+      "(examples|failures|pending)")
+  ⎿  114 examples, 109 failures
+     Failed examples:
+
+⏺ Read(CLAUDE.md)
+  ⎿  Read 80 lines
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 1 line, removed 1 line                                        
+       7  1. Run `bundle install` to install dependencies
+       8  2. Run `rake spec` to see failing tests
+       9  3. Implement the classes in `lib/` to make tests pass
+      10 -4. Work through chapters in order (01 → 02 → 03)               
+      10 +4. Work through chapters in order (01 → 07)                    
+      11  
+      12  ## Running Tests
+      13  
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 14 lines, removed 6 lines                                     
+      37  
+      38  ```
+      39  lib/
+      40 -  chapter_01_classes_and_objects/   # Basic class creation     
+      41 -  chapter_02_encapsulation/         # Data hiding, accessors   
+      42 -  chapter_03_inheritance/           # Subclasses, super, overri
+         -ding                                                           
+      40 +  chapter_01_classes_and_objects/      # Basic class creation  
+      41 +  chapter_02_encapsulation/            # Data hiding, accessors
+      42 +  chapter_03_inheritance/              # Subclasses, super, ove
+         +rriding                                                        
+      43 +  chapter_04_modules_and_mixins/       # Modules, include, exte
+         +nd                                                             
+      44 +  chapter_05_composition/              # Has-a relationships, d
+         +elegation                                                      
+      45 +  chapter_06_polymorphism_and_duck_typing/  # Interface compati
+         +bility                                                         
+      46 +  chapter_07_solid_principles/         # SRP, OCP, LSP, ISP, DI
+         +P                                                              
+      47  spec/
+      44 -  chapter_01_classes_and_objects/   # Tests for chapter 1      
+      45 -  chapter_02_encapsulation/         # Tests for chapter 2      
+      46 -  chapter_03_inheritance/           # Tests for chapter 3      
+      48 +  chapter_01_classes_and_objects/      # Tests for chapter 1   
+      49 +  chapter_02_encapsulation/            # Tests for chapter 2   
+      50 +  chapter_03_inheritance/              # Tests for chapter 3   
+      51 +  chapter_04_modules_and_mixins/       # Tests for chapter 4   
+      52 +  chapter_05_composition/              # Tests for chapter 5   
+      53 +  chapter_06_polymorphism_and_duck_typing/  # Tests for chapter
+         + 6                                                             
+      54 +  chapter_07_solid_principles/         # Tests for chapter 7   
+      55  ```
+      56  
+      57  ## Conventions
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 2 lines, removed 4 lines                                      
+      80  
+      81  ## Chapter Ideas for Future
+      82  
+      83 -- Chapter 04: Modules and Mixins                               
+      84 -- Chapter 05: Composition over Inheritance                     
+      85 -- Chapter 06: Polymorphism and Duck Typing                     
+      86 -- Chapter 07: SOLID Principles                                 
+      83  - Chapter 08: Design Patterns (Factory, Singleton, Observer)
+      84 +- Chapter 09: Metaprogramming Basics                           
+      85 +- Chapter 10: Testing and TDD Patterns                         
+
+⏺ Chapter 7: SOLID Principles - Generated
+
+  Created 5 exercises covering all SOLID principles:
+
+  | Exercise | File                      | Principle             | Topic                                           |
+  |----------|---------------------------|-----------------------|-------------------------------------------------|
+  | 01       | 01_report_generator.rb    | Single Responsibility | Sales report with separated concerns            |
+  | 02       | 02_discount_calculator.rb | Open/Closed           | Extensible discount system                      |
+  | 03       | 03_media_player.rb        | Liskov Substitution   | Interchangeable media types                     |
+  | 04       | 04_worker_system.rb       | Interface Segregation | Focused modules (Workable, Feedable, Sleepable) |
+  | 05       | 05_notification_system.rb | Dependency Inversion  | Injected message senders                        |
+
+  Files created:
+  - lib/chapter_07_solid_principles/ - 5 stub files with implementation hints
+  - spec/chapter_07_solid_principles/ - 5 spec files (114 tests total)
+
+  Status:
+  - Linting: Passes (no offenses)
+  - Tests: 109 failing, 5 passing (expected - implementations are stubs)
+
+  Run tests with:
+  bundle exec rspec spec/chapter_07_solid_principles/
+
+
+
