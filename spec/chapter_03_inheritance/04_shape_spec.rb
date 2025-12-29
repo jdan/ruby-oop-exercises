@@ -3,69 +3,69 @@
 require 'chapter_03_inheritance/04_shape'
 
 RSpec.describe 'Shape hierarchy' do
-  describe Shape do
+  describe Chapter03::Shape do
     it 'raises NotImplementedError for area' do
-      shape = Shape.new
+      shape = described_class.new
       expect { shape.area }.to raise_error(NotImplementedError)
     end
 
     it 'raises NotImplementedError for perimeter' do
-      shape = Shape.new
+      shape = described_class.new
       expect { shape.perimeter }.to raise_error(NotImplementedError)
     end
   end
 
-  describe Circle do
+  describe Chapter03::Circle do
     it 'inherits from Shape' do
-      expect(Circle.superclass).to eq(Shape)
+      expect(described_class.superclass).to eq(Chapter03::Shape)
     end
 
     it 'can be created with a radius' do
-      circle = Circle.new(5)
-      expect(circle).to be_a(Circle)
+      circle = described_class.new(5)
+      expect(circle).to be_a(described_class)
     end
 
     it 'calculates area correctly' do
-      circle = Circle.new(5)
+      circle = described_class.new(5)
       expected_area = Math::PI * 25 # PI * r^2
       expect(circle.area).to be_within(0.001).of(expected_area)
     end
 
     it 'calculates perimeter (circumference) correctly' do
-      circle = Circle.new(5)
+      circle = described_class.new(5)
       expected_perimeter = 2 * Math::PI * 5 # 2 * PI * r
       expect(circle.perimeter).to be_within(0.001).of(expected_perimeter)
     end
 
     it 'is a Shape' do
-      circle = Circle.new(5)
-      expect(circle).to be_a(Shape)
+      circle = described_class.new(5)
+      expect(circle).to be_a(Chapter03::Shape)
     end
   end
 
-  describe Square do
+  describe Chapter03::Square do
     it 'inherits from Shape' do
-      expect(Square.superclass).to eq(Shape)
+      expect(described_class.superclass).to eq(Chapter03::Shape)
     end
 
     it 'can be created with a side length' do
-      square = Square.new(4)
-      expect(square).to be_a(Square)
+      square = described_class.new(4)
+      expect(square).to be_a(described_class)
     end
 
     it 'calculates area correctly' do
-      square = Square.new(4)
+      square = described_class.new(4)
       expect(square.area).to eq(16)
     end
 
     it 'calculates perimeter correctly' do
-      square = Square.new(4)
+      square = described_class.new(4)
       expect(square.perimeter).to eq(16)
     end
 
     it 'is a Shape' do
-      square = Square.new(4)
-      expect(square).to be_a(Shape)
+      square = described_class.new(4)
+      expect(square).to be_a(Chapter03::Shape)
     end
   end
 end

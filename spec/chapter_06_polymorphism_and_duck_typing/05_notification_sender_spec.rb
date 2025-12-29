@@ -2,10 +2,10 @@
 
 require 'chapter_06_polymorphism_and_duck_typing/05_notification_sender'
 
-RSpec.describe EmailChannel do
+RSpec.describe Chapter06::EmailChannel do
   describe '#deliver' do
     it 'returns formatted email notification' do
-      channel = EmailChannel.new
+      channel = described_class.new
 
       result = channel.deliver('user@test.com', 'Welcome!', 'Thanks for signing up')
 
@@ -15,21 +15,21 @@ RSpec.describe EmailChannel do
 
   describe '#channel_name' do
     it 'returns email' do
-      expect(EmailChannel.new.channel_name).to eq('email')
+      expect(described_class.new.channel_name).to eq('email')
     end
   end
 
   describe '#supports_html?' do
     it 'returns true' do
-      expect(EmailChannel.new.supports_html?).to be true
+      expect(described_class.new.supports_html?).to be true
     end
   end
 end
 
-RSpec.describe SmsChannel do
+RSpec.describe Chapter06::SmsChannel do
   describe '#deliver' do
     it 'returns formatted SMS notification' do
-      channel = SmsChannel.new
+      channel = described_class.new
 
       result = channel.deliver('555-1234', 'Alert', 'Your code is 1234')
 
@@ -37,7 +37,7 @@ RSpec.describe SmsChannel do
     end
 
     it 'ignores subject for SMS' do
-      channel = SmsChannel.new
+      channel = described_class.new
 
       result = channel.deliver('555-0000', 'Important Subject', 'Message body')
 
@@ -48,21 +48,21 @@ RSpec.describe SmsChannel do
 
   describe '#channel_name' do
     it 'returns sms' do
-      expect(SmsChannel.new.channel_name).to eq('sms')
+      expect(described_class.new.channel_name).to eq('sms')
     end
   end
 
   describe '#supports_html?' do
     it 'returns false' do
-      expect(SmsChannel.new.supports_html?).to be false
+      expect(described_class.new.supports_html?).to be false
     end
   end
 end
 
-RSpec.describe SlackChannel do
+RSpec.describe Chapter06::SlackChannel do
   describe '#deliver' do
     it 'returns formatted Slack notification' do
-      channel = SlackChannel.new
+      channel = described_class.new
 
       result = channel.deliver('#general', 'Announcement', 'Team meeting at 3pm')
 
@@ -72,21 +72,21 @@ RSpec.describe SlackChannel do
 
   describe '#channel_name' do
     it 'returns slack' do
-      expect(SlackChannel.new.channel_name).to eq('slack')
+      expect(described_class.new.channel_name).to eq('slack')
     end
   end
 
   describe '#supports_html?' do
     it 'returns false (uses markdown instead)' do
-      expect(SlackChannel.new.supports_html?).to be false
+      expect(described_class.new.supports_html?).to be false
     end
   end
 end
 
-RSpec.describe PushChannel do
+RSpec.describe Chapter06::PushChannel do
   describe '#deliver' do
     it 'returns formatted push notification' do
-      channel = PushChannel.new
+      channel = described_class.new
 
       result = channel.deliver('device_token_xyz', 'New Message', 'You have 3 new messages')
 
@@ -96,23 +96,23 @@ RSpec.describe PushChannel do
 
   describe '#channel_name' do
     it 'returns push' do
-      expect(PushChannel.new.channel_name).to eq('push')
+      expect(described_class.new.channel_name).to eq('push')
     end
   end
 
   describe '#supports_html?' do
     it 'returns false' do
-      expect(PushChannel.new.supports_html?).to be false
+      expect(described_class.new.supports_html?).to be false
     end
   end
 end
 
-RSpec.describe NotificationDispatcher do
+RSpec.describe Chapter06::NotificationDispatcher do
   describe '#initialize' do
     it 'creates dispatcher with multiple channels' do
-      email = EmailChannel.new
-      sms = SmsChannel.new
-      dispatcher = NotificationDispatcher.new([email, sms])
+      email = Chapter06::EmailChannel.new
+      sms = Chapter06::SmsChannel.new
+      dispatcher = described_class.new([email, sms])
 
       expect(dispatcher.channels).to contain_exactly(email, sms)
     end
@@ -120,9 +120,9 @@ RSpec.describe NotificationDispatcher do
 
   describe '#send_to_all' do
     it 'sends notification through all channels' do
-      email = EmailChannel.new
-      slack = SlackChannel.new
-      dispatcher = NotificationDispatcher.new([email, slack])
+      email = Chapter06::EmailChannel.new
+      slack = Chapter06::SlackChannel.new
+      dispatcher = described_class.new([email, slack])
 
       results = dispatcher.send_to_all('recipient', 'Hello', 'Test message')
 
@@ -134,9 +134,9 @@ RSpec.describe NotificationDispatcher do
 
   describe '#send_via' do
     it 'sends through specific channel by name' do
-      email = EmailChannel.new
-      sms = SmsChannel.new
-      dispatcher = NotificationDispatcher.new([email, sms])
+      email = Chapter06::EmailChannel.new
+      sms = Chapter06::SmsChannel.new
+      dispatcher = described_class.new([email, sms])
 
       result = dispatcher.send_via('sms', '555-1234', 'Alert', 'Code: 9999')
 
@@ -144,8 +144,8 @@ RSpec.describe NotificationDispatcher do
     end
 
     it 'returns nil if channel not found' do
-      email = EmailChannel.new
-      dispatcher = NotificationDispatcher.new([email])
+      email = Chapter06::EmailChannel.new
+      dispatcher = described_class.new([email])
 
       result = dispatcher.send_via('slack', '#channel', 'Test', 'Message')
 
@@ -155,10 +155,10 @@ RSpec.describe NotificationDispatcher do
 
   describe '#html_capable_channels' do
     it 'returns only channels that support HTML' do
-      email = EmailChannel.new
-      sms = SmsChannel.new
-      slack = SlackChannel.new
-      dispatcher = NotificationDispatcher.new([email, sms, slack])
+      email = Chapter06::EmailChannel.new
+      sms = Chapter06::SmsChannel.new
+      slack = Chapter06::SlackChannel.new
+      dispatcher = described_class.new([email, sms, slack])
 
       result = dispatcher.html_capable_channels
 
@@ -168,10 +168,10 @@ RSpec.describe NotificationDispatcher do
 
   describe '#available_channels' do
     it 'returns list of channel names' do
-      email = EmailChannel.new
-      sms = SmsChannel.new
-      push = PushChannel.new
-      dispatcher = NotificationDispatcher.new([email, sms, push])
+      email = Chapter06::EmailChannel.new
+      sms = Chapter06::SmsChannel.new
+      push = Chapter06::PushChannel.new
+      dispatcher = described_class.new([email, sms, push])
 
       result = dispatcher.available_channels
 

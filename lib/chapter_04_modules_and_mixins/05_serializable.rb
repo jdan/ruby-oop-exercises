@@ -26,62 +26,64 @@
 
 require 'json'
 
-##
-# A module that provides serialization functionality
-module Serializable
-  def to_hash
-    self.class.serializable_attrs.to_h { |sym| [sym, send(sym)] }
-  end
+module Chapter04
+  ##
+  # A module that provides serialization functionality
+  module Serializable
+    def to_hash
+      self.class.serializable_attrs.to_h { |sym| [sym, send(sym)] }
+    end
 
-  def to_json(*_args)
-    to_hash.to_json
-  end
+    def to_json(*_args)
+      to_hash.to_json
+    end
 
-  def self.included(base)
-    base.extend(ClassMethods)
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
+    ##
+    # Class methods to enable the serializable_attributes DSL
+    module ClassMethods
+      attr_reader :serializable_attrs
+
+      def serializable_attributes(*attrs)
+        @serializable_attrs = attrs
+      end
+    end
   end
 
   ##
-  # Class methods to enable the serializable_attributes DSL
-  module ClassMethods
-    attr_reader :serializable_attrs
+  # A user that can be serialized
+  class User
+    include Serializable
 
-    def serializable_attributes(*attrs)
-      @serializable_attrs = attrs
+    attr_reader :name, :email
+
+    serializable_attributes :name, :email
+
+    def initialize(name, email)
+      @name = name
+      @email = email
+    end
+
+    def self.serializable_attrs
+      %i[name email]
     end
   end
-end
 
-##
-# A user that can be serialized
-class User
-  include Serializable
+  ##
+  # A product that can be serialized
+  class Product
+    include Serializable
 
-  attr_reader :name, :email
+    attr_reader :name, :price
 
-  serializable_attributes :name, :email
+    serializable_attributes :name, :price
 
-  def initialize(name, email)
-    @name = name
-    @email = email
-  end
-
-  def self.serializable_attrs
-    %i[name email]
-  end
-end
-
-##
-# A product that can be serialized
-class Product
-  include Serializable
-
-  attr_reader :name, :price
-
-  serializable_attributes :name, :price
-
-  def initialize(name, price)
-    @name = name
-    @price = price
+    def initialize(name, price)
+      @name = name
+      @price = price
+    end
   end
 end

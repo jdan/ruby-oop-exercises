@@ -17,48 +17,50 @@
 # - area returns side^2
 # - perimeter returns 4 * side
 
-##
-# A shape is a base class for geometric objects
-class Shape
-  def area
-    raise NotImplementedError
+module Chapter03
+  ##
+  # A shape is a base class for geometric objects
+  class Shape
+    def area
+      raise NotImplementedError
+    end
+
+    def perimeter
+      raise NotImplementedError
+    end
   end
 
-  def perimeter
-    raise NotImplementedError
-  end
-end
+  ##
+  # A circle is a shape with a radius
+  class Circle < Shape
+    def initialize(radius)
+      super()
+      @radius = radius
+    end
 
-##
-# A circle is a shape with a radius
-class Circle < Shape
-  def initialize(radius)
-    super()
-    @radius = radius
-  end
+    def perimeter
+      2 * Math::PI * @radius
+    end
 
-  def perimeter
-    2 * Math::PI * @radius
-  end
-
-  def area
-    Math::PI * (@radius**2)
-  end
-end
-
-##
-# A square is a shape with a side length
-class Square < Shape
-  def initialize(side_length)
-    super()
-    @side_length = side_length
+    def area
+      Math::PI * (@radius**2)
+    end
   end
 
-  def perimeter
-    4 * @side_length
-  end
+  ##
+  # A square is a shape with a side length
+  class Square < Shape
+    def initialize(side_length)
+      super()
+      @side_length = side_length
+    end
 
-  def area
-    @side_length**2
+    def perimeter
+      4 * @side_length
+    end
+
+    def area
+      @side_length**2
+    end
   end
 end

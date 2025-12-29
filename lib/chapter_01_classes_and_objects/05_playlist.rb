@@ -9,27 +9,29 @@
 # - Have an includes? method that checks if a song is in the playlist
 # - Have a first_song method that returns the first song (or nil if empty)
 
-##
-# A playlist which tracks songs
-class Playlist
-  def initialize(name)
-    @name = name
-    @songs = []
-  end
+module Chapter01
+  ##
+  # A playlist which tracks songs
+  class Playlist
+    def initialize(name)
+      @name = name
+      @songs = []
+    end
 
-  def total_songs
-    @songs.count
-  end
+    def total_songs
+      @songs.count
+    end
 
-  def add_song(song)
-    @songs << song
-  end
+    def add_song(song)
+      @songs << song
+    end
 
-  def includes?(song)
-    @songs.include? song
-  end
+    def includes?(song)
+      @songs.include? song
+    end
 
-  def first_song
-    @songs.first
+    def first_song
+      @songs.first
+    end
   end
 end

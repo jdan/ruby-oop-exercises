@@ -2,10 +2,10 @@
 
 require 'chapter_04_modules_and_mixins/05_serializable'
 
-RSpec.describe Serializable do
+RSpec.describe Chapter04::Serializable do
   describe '#to_hash' do
     it 'returns a hash of serializable attributes for User' do
-      user = User.new('Alice', 'alice@example.com')
+      user = Chapter04::User.new('Alice', 'alice@example.com')
 
       result = user.to_hash
 
@@ -13,7 +13,7 @@ RSpec.describe Serializable do
     end
 
     it 'returns a hash of serializable attributes for Product' do
-      product = Product.new('Widget', 29.99)
+      product = Chapter04::Product.new('Widget', 29.99)
 
       result = product.to_hash
 
@@ -23,7 +23,7 @@ RSpec.describe Serializable do
 
   describe '#to_json' do
     it 'returns a JSON string for User' do
-      user = User.new('Bob', 'bob@example.com')
+      user = Chapter04::User.new('Bob', 'bob@example.com')
 
       result = user.to_json
 
@@ -31,7 +31,7 @@ RSpec.describe Serializable do
     end
 
     it 'returns a JSON string for Product' do
-      product = Product.new('Gadget', 49.99)
+      product = Chapter04::Product.new('Gadget', 49.99)
 
       result = product.to_json
 
@@ -41,19 +41,19 @@ RSpec.describe Serializable do
 
   describe '.serializable_attributes' do
     it 'defines which attributes are serializable' do
-      expect(User.serializable_attrs).to contain_exactly(:name, :email)
+      expect(Chapter04::User.serializable_attrs).to contain_exactly(:name, :email)
     end
 
     it 'can define different attributes for different classes' do
-      expect(Product.serializable_attrs).to contain_exactly(:name, :price)
+      expect(Chapter04::Product.serializable_attrs).to contain_exactly(:name, :price)
     end
   end
 end
 
-RSpec.describe User do
+RSpec.describe Chapter04::User do
   describe '#initialize' do
     it 'accepts name and email' do
-      user = User.new('Charlie', 'charlie@example.com')
+      user = described_class.new('Charlie', 'charlie@example.com')
 
       expect(user.name).to eq('Charlie')
       expect(user.email).to eq('charlie@example.com')
@@ -62,15 +62,15 @@ RSpec.describe User do
 
   describe 'module inclusion' do
     it 'includes the Serializable module' do
-      expect(User.included_modules).to include(Serializable)
+      expect(described_class.included_modules).to include(Chapter04::Serializable)
     end
   end
 end
 
-RSpec.describe Product do
+RSpec.describe Chapter04::Product do
   describe '#initialize' do
     it 'accepts name and price' do
-      product = Product.new('Book', 19.99)
+      product = described_class.new('Book', 19.99)
 
       expect(product.name).to eq('Book')
       expect(product.price).to eq(19.99)
@@ -79,7 +79,7 @@ RSpec.describe Product do
 
   describe 'module inclusion' do
     it 'includes the Serializable module' do
-      expect(Product.included_modules).to include(Serializable)
+      expect(described_class.included_modules).to include(Chapter04::Serializable)
     end
   end
 end

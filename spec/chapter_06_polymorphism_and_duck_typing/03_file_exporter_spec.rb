@@ -2,10 +2,10 @@
 
 require 'chapter_06_polymorphism_and_duck_typing/03_file_exporter'
 
-RSpec.describe CsvExporter do
+RSpec.describe Chapter06::CsvExporter do
   describe '#export' do
     it 'exports data as CSV format' do
-      exporter = CsvExporter.new
+      exporter = described_class.new
       data = [
         { name: 'Alice', age: 30 },
         { name: 'Bob', age: 25 }
@@ -17,7 +17,7 @@ RSpec.describe CsvExporter do
     end
 
     it 'handles single row' do
-      exporter = CsvExporter.new
+      exporter = described_class.new
       data = [{ name: 'Charlie', age: 35 }]
 
       result = exporter.export(data)
@@ -26,7 +26,7 @@ RSpec.describe CsvExporter do
     end
 
     it 'handles empty data' do
-      exporter = CsvExporter.new
+      exporter = described_class.new
 
       result = exporter.export([])
 
@@ -36,15 +36,15 @@ RSpec.describe CsvExporter do
 
   describe '#file_extension' do
     it 'returns csv' do
-      expect(CsvExporter.new.file_extension).to eq('csv')
+      expect(described_class.new.file_extension).to eq('csv')
     end
   end
 end
 
-RSpec.describe JsonExporter do
+RSpec.describe Chapter06::JsonExporter do
   describe '#export' do
     it 'exports data as JSON format' do
-      exporter = JsonExporter.new
+      exporter = described_class.new
       data = [
         { name: 'Alice', age: 30 },
         { name: 'Bob', age: 25 }
@@ -56,7 +56,7 @@ RSpec.describe JsonExporter do
     end
 
     it 'handles empty data' do
-      exporter = JsonExporter.new
+      exporter = described_class.new
 
       result = exporter.export([])
 
@@ -66,15 +66,15 @@ RSpec.describe JsonExporter do
 
   describe '#file_extension' do
     it 'returns json' do
-      expect(JsonExporter.new.file_extension).to eq('json')
+      expect(described_class.new.file_extension).to eq('json')
     end
   end
 end
 
-RSpec.describe XmlExporter do
+RSpec.describe Chapter06::XmlExporter do
   describe '#export' do
     it 'exports data as XML format' do
-      exporter = XmlExporter.new
+      exporter = described_class.new
       data = [
         { name: 'Alice', age: 30 },
         { name: 'Bob', age: 25 }
@@ -90,7 +90,7 @@ RSpec.describe XmlExporter do
     end
 
     it 'handles empty data' do
-      exporter = XmlExporter.new
+      exporter = described_class.new
 
       result = exporter.export([])
 
@@ -100,16 +100,16 @@ RSpec.describe XmlExporter do
 
   describe '#file_extension' do
     it 'returns xml' do
-      expect(XmlExporter.new.file_extension).to eq('xml')
+      expect(described_class.new.file_extension).to eq('xml')
     end
   end
 end
 
-RSpec.describe ReportGenerator do
+RSpec.describe Chapter06::ReportGenerator do
   describe '#initialize' do
     it 'creates a generator with an exporter' do
-      exporter = CsvExporter.new
-      generator = ReportGenerator.new(exporter)
+      exporter = Chapter06::CsvExporter.new
+      generator = described_class.new(exporter)
 
       expect(generator.exporter).to eq(exporter)
     end
@@ -117,8 +117,8 @@ RSpec.describe ReportGenerator do
 
   describe '#generate' do
     it 'generates report using CSV exporter' do
-      exporter = CsvExporter.new
-      generator = ReportGenerator.new(exporter)
+      exporter = Chapter06::CsvExporter.new
+      generator = described_class.new(exporter)
       data = [{ name: 'Test', value: 100 }]
 
       result = generator.generate(data)
@@ -127,8 +127,8 @@ RSpec.describe ReportGenerator do
     end
 
     it 'generates report using JSON exporter' do
-      exporter = JsonExporter.new
-      generator = ReportGenerator.new(exporter)
+      exporter = Chapter06::JsonExporter.new
+      generator = described_class.new(exporter)
       data = [{ name: 'Test', value: 100 }]
 
       result = generator.generate(data)
@@ -139,15 +139,15 @@ RSpec.describe ReportGenerator do
 
   describe '#suggested_filename' do
     it 'returns filename with correct extension' do
-      csv_exporter = CsvExporter.new
-      generator = ReportGenerator.new(csv_exporter)
+      csv_exporter = Chapter06::CsvExporter.new
+      generator = described_class.new(csv_exporter)
 
       expect(generator.suggested_filename('report')).to eq('report.csv')
     end
 
     it 'uses exporter file extension' do
-      json_exporter = JsonExporter.new
-      generator = ReportGenerator.new(json_exporter)
+      json_exporter = Chapter06::JsonExporter.new
+      generator = described_class.new(json_exporter)
 
       expect(generator.suggested_filename('data')).to eq('data.json')
     end
@@ -155,9 +155,9 @@ RSpec.describe ReportGenerator do
 
   describe '#change_exporter' do
     it 'allows switching exporters' do
-      csv_exporter = CsvExporter.new
-      xml_exporter = XmlExporter.new
-      generator = ReportGenerator.new(csv_exporter)
+      csv_exporter = Chapter06::CsvExporter.new
+      xml_exporter = Chapter06::XmlExporter.new
+      generator = described_class.new(csv_exporter)
 
       generator.change_exporter(xml_exporter)
 

@@ -11,47 +11,49 @@
 # - Items should NOT be directly accessible from outside
 # - Have a apply_discount(percent) method that reduces total (use private helper)
 
-##
-# A shopping cart which keeps track of its items and discount
-class ShoppingCart
-  def initialize
-    @items = []
-    @discount = 0
+module Chapter02
+  ##
+  # A shopping cart which keeps track of its items and discount
+  class ShoppingCart
+    def initialize
+      @items = []
+      @discount = 0
+    end
+
+    def item_count
+      @items.count
+    end
+
+    def add_item(name, price)
+      @items << Item.new(name, price)
+    end
+
+    def remove_item(name)
+      @items.reject! { |item| item.is? name }
+    end
+
+    def total
+      mult = 1 - (@discount / 100.0)
+      @items.sum(&:price) * mult
+    end
+
+    def apply_discount(percent)
+      @discount = percent
+    end
   end
 
-  def item_count
-    @items.count
-  end
+  ##
+  # An item with a name and a price
+  class Item
+    attr_reader :name, :price
 
-  def add_item(name, price)
-    @items << Item.new(name, price)
-  end
+    def initialize(name, price)
+      @name = name
+      @price = price
+    end
 
-  def remove_item(name)
-    @items.reject! { |item| item.is? name }
-  end
-
-  def total
-    mult = 1 - (@discount / 100.0)
-    @items.sum(&:price) * mult
-  end
-
-  def apply_discount(percent)
-    @discount = percent
-  end
-end
-
-##
-# An item with a name and a price
-class Item
-  attr_reader :name, :price
-
-  def initialize(name, price)
-    @name = name
-    @price = price
-  end
-
-  def is?(name)
-    @name == name
+    def is?(name)
+      @name == name
+    end
   end
 end

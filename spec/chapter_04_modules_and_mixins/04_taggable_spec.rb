@@ -2,10 +2,10 @@
 
 require 'chapter_04_modules_and_mixins/04_taggable'
 
-RSpec.describe Taggable do
+RSpec.describe Chapter04::Taggable do
   describe '#add_tag' do
     it 'adds a tag' do
-      article = Article.new('Ruby Tips')
+      article = Chapter04::Article.new('Ruby Tips')
 
       article.add_tag('ruby')
 
@@ -13,7 +13,7 @@ RSpec.describe Taggable do
     end
 
     it 'does not add duplicate tags' do
-      article = Article.new('Ruby Tips')
+      article = Chapter04::Article.new('Ruby Tips')
 
       article.add_tag('ruby')
       article.add_tag('ruby')
@@ -24,7 +24,7 @@ RSpec.describe Taggable do
 
   describe '#remove_tag' do
     it 'removes a tag' do
-      article = Article.new('Ruby Tips')
+      article = Chapter04::Article.new('Ruby Tips')
       article.add_tag('ruby')
       article.add_tag('programming')
 
@@ -37,13 +37,13 @@ RSpec.describe Taggable do
 
   describe '#tags' do
     it 'returns an empty array initially' do
-      article = Article.new('Empty Article')
+      article = Chapter04::Article.new('Empty Article')
 
       expect(article.tags).to eq([])
     end
 
     it 'returns all tags' do
-      article = Article.new('Tagged Article')
+      article = Chapter04::Article.new('Tagged Article')
       article.add_tag('tech')
       article.add_tag('news')
 
@@ -53,14 +53,14 @@ RSpec.describe Taggable do
 
   describe '#tagged_with?' do
     it 'returns true if the tag exists' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
       article.add_tag('important')
 
       expect(article.tagged_with?('important')).to be true
     end
 
     it 'returns false if the tag does not exist' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
 
       expect(article.tagged_with?('missing')).to be false
     end
@@ -68,7 +68,7 @@ RSpec.describe Taggable do
 
   describe '#clear_tags' do
     it 'removes all tags' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
       article.add_tag('one')
       article.add_tag('two')
       article.add_tag('three')
@@ -81,13 +81,13 @@ RSpec.describe Taggable do
 
   describe 'encapsulation' do
     it 'does not expose tag_set publicly' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
 
       expect { article.tag_set }.to raise_error(NoMethodError, /private method/)
     end
 
     it 'returns a copy from tags so internal state cannot be mutated' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
       article.add_tag('original')
 
       article.tags << 'injected'
@@ -96,7 +96,7 @@ RSpec.describe Taggable do
     end
 
     it 'does not leak internal state from add_tag' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
 
       result = article.add_tag('ruby')
 
@@ -104,7 +104,7 @@ RSpec.describe Taggable do
     end
 
     it 'does not leak internal state from remove_tag' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
       article.add_tag('ruby')
 
       result = article.remove_tag('ruby')
@@ -113,7 +113,7 @@ RSpec.describe Taggable do
     end
 
     it 'does not leak internal state from clear_tags' do
-      article = Article.new('Test')
+      article = Chapter04::Article.new('Test')
       article.add_tag('ruby')
 
       result = article.clear_tags
@@ -123,10 +123,10 @@ RSpec.describe Taggable do
   end
 end
 
-RSpec.describe Article do
+RSpec.describe Chapter04::Article do
   describe '#initialize' do
     it 'accepts a title' do
-      article = Article.new('My Article')
+      article = described_class.new('My Article')
 
       expect(article.title).to eq('My Article')
     end
@@ -134,15 +134,15 @@ RSpec.describe Article do
 
   describe 'module inclusion' do
     it 'includes the Taggable module' do
-      expect(Article.included_modules).to include(Taggable)
+      expect(described_class.included_modules).to include(Chapter04::Taggable)
     end
   end
 end
 
-RSpec.describe Photo do
+RSpec.describe Chapter04::Photo do
   describe '#initialize' do
     it 'accepts a filename' do
-      photo = Photo.new('sunset.jpg')
+      photo = described_class.new('sunset.jpg')
 
       expect(photo.filename).to eq('sunset.jpg')
     end
@@ -150,11 +150,11 @@ RSpec.describe Photo do
 
   describe 'module inclusion' do
     it 'includes the Taggable module' do
-      expect(Photo.included_modules).to include(Taggable)
+      expect(described_class.included_modules).to include(Chapter04::Taggable)
     end
 
     it 'can use tagging functionality' do
-      photo = Photo.new('beach.png')
+      photo = described_class.new('beach.png')
       photo.add_tag('vacation')
       photo.add_tag('summer')
 

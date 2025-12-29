@@ -1,0 +1,3386 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Pro
+ *  ▘▘ ▝▝  *   ~/Projects/ruby-oop-exercises
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> why does rake spec fail? but testing a specific directory works 
+
+⏺ Let me investigate the issue.
+
+⏺ Bash(rake spec 2>&1)
+  ⎿  Error: Exit code 1
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/bin/ruby 
+     -I/Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/ge
+     ms/rspec-support-3.13.6/lib:/Users/jordan/.local/share/mise/installs/ruby/4.
+     0.0/lib/ruby/gems/4.0.0/gems/rspec-core-3.13.6/lib 
+     /Users/jordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/gems
+     /rspec-core-3.13.6/exe/rspec --pattern spec/\*\*\{,/\*/\*\*\}/\*_spec.rb
+     /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_06_polymorphism_and_du
+     ck_typing/01_speaker.rb:13: warning: already initialized constant Dog
+     /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_01_classes_and_objects
+     /01_dog.rb:12: warning: previous definition of Dog was here
+     /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_06_polymorphism_and_du
+     ck_typing/04_shape_calculator.rb:8: warning: already initialized constant 
+     Circle
+     /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_03_inheritance/04_shap
+     e.rb:34: warning: previous definition of Circle was here
+     /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_06_polymorphism_and_du
+     ck_typing/04_shape_calculator.rb:28: warning: already initialized constant 
+     Rectangle
+     /Users/jordan/Projects/ruby-oop-exercises/lib/chapter_01_classes_and_objects
+     /03_rectangle.rb:13: warning: previous definition of Rectangle was here
+
+     Randomized with seed 14024
+
+     … +217 lines (ctrl+o to see all)
+
+⏺ Read(Rakefile)
+  ⎿  Read 10 lines
+
+⏺ The problem is class name collisions across chapters. Look at the warnings at the top of the output:
+
+  warning: already initialized constant Dog
+  warning: already initialized constant Circle
+  warning: already initialized constant Rectangle
+
+  When rake spec runs, it loads all spec files which require all lib files. Multiple chapters define the same class names:
+
+  | Class     | Defined in                            |
+  |-----------|---------------------------------------|
+  | Dog       | chapter_01 AND chapter_06             |
+  | Circle    | chapter_01, chapter_03 AND chapter_06 |
+  | Rectangle | chapter_01 AND chapter_06             |
+
+  The later definition overwrites the earlier one, so tests for the original class fail (wrong methods/behavior).
+
+  When you run a specific directory (bundle exec rspec spec/chapter_01.../), only that chapter's files are loaded—no conflicts.
+
+  Solutions:
+
+  1. Namespace classes by chapter (cleanest):
+  module Chapter01
+    class Dog; end
+  end
+  2. Use different class names in later chapters (e.g., SpeakingDog, PolymorphicCircle)
+  3. Isolate spec loading so each chapter only loads its own lib files
+
+  Would you like me to implement one of these fixes?
+
+> I like 1, let's do it. Continue iterating until tests pass. 
+
+⏺ I'll namespace all classes by chapter. Let me start by identifying all the files that need changes.
+
+⏺ Search(pattern: "lib/chapter_01_classes_and_objects/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_01_classes_and_objects/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Read(lib/chapter_01_classes_and_objects/01_dog.rb)
+  ⎿  Read 26 lines
+
+⏺ Read(lib/chapter_01_classes_and_objects/02_book.rb)
+  ⎿  Read 28 lines
+
+⏺ Read(lib/chapter_01_classes_and_objects/03_rectangle.rb)
+  ⎿  Read 31 lines
+
+⏺ Read(lib/chapter_01_classes_and_objects/04_counter.rb)
+  ⎿  Read 36 lines
+
+⏺ Read(lib/chapter_01_classes_and_objects/05_playlist.rb)
+  ⎿  Read 36 lines
+
+⏺ Read(spec/chapter_01_classes_and_objects/01_dog_spec.rb)
+  ⎿  Read 32 lines
+
+⏺ Read(spec/chapter_01_classes_and_objects/02_book_spec.rb)
+  ⎿  Read 42 lines
+
+⏺ Read(spec/chapter_01_classes_and_objects/03_rectangle_spec.rb)
+  ⎿  Read 54 lines
+
+⏺ Read(spec/chapter_01_classes_and_objects/04_counter_spec.rb)
+  ⎿  Read 66 lines
+
+⏺ Read(spec/chapter_01_classes_and_objects/05_playlist_spec.rb)
+  ⎿  Read 71 lines
+
+⏺ Now I'll update all Chapter 01 files. Let me edit the lib files first:
+
+⏺ Update(lib/chapter_01_classes_and_objects/01_dog.rb)
+  ⎿  Added 14 lines, removed 12 lines                                    
+       7  # - Have a bark method that returns "Woof!"
+       8  # - Have a describe method that returns "{name} is a {breed}"
+       9  
+      10 -##                                                             
+      11 -# A Dog which can bark and describe itself                     
+      12 -class Dog                                                      
+      13 -  def initialize(name, breed)                                  
+      14 -    @name = name                                               
+      15 -    @breed = breed                                             
+      16 -  end                                                          
+      10 +module Chapter01                                               
+      11 +  ##                                                           
+      12 +  # A Dog which can bark and describe itself                   
+      13 +  class Dog                                                    
+      14 +    def initialize(name, breed)                                
+      15 +      @name = name                                             
+      16 +      @breed = breed                                           
+      17 +    end                                                        
+      18  
+      18 -  def bark                                                     
+      19 -    'Woof!'                                                    
+      20 -  end                                                          
+      19 +    def bark                                                   
+      20 +      'Woof!'                                                  
+      21 +    end                                                        
+      22  
+      22 -  def describe                                                 
+      23 -    "#{@name} is a #{@breed}"                                  
+      23 +    def describe                                               
+      24 +      "#{@name} is a #{@breed}"                                
+      25 +    end                                                        
+      26    end
+      27  end
+
+⏺ Update(lib/chapter_01_classes_and_objects/02_book.rb)
+  ⎿  Added 16 lines, removed 14 lines                                    
+       7  # - Have a summary method that returns "{title} by {author}"
+       8  # - Have a long_read? method that returns true if pages > 300
+       9  
+      10 -##                                                             
+      11 -# A book with a title and author that can describe itself      
+      12 -# and if it's a long read of > 300 pages                       
+      13 -class Book                                                     
+      14 -  def initialize(title, author, num_pages)                     
+      15 -    @title = title                                             
+      16 -    @author = author                                           
+      17 -    @num_pages = num_pages                                     
+      18 -  end                                                          
+      10 +module Chapter01                                               
+      11 +  ##                                                           
+      12 +  # A book with a title and author that can describe itself    
+      13 +  # and if it's a long read of > 300 pages                     
+      14 +  class Book                                                   
+      15 +    def initialize(title, author, num_pages)                   
+      16 +      @title = title                                           
+      17 +      @author = author                                         
+      18 +      @num_pages = num_pages                                   
+      19 +    end                                                        
+      20  
+      20 -  def summary                                                  
+      21 -    "#{@title} by #{@author}"                                  
+      22 -  end                                                          
+      21 +    def summary                                                
+      22 +      "#{@title} by #{@author}"                                
+      23 +    end                                                        
+      24  
+      24 -  def long_read?                                               
+      25 -    @num_pages > 300                                           
+      25 +    def long_read?                                             
+      26 +      @num_pages > 300                                         
+      27 +    end                                                        
+      28    end
+      29  end
+
+⏺ Update(lib/chapter_01_classes_and_objects/03_rectangle.rb)
+  ⎿  Added 17 lines, removed 15 lines                                    
+       8  # - Have a perimeter method that returns 2 * (width + height)
+       9  # - Have a square? method that returns true if width equals hei
+          ght
+      10  
+      11 -##                                                             
+      12 -# A rectangle class which can compute its area and perimeter.  
+      13 -class Rectangle                                                
+      14 -  def initialize(width, height)                                
+      15 -    @width = width                                             
+      16 -    @height = height                                           
+      17 -  end                                                          
+      11 +module Chapter01                                               
+      12 +  ##                                                           
+      13 +  # A rectangle class which can compute its area and perimeter.
+      14 +  class Rectangle                                              
+      15 +    def initialize(width, height)                              
+      16 +      @width = width                                           
+      17 +      @height = height                                         
+      18 +    end                                                        
+      19  
+      19 -  def area                                                     
+      20 -    @width * @height                                           
+      21 -  end                                                          
+      20 +    def area                                                   
+      21 +      @width * @height                                         
+      22 +    end                                                        
+      23  
+      23 -  def perimeter                                                
+      24 -    (2 * @width) + (2 * @height)                               
+      25 -  end                                                          
+      24 +    def perimeter                                              
+      25 +      (2 * @width) + (2 * @height)                             
+      26 +    end                                                        
+      27  
+      27 -  def square?                                                  
+      28 -    @width == @height                                          
+      28 +    def square?                                                
+      29 +      @width == @height                                        
+      30 +    end                                                        
+      31    end
+      32  end
+
+⏺ Update(lib/chapter_01_classes_and_objects/04_counter.rb)
+  ⎿  Added 20 lines, removed 18 lines                                    
+       9  # - Have a decrement method that decreases count by 1
+      10  # - Have a reset method that sets count back to the initial val
+          ue
+      11  
+      12 -##                                                             
+      13 -# A counter which tracks its state                             
+      14 -class Counter                                                  
+      15 -  # attr_reader gives us a `value` getter method               
+      16 -  # but tightly couples the instance variable name             
+      17 -  attr_reader :value                                           
+      12 +module Chapter01                                               
+      13 +  ##                                                           
+      14 +  # A counter which tracks its state                           
+      15 +  class Counter                                                
+      16 +    # attr_reader gives us a `value` getter method             
+      17 +    # but tightly couples the instance variable name           
+      18 +    attr_reader :value                                         
+      19  
+      19 -  def initialize(start_value = 0)                              
+      20 -    @start_value = start_value                                 
+      21 -    @value = start_value                                       
+      22 -  end                                                          
+      20 +    def initialize(start_value = 0)                            
+      21 +      @start_value = start_value                               
+      22 +      @value = start_value                                     
+      23 +    end                                                        
+      24  
+      24 -  def increment                                                
+      25 -    @value += 1                                                
+      26 -  end                                                          
+      25 +    def increment                                              
+      26 +      @value += 1                                              
+      27 +    end                                                        
+      28  
+      28 -  def decrement                                                
+      29 -    @value -= 1                                                
+      30 -  end                                                          
+      29 +    def decrement                                              
+      30 +      @value -= 1                                              
+      31 +    end                                                        
+      32  
+      32 -  def reset                                                    
+      33 -    @value = @start_value                                      
+      33 +    def reset                                                  
+      34 +      @value = @start_value                                    
+      35 +    end                                                        
+      36    end
+      37  end
+
+⏺ Update(lib/chapter_01_classes_and_objects/05_playlist.rb)
+  ⎿  Added 20 lines, removed 18 lines                                    
+       9  # - Have an includes? method that checks if a song is in the pl
+          aylist
+      10  # - Have a first_song method that returns the first song (or ni
+          l if empty)
+      11  
+      12 -##                                                             
+      13 -# A playlist which tracks songs                                
+      14 -class Playlist                                                 
+      15 -  def initialize(name)                                         
+      16 -    @name = name                                               
+      17 -    @songs = []                                                
+      18 -  end                                                          
+      12 +module Chapter01                                               
+      13 +  ##                                                           
+      14 +  # A playlist which tracks songs                              
+      15 +  class Playlist                                               
+      16 +    def initialize(name)                                       
+      17 +      @name = name                                             
+      18 +      @songs = []                                              
+      19 +    end                                                        
+      20  
+      20 -  def total_songs                                              
+      21 -    @songs.count                                               
+      22 -  end                                                          
+      21 +    def total_songs                                            
+      22 +      @songs.count                                             
+      23 +    end                                                        
+      24  
+      24 -  def add_song(song)                                           
+      25 -    @songs << song                                             
+      26 -  end                                                          
+      25 +    def add_song(song)                                         
+      26 +      @songs << song                                           
+      27 +    end                                                        
+      28  
+      28 -  def includes?(song)                                          
+      29 -    @songs.include? song                                       
+      30 -  end                                                          
+      29 +    def includes?(song)                                        
+      30 +      @songs.include? song                                     
+      31 +    end                                                        
+      32  
+      32 -  def first_song                                               
+      33 -    @songs.first                                               
+      33 +    def first_song                                             
+      34 +      @songs.first                                             
+      35 +    end                                                        
+      36    end
+      37  end
+
+⏺ Now let me update the spec files for Chapter 01:
+
+⏺ Update(spec/chapter_01_classes_and_objects/01_dog_spec.rb)
+  ⎿  Added 6 lines, removed 6 lines                                      
+       2  
+       3  require 'chapter_01_classes_and_objects/01_dog'
+       4  
+       5 -RSpec.describe Dog do                                          
+       5 +RSpec.describe Chapter01::Dog do                               
+       6    describe '#initialize' do
+       7      it 'creates a dog with a name and breed' do
+       8 -      dog = Dog.new('Buddy', 'Golden Retriever')               
+       9 -      expect(dog).to be_a(Dog)                                 
+       8 +      dog = described_class.new('Buddy', 'Golden Retriever')   
+       9 +      expect(dog).to be_a(described_class)                     
+      10      end
+      11    end
+      12  
+      13    describe '#bark' do
+      14      it 'returns "Woof!"' do
+      15 -      dog = Dog.new('Buddy', 'Golden Retriever')               
+      15 +      dog = described_class.new('Buddy', 'Golden Retriever')   
+      16        expect(dog.bark).to eq('Woof!')
+      17      end
+      18    end
+      19  
+      20    describe '#describe' do
+      21      it 'returns a description with name and breed' do
+      22 -      dog = Dog.new('Buddy', 'Golden Retriever')               
+      22 +      dog = described_class.new('Buddy', 'Golden Retriever')   
+      23        expect(dog.describe).to eq('Buddy is a Golden Retriever')
+      24      end
+      25  
+      26      it 'works with different dogs' do
+      27 -      dog = Dog.new('Max', 'German Shepherd')                  
+      27 +      dog = described_class.new('Max', 'German Shepherd')      
+      28        expect(dog.describe).to eq('Max is a German Shepherd')
+      29      end
+      30    end
+
+⏺ Update(spec/chapter_01_classes_and_objects/02_book_spec.rb)
+  ⎿  Added 8 lines, removed 8 lines                                      
+       2  
+       3  require 'chapter_01_classes_and_objects/02_book'
+       4  
+       5 -RSpec.describe Book do                                         
+       5 +RSpec.describe Chapter01::Book do                              
+       6    describe '#initialize' do
+       7      it 'creates a book with title, author, and pages' do
+       8 -      book = Book.new('1984', 'George Orwell', 328)            
+       9 -      expect(book).to be_a(Book)                               
+       8 +      book = described_class.new('1984', 'George Orwell', 328) 
+       9 +      expect(book).to be_a(described_class)                    
+      10      end
+      11    end
+      12  
+      13    describe '#summary' do
+      14      it 'returns title by author' do
+      15 -      book = Book.new('1984', 'George Orwell', 328)            
+      15 +      book = described_class.new('1984', 'George Orwell', 328) 
+      16        expect(book.summary).to eq('1984 by George Orwell')
+      17      end
+      18  
+      19      it 'works with different books' do
+      20 -      book = Book.new('The Hobbit', 'J.R.R. Tolkien', 310)     
+      20 +      book = described_class.new('The Hobbit', 'J.R.R. Tolkien'
+         +, 310)                                                         
+      21        expect(book.summary).to eq('The Hobbit by J.R.R. Tolkien'
+          )
+      22      end
+      23    end
+      24  
+      25    describe '#long_read?' do
+      26      it 'returns true for books over 300 pages' do
+      27 -      book = Book.new('War and Peace', 'Leo Tolstoy', 1225)    
+      27 +      book = described_class.new('War and Peace', 'Leo Tolstoy'
+         +, 1225)                                                        
+      28        expect(book.long_read?).to be true
+      29      end
+      30  
+      31      it 'returns false for books with 300 or fewer pages' do
+      32 -      book = Book.new('The Old Man and the Sea', 'Ernest Heming
+         -way', 127)                                                     
+      32 +      book = described_class.new('The Old Man and the Sea', 'Er
+         +nest Hemingway', 127)                                          
+      33        expect(book.long_read?).to be false
+      34      end
+      35  
+      36      it 'returns false for exactly 300 pages' do
+      37 -      book = Book.new('Some Book', 'Some Author', 300)         
+      37 +      book = described_class.new('Some Book', 'Some Author', 30
+         +0)                                                             
+      38        expect(book.long_read?).to be false
+      39      end
+      40    end
+
+⏺ Update(spec/chapter_01_classes_and_objects/03_rectangle_spec.rb)
+  ⎿  Added 10 lines, removed 10 lines                                    
+       2  
+       3  require 'chapter_01_classes_and_objects/03_rectangle'
+       4  
+       5 -RSpec.describe Rectangle do                                    
+       5 +RSpec.describe Chapter01::Rectangle do                         
+       6    describe '#initialize' do
+       7      it 'creates a rectangle with width and height' do
+       8 -      rect = Rectangle.new(10, 5)                              
+       9 -      expect(rect).to be_a(Rectangle)                          
+       8 +      rect = described_class.new(10, 5)                        
+       9 +      expect(rect).to be_a(described_class)                    
+      10      end
+      11    end
+      12  
+      13    describe '#area' do
+      14      it 'returns width times height' do
+      15 -      rect = Rectangle.new(10, 5)                              
+      15 +      rect = described_class.new(10, 5)                        
+      16        expect(rect.area).to eq(50)
+      17      end
+      18  
+      19      it 'works with different dimensions' do
+      20 -      rect = Rectangle.new(7, 3)                               
+      20 +      rect = described_class.new(7, 3)                         
+      21        expect(rect.area).to eq(21)
+      22      end
+      23  
+      24      it 'handles square dimensions' do
+      25 -      rect = Rectangle.new(4, 4)                               
+      25 +      rect = described_class.new(4, 4)                         
+      26        expect(rect.area).to eq(16)
+      27      end
+      28    end
+      29  
+      30    describe '#perimeter' do
+      31      it 'returns 2 times width plus height' do
+      32 -      rect = Rectangle.new(10, 5)                              
+      32 +      rect = described_class.new(10, 5)                        
+      33        expect(rect.perimeter).to eq(30)
+      34      end
+      35  
+      36      it 'works with different dimensions' do
+      37 -      rect = Rectangle.new(7, 3)                               
+      37 +      rect = described_class.new(7, 3)                         
+      38        expect(rect.perimeter).to eq(20)
+      39      end
+      40    end
+      41  
+      42    describe '#square?' do
+      43      it 'returns true when width equals height' do
+      44 -      rect = Rectangle.new(5, 5)                               
+      44 +      rect = described_class.new(5, 5)                         
+      45        expect(rect.square?).to be true
+      46      end
+      47  
+      48      it 'returns false when width does not equal height' do
+      49 -      rect = Rectangle.new(5, 10)                              
+      49 +      rect = described_class.new(5, 10)                        
+      50        expect(rect.square?).to be false
+      51      end
+      52    end
+
+⏺ Update(spec/chapter_01_classes_and_objects/04_counter_spec.rb)
+  ⎿  Added 9 lines, removed 9 lines                                      
+       2  
+       3  require 'chapter_01_classes_and_objects/04_counter'
+       4  
+       5 -RSpec.describe Counter do                                      
+       5 +RSpec.describe Chapter01::Counter do                           
+       6    describe '#initialize' do
+       7      it 'starts at 0 by default' do
+       8 -      counter = Counter.new                                    
+       8 +      counter = described_class.new                            
+       9        expect(counter.value).to eq(0)
+      10      end
+      11  
+      12      it 'can start at a custom value' do
+      13 -      counter = Counter.new(10)                                
+      13 +      counter = described_class.new(10)                        
+      14        expect(counter.value).to eq(10)
+      15      end
+      16    end
+      17  
+      18    describe '#increment' do
+      19      it 'increases the value by 1' do
+      20 -      counter = Counter.new                                    
+      20 +      counter = described_class.new                            
+      21        counter.increment
+      22        expect(counter.value).to eq(1)
+      23      end
+      24  
+      25      it 'can be called multiple times' do
+      26 -      counter = Counter.new                                    
+      26 +      counter = described_class.new                            
+      27        counter.increment
+      28        counter.increment
+      29        counter.increment
+     ...
+      33  
+      34    describe '#decrement' do
+      35      it 'decreases the value by 1' do
+      36 -      counter = Counter.new(5)                                 
+      36 +      counter = described_class.new(5)                         
+      37        counter.decrement
+      38        expect(counter.value).to eq(4)
+      39      end
+      40  
+      41      it 'can go negative' do
+      42 -      counter = Counter.new(0)                                 
+      42 +      counter = described_class.new(0)                         
+      43        counter.decrement
+      44        expect(counter.value).to eq(-1)
+      45      end
+     ...
+      47  
+      48    describe '#reset' do
+      49      it 'resets to the initial value' do
+      50 -      counter = Counter.new(10)                                
+      50 +      counter = described_class.new(10)                        
+      51        counter.increment
+      52        counter.increment
+      53        counter.reset
+     ...
+      55      end
+      56  
+      57      it 'resets to 0 when no initial value was given' do
+      58 -      counter = Counter.new                                    
+      58 +      counter = described_class.new                            
+      59        counter.increment
+      60        counter.increment
+      61        counter.reset
+
+⏺ Update(spec/chapter_01_classes_and_objects/05_playlist_spec.rb)
+  ⎿  Added 11 lines, removed 11 lines                                    
+       2  
+       3  require 'chapter_01_classes_and_objects/05_playlist'
+       4  
+       5 -RSpec.describe Playlist do                                     
+       5 +RSpec.describe Chapter01::Playlist do                          
+       6    describe '#initialize' do
+       7      it 'creates a playlist with a name' do
+       8 -      playlist = Playlist.new('Road Trip')                     
+       9 -      expect(playlist).to be_a(Playlist)                       
+       8 +      playlist = described_class.new('Road Trip')              
+       9 +      expect(playlist).to be_a(described_class)                
+      10      end
+      11  
+      12      it 'starts with no songs' do
+      13 -      playlist = Playlist.new('Road Trip')                     
+      13 +      playlist = described_class.new('Road Trip')              
+      14        expect(playlist.total_songs).to eq(0)
+      15      end
+      16    end
+      17  
+      18    describe '#add_song' do
+      19      it 'adds a song to the playlist' do
+      20 -      playlist = Playlist.new('Road Trip')                     
+      20 +      playlist = described_class.new('Road Trip')              
+      21        playlist.add_song('Bohemian Rhapsody')
+      22        expect(playlist.total_songs).to eq(1)
+      23      end
+      24  
+      25      it 'can add multiple songs' do
+      26 -      playlist = Playlist.new('Road Trip')                     
+      26 +      playlist = described_class.new('Road Trip')              
+      27        playlist.add_song('Bohemian Rhapsody')
+      28        playlist.add_song('Hotel California')
+      29        playlist.add_song('Stairway to Heaven')
+     ...
+      33  
+      34    describe '#total_songs' do
+      35      it 'returns the number of songs' do
+      36 -      playlist = Playlist.new('Workout')                       
+      36 +      playlist = described_class.new('Workout')                
+      37        expect(playlist.total_songs).to eq(0)
+      38        playlist.add_song('Eye of the Tiger')
+      39        expect(playlist.total_songs).to eq(1)
+     ...
+      42  
+      43    describe '#includes?' do
+      44      it 'returns true if the song is in the playlist' do
+      45 -      playlist = Playlist.new('Favorites')                     
+      45 +      playlist = described_class.new('Favorites')              
+      46        playlist.add_song('Yesterday')
+      47        expect(playlist.includes?('Yesterday')).to be true
+      48      end
+      49  
+      50      it 'returns false if the song is not in the playlist' do
+      51 -      playlist = Playlist.new('Favorites')                     
+      51 +      playlist = described_class.new('Favorites')              
+      52        playlist.add_song('Yesterday')
+      53        expect(playlist.includes?('Tomorrow')).to be false
+      54      end
+     ...
+      56  
+      57    describe '#first_song' do
+      58      it 'returns the first song added' do
+      59 -      playlist = Playlist.new('Mix')                           
+      59 +      playlist = described_class.new('Mix')                    
+      60        playlist.add_song('First Song')
+      61        playlist.add_song('Second Song')
+      62        expect(playlist.first_song).to eq('First Song')
+      63      end
+      64  
+      65      it 'returns nil for an empty playlist' do
+      66 -      playlist = Playlist.new('Empty')                         
+      66 +      playlist = described_class.new('Empty')                  
+      67        expect(playlist.first_song).to be_nil
+      68      end
+      69    end
+
+⏺ Chapter 01 done. Now let me move to Chapter 02:
+
+⏺ Search(pattern: "lib/chapter_02_encapsulation/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_02_encapsulation/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Read(lib/chapter_02_encapsulation/01_person.rb)
+  ⎿  Read 22 lines
+
+⏺ Read(lib/chapter_02_encapsulation/02_temperature.rb)
+  ⎿  Read 32 lines
+
+⏺ Read(lib/chapter_02_encapsulation/03_bank_account.rb)
+  ⎿  Read 42 lines
+
+⏺ Read(lib/chapter_02_encapsulation/04_password_manager.rb)
+  ⎿  Read 31 lines
+
+⏺ Read(lib/chapter_02_encapsulation/05_shopping_cart.rb)
+  ⎿  Read 58 lines
+
+⏺ Read(spec/chapter_02_encapsulation/01_person_spec.rb)
+  ⎿  Read 51 lines
+
+⏺ Read(spec/chapter_02_encapsulation/02_temperature_spec.rb)
+  ⎿  Read 60 lines
+
+⏺ Read(spec/chapter_02_encapsulation/03_bank_account_spec.rb)
+  ⎿  Read 98 lines
+
+⏺ Read(spec/chapter_02_encapsulation/04_password_manager_spec.rb)
+  ⎿  Read 71 lines
+
+⏺ Read(spec/chapter_02_encapsulation/05_shopping_cart_spec.rb)
+  ⎿  Read 102 lines
+
+⏺ Now let me update all Chapter 02 files:
+
+⏺ Update(lib/chapter_02_encapsulation/01_person.rb)
+  ⎿  Added 11 lines, removed 9 lines                                     
+       7  # - Have name and age that can be read and written (attr_access
+          or)
+       8  # - Have email that can only be read after initialization (attr
+          _reader)
+       9  
+      10 -##                                                             
+      11 -# A person with mutable name and age, and immutable email      
+      12 -class Person                                                   
+      13 -  attr_accessor :name, :age                                    
+      14 -  attr_reader :email                                           
+      10 +module Chapter02                                               
+      11 +  ##                                                           
+      12 +  # A person with mutable name and age, and immutable email    
+      13 +  class Person                                                 
+      14 +    attr_accessor :name, :age                                  
+      15 +    attr_reader :email                                         
+      16  
+      16 -  def initialize(name, age, email)                             
+      17 -    @name = name                                               
+      18 -    @age = age                                                 
+      19 -    @email = email                                             
+      17 +    def initialize(name, age, email)                           
+      18 +      @name = name                                             
+      19 +      @age = age                                               
+      20 +      @email = email                                           
+      21 +    end                                                        
+      22    end
+      23  end
+
+⏺ Update(lib/chapter_02_encapsulation/02_temperature.rb)
+  ⎿  Added 14 lines, removed 12 lines                                    
+      12  # - Fahrenheit = (Celsius * 9/5) + 32
+      13  # - Kelvin = Celsius + 273.15
+      14  
+      15 -##                                                             
+      16 -# A utility for converting temperatures                        
+      17 -class Temperature                                              
+      18 -  attr_accessor :celsius                                       
+      15 +module Chapter02                                               
+      16 +  ##                                                           
+      17 +  # A utility for converting temperatures                      
+      18 +  class Temperature                                            
+      19 +    attr_accessor :celsius                                     
+      20  
+      20 -  def initialize(celsius)                                      
+      21 -    @celsius = celsius                                         
+      22 -  end                                                          
+      21 +    def initialize(celsius)                                    
+      22 +      @celsius = celsius                                       
+      23 +    end                                                        
+      24  
+      24 -  def fahrenheit                                               
+      25 -    (@celsius * 9.0 / 5) + 32                                  
+      26 -  end                                                          
+      25 +    def fahrenheit                                             
+      26 +      (@celsius * 9.0 / 5) + 32                                
+      27 +    end                                                        
+      28  
+      28 -  def kelvin                                                   
+      29 -    @celsius + 273.15                                          
+      29 +    def kelvin                                                 
+      30 +      @celsius + 273.15                                        
+      31 +    end                                                        
+      32    end
+      33  end
+
+⏺ Update(lib/chapter_02_encapsulation/03_bank_account.rb)
+  ⎿  Added 23 lines, removed 21 lines                                    
+      10  # - Have a transaction_history method that returns all transact
+          ions
+      11  # - Use a private log_transaction method to record each transac
+          tion
+      12  
+      13 -##                                                             
+      14 -# A Bank acount which logs transactions                        
+      15 -class BankAccount                                              
+      16 -  attr_reader :balance, :transaction_history                   
+      13 +module Chapter02                                               
+      14 +  ##                                                           
+      15 +  # A Bank acount which logs transactions                      
+      16 +  class BankAccount                                            
+      17 +    attr_reader :balance, :transaction_history                 
+      18  
+      18 -  def initialize(_owner, balance = 0)                          
+      19 -    @balance = balance                                         
+      20 -    @transaction_history = []                                  
+      21 -  end                                                          
+      19 +    def initialize(_owner, balance = 0)                        
+      20 +      @balance = balance                                       
+      21 +      @transaction_history = []                                
+      22 +    end                                                        
+      23  
+      23 -  def deposit(amount)                                          
+      24 -    @balance += amount                                         
+      25 -    log_transaction("Deposit: #{amount}")                      
+      26 -  end                                                          
+      24 +    def deposit(amount)                                        
+      25 +      @balance += amount                                       
+      26 +      log_transaction("Deposit: #{amount}")                    
+      27 +    end                                                        
+      28  
+      28 -  def withdraw(amount)                                         
+      29 -    return false if @balance < amount                          
+      29 +    def withdraw(amount)                                       
+      30 +      return false if @balance < amount                        
+      31  
+      31 -    @balance -= amount                                         
+      32 -    log_transaction("Withdrawal: #{amount}")                   
+      33 -    true                                                       
+      34 -  end                                                          
+      32 +      @balance -= amount                                       
+      33 +      log_transaction("Withdrawal: #{amount}")                 
+      34 +      true                                                     
+      35 +    end                                                        
+      36  
+      36 -  private                                                      
+      37 +    private                                                    
+      38  
+      38 -  def log_transaction(log)                                     
+      39 -    @transaction_history << log                                
+      39 +    def log_transaction(log)                                   
+      40 +      @transaction_history << log                              
+      41 +    end                                                        
+      42    end
+      43  end
+
+⏺ Update(lib/chapter_02_encapsulation/04_password_manager.rb)
+  ⎿  Added 15 lines, removed 13 lines                                    
+      10  #   - Returns false and keeps old password if old_password is w
+          rong
+      11  # - The password should NEVER be accessible from outside the cl
+          ass
+      12  
+      13 -##                                                             
+      14 -# A password manager which does not expose a password to caller
+         -s                                                              
+      15 -class PasswordManager                                          
+      16 -  def initialize(password)                                     
+      17 -    @password = password                                       
+      18 -  end                                                          
+      13 +module Chapter02                                               
+      14 +  ##                                                           
+      15 +  # A password manager which does not expose a password to call
+         +ers                                                            
+      16 +  class PasswordManager                                        
+      17 +    def initialize(password)                                   
+      18 +      @password = password                                     
+      19 +    end                                                        
+      20  
+      20 -  def authenticate(attempt)                                    
+      21 -    attempt == @password                                       
+      22 -  end                                                          
+      21 +    def authenticate(attempt)                                  
+      22 +      attempt == @password                                     
+      23 +    end                                                        
+      24  
+      24 -  def change_password(old_password, new_password)              
+      25 -    return false unless authenticate(old_password)             
+      25 +    def change_password(old_password, new_password)            
+      26 +      return false unless authenticate(old_password)           
+      27  
+      27 -    @password = new_password                                   
+      28 -    true                                                       
+      28 +      @password = new_password                                 
+      29 +      true                                                     
+      30 +    end                                                        
+      31    end
+      32  end
+
+⏺ Update(lib/chapter_02_encapsulation/05_shopping_cart.rb)
+  ⎿  Added 35 lines, removed 33 lines                                    
+      11  # - Items should NOT be directly accessible from outside
+      12  # - Have a apply_discount(percent) method that reduces total (u
+          se private helper)
+      13  
+      14 -##                                                             
+      15 -# A shopping cart which keeps track of its items and discount  
+      16 -class ShoppingCart                                             
+      17 -  def initialize                                               
+      18 -    @items = []                                                
+      19 -    @discount = 0                                              
+      20 -  end                                                          
+      14 +module Chapter02                                               
+      15 +  ##                                                           
+      16 +  # A shopping cart which keeps track of its items and discount
+      17 +  class ShoppingCart                                           
+      18 +    def initialize                                             
+      19 +      @items = []                                              
+      20 +      @discount = 0                                            
+      21 +    end                                                        
+      22  
+      22 -  def item_count                                               
+      23 -    @items.count                                               
+      24 -  end                                                          
+      23 +    def item_count                                             
+      24 +      @items.count                                             
+      25 +    end                                                        
+      26  
+      26 -  def add_item(name, price)                                    
+      27 -    @items << Item.new(name, price)                            
+      28 -  end                                                          
+      27 +    def add_item(name, price)                                  
+      28 +      @items << Item.new(name, price)                          
+      29 +    end                                                        
+      30  
+      30 -  def remove_item(name)                                        
+      31 -    @items.reject! { |item| item.is? name }                    
+      32 -  end                                                          
+      31 +    def remove_item(name)                                      
+      32 +      @items.reject! { |item| item.is? name }                  
+      33 +    end                                                        
+      34  
+      34 -  def total                                                    
+      35 -    mult = 1 - (@discount / 100.0)                             
+      36 -    @items.sum(&:price) * mult                                 
+      37 -  end                                                          
+      35 +    def total                                                  
+      36 +      mult = 1 - (@discount / 100.0)                           
+      37 +      @items.sum(&:price) * mult                               
+      38 +    end                                                        
+      39  
+      39 -  def apply_discount(percent)                                  
+      40 -    @discount = percent                                        
+      40 +    def apply_discount(percent)                                
+      41 +      @discount = percent                                      
+      42 +    end                                                        
+      43    end
+      42 -end                                                            
+      44  
+      44 -##                                                             
+      45 -# An item with a name and a price                              
+      46 -class Item                                                     
+      47 -  attr_reader :name, :price                                    
+      45 +  ##                                                           
+      46 +  # An item with a name and a price                            
+      47 +  class Item                                                   
+      48 +    attr_reader :name, :price                                  
+      49  
+      49 -  def initialize(name, price)                                  
+      50 -    @name = name                                               
+      51 -    @price = price                                             
+      52 -  end                                                          
+      50 +    def initialize(name, price)                                
+      51 +      @name = name                                             
+      52 +      @price = price                                           
+      53 +    end                                                        
+      54  
+      54 -  def is?(name)                                                
+      55 -    @name == name                                              
+      55 +    def is?(name)                                              
+      56 +      @name == name                                            
+      57 +    end                                                        
+      58    end
+      59  end
+
+⏺ Now updating Chapter 02 spec files:
+
+⏺ Update(spec/chapter_02_encapsulation/01_person_spec.rb)
+  ⎿  Added 9 lines, removed 9 lines                                      
+       2  
+       3  require 'chapter_02_encapsulation/01_person'
+       4  
+       5 -RSpec.describe Person do                                       
+       5 +RSpec.describe Chapter02::Person do                            
+       6    describe '#initialize' do
+       7      it 'creates a person with name, age, and email' do
+       8 -      person = Person.new('Alice', 30, 'alice@example.com')    
+       9 -      expect(person).to be_a(Person)                           
+       8 +      person = described_class.new('Alice', 30, 'alice@example.
+         +com')                                                          
+       9 +      expect(person).to be_a(described_class)                  
+      10      end
+      11    end
+      12  
+      13    describe '#name' do
+      14      it 'can read the name' do
+      15 -      person = Person.new('Alice', 30, 'alice@example.com')    
+      15 +      person = described_class.new('Alice', 30, 'alice@example.
+         +com')                                                          
+      16        expect(person.name).to eq('Alice')
+      17      end
+      18  
+      19      it 'can change the name' do
+      20 -      person = Person.new('Alice', 30, 'alice@example.com')    
+      20 +      person = described_class.new('Alice', 30, 'alice@example.
+         +com')                                                          
+      21        person.name = 'Alicia'
+      22        expect(person.name).to eq('Alicia')
+      23      end
+     ...
+      25  
+      26    describe '#age' do
+      27      it 'can read the age' do
+      28 -      person = Person.new('Bob', 25, 'bob@example.com')        
+      28 +      person = described_class.new('Bob', 25, 'bob@example.com'
+         +)                                                              
+      29        expect(person.age).to eq(25)
+      30      end
+      31  
+      32      it 'can change the age' do
+      33 -      person = Person.new('Bob', 25, 'bob@example.com')        
+      33 +      person = described_class.new('Bob', 25, 'bob@example.com'
+         +)                                                              
+      34        person.age = 26
+      35        expect(person.age).to eq(26)
+      36      end
+     ...
+      38  
+      39    describe '#email' do
+      40      it 'can read the email' do
+      41 -      person = Person.new('Carol', 35, 'carol@example.com')    
+      41 +      person = described_class.new('Carol', 35, 'carol@example.
+         +com')                                                          
+      42        expect(person.email).to eq('carol@example.com')
+      43      end
+      44  
+      45      it 'cannot change the email directly' do
+      46 -      person = Person.new('Carol', 35, 'carol@example.com')    
+      46 +      person = described_class.new('Carol', 35, 'carol@example.
+         +com')                                                          
+      47        expect { person.email = 'new@example.com' }.to raise_erro
+          r(NoMethodError)
+      48      end
+      49    end
+
+⏺ Update(spec/chapter_02_encapsulation/02_temperature_spec.rb)
+  ⎿  Added 11 lines, removed 11 lines                                    
+       2  
+       3  require 'chapter_02_encapsulation/02_temperature'
+       4  
+       5 -RSpec.describe Temperature do                                  
+       5 +RSpec.describe Chapter02::Temperature do                       
+       6    describe '#initialize' do
+       7      it 'creates a temperature with Celsius value' do
+       8 -      temp = Temperature.new(25)                               
+       9 -      expect(temp).to be_a(Temperature)                        
+       8 +      temp = described_class.new(25)                           
+       9 +      expect(temp).to be_a(described_class)                    
+      10      end
+      11    end
+      12  
+      13    describe '#celsius' do
+      14      it 'returns the temperature in Celsius' do
+      15 -      temp = Temperature.new(25)                               
+      15 +      temp = described_class.new(25)                           
+      16        expect(temp.celsius).to eq(25)
+      17      end
+      18  
+      19      it 'can be changed' do
+      20 -      temp = Temperature.new(25)                               
+      20 +      temp = described_class.new(25)                           
+      21        temp.celsius = 30
+      22        expect(temp.celsius).to eq(30)
+      23      end
+     ...
+      25  
+      26    describe '#fahrenheit' do
+      27      it 'converts 0 Celsius to 32 Fahrenheit' do
+      28 -      temp = Temperature.new(0)                                
+      28 +      temp = described_class.new(0)                            
+      29        expect(temp.fahrenheit).to eq(32)
+      30      end
+      31  
+      32      it 'converts 100 Celsius to 212 Fahrenheit' do
+      33 -      temp = Temperature.new(100)                              
+      33 +      temp = described_class.new(100)                          
+      34        expect(temp.fahrenheit).to eq(212)
+      35      end
+      36  
+      37      it 'converts 25 Celsius to 77 Fahrenheit' do
+      38 -      temp = Temperature.new(25)                               
+      38 +      temp = described_class.new(25)                           
+      39        expect(temp.fahrenheit).to eq(77)
+      40      end
+      41    end
+      42  
+      43    describe '#kelvin' do
+      44      it 'converts 0 Celsius to 273.15 Kelvin' do
+      45 -      temp = Temperature.new(0)                                
+      45 +      temp = described_class.new(0)                            
+      46        expect(temp.kelvin).to eq(273.15)
+      47      end
+      48  
+      49      it 'converts -273.15 Celsius to 0 Kelvin (absolute zero)' d
+          o
+      50 -      temp = Temperature.new(-273.15)                          
+      50 +      temp = described_class.new(-273.15)                      
+      51        expect(temp.kelvin).to eq(0)
+      52      end
+      53  
+      54      it 'converts 25 Celsius to 298.15 Kelvin' do
+      55 -      temp = Temperature.new(25)                               
+      55 +      temp = described_class.new(25)                           
+      56        expect(temp.kelvin).to eq(298.15)
+      57      end
+      58    end
+
+⏺ Update(spec/chapter_02_encapsulation/03_bank_account_spec.rb)
+  ⎿  Added 15 lines, removed 15 lines                                    
+       2  
+       3  require 'chapter_02_encapsulation/03_bank_account'
+       4  
+       5 -RSpec.describe BankAccount do                                  
+       5 +RSpec.describe Chapter02::BankAccount do                       
+       6    describe '#initialize' do
+       7      it 'creates an account with owner and default balance of 0'
+           do
+       8 -      account = BankAccount.new('Alice')                       
+       8 +      account = described_class.new('Alice')                   
+       9        expect(account.balance).to eq(0)
+      10      end
+      11  
+      12      it 'can be created with a starting balance' do
+      13 -      account = BankAccount.new('Bob', 100)                    
+      13 +      account = described_class.new('Bob', 100)                
+      14        expect(account.balance).to eq(100)
+      15      end
+      16    end
+      17  
+      18    describe '#balance' do
+      19      it 'returns the current balance' do
+      20 -      account = BankAccount.new('Alice', 50)                   
+      20 +      account = described_class.new('Alice', 50)               
+      21        expect(account.balance).to eq(50)
+      22      end
+      23  
+      24      it 'cannot be set directly' do
+      25 -      account = BankAccount.new('Alice', 50)                   
+      25 +      account = described_class.new('Alice', 50)               
+      26        expect { account.balance = 1000 }.to raise_error(NoMethod
+          Error)
+      27      end
+      28    end
+      29  
+      30    describe '#deposit' do
+      31      it 'adds money to the balance' do
+      32 -      account = BankAccount.new('Alice')                       
+      32 +      account = described_class.new('Alice')                   
+      33        account.deposit(50)
+      34        expect(account.balance).to eq(50)
+      35      end
+      36  
+      37      it 'can be called multiple times' do
+      38 -      account = BankAccount.new('Alice')                       
+      38 +      account = described_class.new('Alice')                   
+      39        account.deposit(50)
+      40        account.deposit(25)
+      41        expect(account.balance).to eq(75)
+     ...
+      44  
+      45    describe '#withdraw' do
+      46      it 'removes money from the balance' do
+      47 -      account = BankAccount.new('Alice', 100)                  
+      47 +      account = described_class.new('Alice', 100)              
+      48        account.withdraw(30)
+      49        expect(account.balance).to eq(70)
+      50      end
+      51  
+      52      it 'does not withdraw if insufficient funds' do
+      53 -      account = BankAccount.new('Alice', 50)                   
+      53 +      account = described_class.new('Alice', 50)               
+      54        account.withdraw(100)
+      55        expect(account.balance).to eq(50)
+      56      end
+      57  
+      58      it 'returns true if withdrawal was successful' do
+      59 -      account = BankAccount.new('Alice', 100)                  
+      59 +      account = described_class.new('Alice', 100)              
+      60        expect(account.withdraw(30)).to be true
+      61      end
+      62  
+      63      it 'returns false if withdrawal failed' do
+      64 -      account = BankAccount.new('Alice', 50)                   
+      64 +      account = described_class.new('Alice', 50)               
+      65        expect(account.withdraw(100)).to be false
+      66      end
+      67    end
+      68  
+      69    describe '#transaction_history' do
+      70      it 'records deposits' do
+      71 -      account = BankAccount.new('Alice')                       
+      71 +      account = described_class.new('Alice')                   
+      72        account.deposit(100)
+      73        expect(account.transaction_history).to include('Deposit: 
+          100')
+      74      end
+      75  
+      76      it 'records withdrawals' do
+      77 -      account = BankAccount.new('Alice', 100)                  
+      77 +      account = described_class.new('Alice', 100)              
+      78        account.withdraw(50)
+      79        expect(account.transaction_history).to include('Withdrawa
+          l: 50')
+      80      end
+      81  
+      82      it 'records multiple transactions in order' do
+      83 -      account = BankAccount.new('Alice', 100)                  
+      83 +      account = described_class.new('Alice', 100)              
+      84        account.deposit(50)
+      85        account.withdraw(25)
+      86        history = account.transaction_history
+     ...
+      90  
+      91    describe 'private methods' do
+      92      it 'has a private log_transaction method' do
+      93 -      account = BankAccount.new('Alice')                       
+      93 +      account = described_class.new('Alice')                   
+      94        expect { account.log_transaction('test') }.to raise_error
+          (NoMethodError)
+      95      end
+      96    end
+
+⏺ Update(spec/chapter_02_encapsulation/04_password_manager_spec.rb)
+  ⎿  Added 12 lines, removed 12 lines                                    
+       2  
+       3  require 'chapter_02_encapsulation/04_password_manager'
+       4  
+       5 -RSpec.describe PasswordManager do                              
+       5 +RSpec.describe Chapter02::PasswordManager do                   
+       6    describe '#initialize' do
+       7      it 'creates a password manager with a password' do
+       8 -      pm = PasswordManager.new('secret123')                    
+       9 -      expect(pm).to be_a(PasswordManager)                      
+       8 +      pm = described_class.new('secret123')                    
+       9 +      expect(pm).to be_a(described_class)                      
+      10      end
+      11    end
+      12  
+      13    describe '#authenticate' do
+      14      it 'returns true for correct password' do
+      15 -      pm = PasswordManager.new('secret123')                    
+      15 +      pm = described_class.new('secret123')                    
+      16        expect(pm.authenticate('secret123')).to be true
+      17      end
+      18  
+      19      it 'returns false for incorrect password' do
+      20 -      pm = PasswordManager.new('secret123')                    
+      20 +      pm = described_class.new('secret123')                    
+      21        expect(pm.authenticate('wrongpassword')).to be false
+      22      end
+      23  
+      24      it 'is case-sensitive' do
+      25 -      pm = PasswordManager.new('Secret123')                    
+      25 +      pm = described_class.new('Secret123')                    
+      26        expect(pm.authenticate('secret123')).to be false
+      27      end
+      28    end
+      29  
+      30    describe '#change_password' do
+      31      it 'returns true and changes password when old password is 
+          correct' do
+      32 -      pm = PasswordManager.new('secret123')                    
+      32 +      pm = described_class.new('secret123')                    
+      33        result = pm.change_password('secret123', 'newpass456')
+      34        expect(result).to be true
+      35        expect(pm.authenticate('newpass456')).to be true
+      36      end
+      37  
+      38      it 'returns false and keeps old password when old password 
+          is wrong' do
+      39 -      pm = PasswordManager.new('secret123')                    
+      39 +      pm = described_class.new('secret123')                    
+      40        result = pm.change_password('wrongpass', 'newpass456')
+      41        expect(result).to be false
+      42        expect(pm.authenticate('secret123')).to be true
+      43      end
+      44  
+      45      it 'old password no longer works after change' do
+      46 -      pm = PasswordManager.new('secret123')                    
+      46 +      pm = described_class.new('secret123')                    
+      47        pm.change_password('secret123', 'newpass456')
+      48        expect(pm.authenticate('secret123')).to be false
+      49      end
+     ...
+      51  
+      52    describe 'password encapsulation' do
+      53      it 'does not expose password through instance variables' do
+      54 -      pm = PasswordManager.new('secret123')                    
+      54 +      pm = described_class.new('secret123')                    
+      55        expect(pm.instance_variables).not_to be_empty
+      56        # Password should not be directly readable
+      57        expect { pm.password }.to raise_error(NoMethodError)
+      58      end
+      59  
+      60      it 'does not have a password reader method' do
+      61 -      pm = PasswordManager.new('secret123')                    
+      61 +      pm = described_class.new('secret123')                    
+      62        expect(pm).not_to respond_to(:password)
+      63      end
+      64  
+      65      it 'does not have a password writer method' do
+      66 -      pm = PasswordManager.new('secret123')                    
+      66 +      pm = described_class.new('secret123')                    
+      67        expect(pm).not_to respond_to(:password=)
+      68      end
+      69    end
+
+⏺ Update(spec/chapter_02_encapsulation/05_shopping_cart_spec.rb)
+  ⎿  Added 13 lines, removed 13 lines                                    
+       2  
+       3  require 'chapter_02_encapsulation/05_shopping_cart'
+       4  
+       5 -RSpec.describe ShoppingCart do                                 
+       5 +RSpec.describe Chapter02::ShoppingCart do                      
+       6    describe '#initialize' do
+       7      it 'creates an empty shopping cart' do
+       8 -      cart = ShoppingCart.new                                  
+       8 +      cart = described_class.new                               
+       9        expect(cart.item_count).to eq(0)
+      10      end
+      11    end
+      12  
+      13    describe '#add_item' do
+      14      it 'adds an item with name and price' do
+      15 -      cart = ShoppingCart.new                                  
+      15 +      cart = described_class.new                               
+      16        cart.add_item('Apple', 1.50)
+      17        expect(cart.item_count).to eq(1)
+      18      end
+      19  
+      20      it 'can add multiple items' do
+      21 -      cart = ShoppingCart.new                                  
+      21 +      cart = described_class.new                               
+      22        cart.add_item('Apple', 1.50)
+      23        cart.add_item('Banana', 0.75)
+      24        cart.add_item('Orange', 2.00)
+     ...
+      28  
+      29    describe '#remove_item' do
+      30      it 'removes an item by name' do
+      31 -      cart = ShoppingCart.new                                  
+      31 +      cart = described_class.new                               
+      32        cart.add_item('Apple', 1.50)
+      33        cart.add_item('Banana', 0.75)
+      34        cart.remove_item('Apple')
+     ...
+      36      end
+      37  
+      38      it 'does nothing if item not found' do
+      39 -      cart = ShoppingCart.new                                  
+      39 +      cart = described_class.new                               
+      40        cart.add_item('Apple', 1.50)
+      41        cart.remove_item('Orange')
+      42        expect(cart.item_count).to eq(1)
+     ...
+      45  
+      46    describe '#total' do
+      47      it 'returns 0 for empty cart' do
+      48 -      cart = ShoppingCart.new                                  
+      48 +      cart = described_class.new                               
+      49        expect(cart.total).to eq(0)
+      50      end
+      51  
+      52      it 'returns the sum of all item prices' do
+      53 -      cart = ShoppingCart.new                                  
+      53 +      cart = described_class.new                               
+      54        cart.add_item('Apple', 1.50)
+      55        cart.add_item('Banana', 0.75)
+      56        cart.add_item('Orange', 2.00)
+     ...
+      58      end
+      59  
+      60      it 'updates after removing items' do
+      61 -      cart = ShoppingCart.new                                  
+      61 +      cart = described_class.new                               
+      62        cart.add_item('Apple', 1.50)
+      63        cart.add_item('Banana', 0.75)
+      64        cart.remove_item('Apple')
+     ...
+      68  
+      69    describe '#item_count' do
+      70      it 'returns the number of items' do
+      71 -      cart = ShoppingCart.new                                  
+      71 +      cart = described_class.new                               
+      72        expect(cart.item_count).to eq(0)
+      73        cart.add_item('Apple', 1.50)
+      74        expect(cart.item_count).to eq(1)
+     ...
+      77  
+      78    describe '#apply_discount' do
+      79      it 'reduces the total by the given percentage' do
+      80 -      cart = ShoppingCart.new                                  
+      80 +      cart = described_class.new                               
+      81        cart.add_item('Item', 100.00)
+      82        cart.apply_discount(10)
+      83        expect(cart.total).to eq(90.00)
+      84      end
+      85  
+      86      it 'works with multiple items' do
+      87 -      cart = ShoppingCart.new                                  
+      87 +      cart = described_class.new                               
+      88        cart.add_item('Item1', 50.00)
+      89        cart.add_item('Item2', 50.00)
+      90        cart.apply_discount(20)
+     ...
+       94  
+       95    describe 'encapsulation' do
+       96      it 'does not expose items directly' do
+       97 -      cart = ShoppingCart.new                                 
+       97 +      cart = described_class.new                              
+       98        expect(cart).not_to respond_to(:items)
+       99      end
+      100    end
+
+⏺ Now let me move to Chapter 03:
+
+⏺ Search(pattern: "lib/chapter_03_inheritance/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_03_inheritance/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Read(lib/chapter_03_inheritance/01_animal.rb)
+  ⎿  Read 45 lines
+
+⏺ Read(lib/chapter_03_inheritance/02_vehicle.rb)
+  ⎿  Read 59 lines
+
+⏺ Read(lib/chapter_03_inheritance/03_employee.rb)
+  ⎿  Read 66 lines
+
+⏺ Read(lib/chapter_03_inheritance/04_shape.rb)
+  ⎿  Read 65 lines
+
+⏺ Read(lib/chapter_03_inheritance/05_game_character.rb)
+  ⎿  Read 94 lines
+
+⏺ Read(spec/chapter_03_inheritance/01_animal_spec.rb)
+  ⎿  Read 60 lines
+
+⏺ Read(spec/chapter_03_inheritance/02_vehicle_spec.rb)
+  ⎿  Read 69 lines
+
+⏺ Read(spec/chapter_03_inheritance/03_employee_spec.rb)
+  ⎿  Read 66 lines
+
+⏺ Read(spec/chapter_03_inheritance/04_shape_spec.rb)
+  ⎿  Read 72 lines
+
+⏺ Read(spec/chapter_03_inheritance/05_game_character_spec.rb)
+  ⎿  Read 116 lines
+
+⏺ Now updating Chapter 03 files - these have class hierarchies:
+
+⏺ Update(lib/chapter_03_inheritance/01_animal.rb)
+  ⎿  Added 23 lines, removed 21 lines                                    
+      13  # Tiger (inherits from Animal):
+      14  # - speak method returns "Roar!"
+      15  
+      16 -##                                                             
+      17 -# An animal which can speak nonsense                           
+      18 -class Animal                                                   
+      19 -  attr_reader :name                                            
+      16 +module Chapter03                                               
+      17 +  ##                                                           
+      18 +  # An animal which can speak nonsense                         
+      19 +  class Animal                                                 
+      20 +    attr_reader :name                                          
+      21  
+      21 -  def initialize(name)                                         
+      22 -    @name = name                                               
+      23 -  end                                                          
+      22 +    def initialize(name)                                       
+      23 +      @name = name                                             
+      24 +    end                                                        
+      25  
+      25 -  def speak                                                    
+      26 -    'Some sound'                                               
+      26 +    def speak                                                  
+      27 +      'Some sound'                                             
+      28 +    end                                                        
+      29    end
+      28 -end                                                            
+      30  
+      30 -##                                                             
+      31 -# A howling wolf                                               
+      32 -class Wolf < Animal                                            
+      33 -  def speak                                                    
+      34 -    'Howl!'                                                    
+      31 +  ##                                                           
+      32 +  # A howling wolf                                             
+      33 +  class Wolf < Animal                                          
+      34 +    def speak                                                  
+      35 +      'Howl!'                                                  
+      36 +    end                                                        
+      37    end
+      36 -end                                                            
+      38  
+      38 -##                                                             
+      39 -# A roaring tiger                                              
+      40 -class Tiger < Animal                                           
+      41 -  def speak                                                    
+      42 -    'Roar!'                                                    
+      39 +  ##                                                           
+      40 +  # A roaring tiger                                            
+      41 +  class Tiger < Animal                                         
+      42 +    def speak                                                  
+      43 +      'Roar!'                                                  
+      44 +    end                                                        
+      45    end
+      46  end
+
+⏺ Update(lib/chapter_03_inheritance/02_vehicle.rb)
+  ⎿  Added 31 lines, removed 29 lines                                    
+      17  # - calls super for base attributes
+      18  # - has_sidecar? method
+      19  
+      20 -##                                                             
+      21 -# A vehicle with a make and model                              
+      22 -class Vehicle                                                  
+      23 -  attr_reader :make, :model, :year                             
+      20 +module Chapter03                                               
+      21 +  ##                                                           
+      22 +  # A vehicle with a make and model                            
+      23 +  class Vehicle                                                
+      24 +    attr_reader :make, :model, :year                           
+      25  
+      25 -  def initialize(make, model, year)                            
+      26 -    @make = make                                               
+      27 -    @model = model                                             
+      28 -    @year = year                                               
+      29 -  end                                                          
+      26 +    def initialize(make, model, year)                          
+      27 +      @make = make                                             
+      28 +      @model = model                                           
+      29 +      @year = year                                             
+      30 +    end                                                        
+      31  
+      31 -  def info                                                     
+      32 -    "#{year} #{make} #{model}"                                 
+      32 +    def info                                                   
+      33 +      "#{year} #{make} #{model}"                               
+      34 +    end                                                        
+      35    end
+      34 -end                                                            
+      36  
+      36 -##                                                             
+      37 -# A car is a vehicle with doors                                
+      38 -class Car < Vehicle                                            
+      39 -  attr_reader :num_doors                                       
+      37 +  ##                                                           
+      38 +  # A car is a vehicle with doors                              
+      39 +  class Car < Vehicle                                          
+      40 +    attr_reader :num_doors                                     
+      41  
+      41 -  def initialize(make, model, year, num_doors)                 
+      42 -    super(make, model, year)                                   
+      43 -    @num_doors = num_doors                                     
+      42 +    def initialize(make, model, year, num_doors)               
+      43 +      super(make, model, year)                                 
+      44 +      @num_doors = num_doors                                   
+      45 +    end                                                        
+      46    end
+      45 -end                                                            
+      47  
+      47 -##                                                             
+      48 -# A motorcycle is a vehicle with an optional sidecar           
+      49 -class Motorcycle < Vehicle                                     
+      50 -  def initialize(make, model, year, has_sidecar)               
+      51 -    super(make, model, year)                                   
+      52 -    @has_sidecar = has_sidecar                                 
+      53 -  end                                                          
+      48 +  ##                                                           
+      49 +  # A motorcycle is a vehicle with an optional sidecar         
+      50 +  class Motorcycle < Vehicle                                   
+      51 +    def initialize(make, model, year, has_sidecar)             
+      52 +      super(make, model, year)                                 
+      53 +      @has_sidecar = has_sidecar                               
+      54 +    end                                                        
+      55  
+      55 -  def has_sidecar?                                             
+      56 -    @has_sidecar                                               
+      56 +    def has_sidecar?                                           
+      57 +      @has_sidecar                                             
+      58 +    end                                                        
+      59    end
+      60  end
+
+⏺ Update(lib/chapter_03_inheritance/03_employee.rb)
+  ⎿  Added 36 lines, removed 34 lines                                    
+      17  # - salary_info returns "Name: {name}, Salary: ${base_salary}, 
+          School: {school}"
+      18  # - school reader
+      19  
+      20 -##                                                             
+      21 -# An employee with a name and base salary                      
+      22 -class Employee                                                 
+      23 -  attr_reader :name                                            
+      20 +module Chapter03                                               
+      21 +  ##                                                           
+      22 +  # An employee with a name and base salary                    
+      23 +  class Employee                                               
+      24 +    attr_reader :name                                          
+      25  
+      25 -  def initialize(name, base_salary)                            
+      26 -    @name = name                                               
+      27 -    @base_salary = base_salary                                 
+      28 -  end                                                          
+      26 +    def initialize(name, base_salary)                          
+      27 +      @name = name                                             
+      28 +      @base_salary = base_salary                               
+      29 +    end                                                        
+      30  
+      30 -  def salary_info                                              
+      31 -    "Name: #{name}, Salary: $#{@base_salary}"                  
+      31 +    def salary_info                                            
+      32 +      "Name: #{name}, Salary: $#{@base_salary}"                
+      33 +    end                                                        
+      34    end
+      33 -end                                                            
+      35  
+      35 -##                                                             
+      36 -# A manager is an employee who receives a bonus                
+      37 -class Manager < Employee                                       
+      38 -  def initialize(name, base_salary, bonus)                     
+      39 -    super(name, base_salary)                                   
+      40 -    @bonus = bonus                                             
+      41 -  end                                                          
+      36 +  ##                                                           
+      37 +  # A manager is an employee who receives a bonus              
+      38 +  class Manager < Employee                                     
+      39 +    def initialize(name, base_salary, bonus)                   
+      40 +      super(name, base_salary)                                 
+      41 +      @bonus = bonus                                           
+      42 +    end                                                        
+      43  
+      43 -  def salary_info                                              
+      44 -    "Name: #{name}, Salary: $#{@base_salary}, Bonus: $#{@bonus}
+         -"                                                              
+      45 -  end                                                          
+      44 +    def salary_info                                            
+      45 +      "Name: #{name}, Salary: $#{@base_salary}, Bonus: $#{@bonu
+         +s}"                                                            
+      46 +    end                                                        
+      47  
+      47 -  def total_compensation                                       
+      48 -    @base_salary + @bonus                                      
+      48 +    def total_compensation                                     
+      49 +      @base_salary + @bonus                                    
+      50 +    end                                                        
+      51    end
+      50 -end                                                            
+      52  
+      52 -##                                                             
+      53 -# An intern is an employee who goes to a school                
+      54 -class Intern < Employee                                        
+      55 -  attr_reader :school                                          
+      53 +  ##                                                           
+      54 +  # An intern is an employee who goes to a school              
+      55 +  class Intern < Employee                                      
+      56 +    attr_reader :school                                        
+      57  
+      57 -  def initialize(name, base_salary, school)                    
+      58 -    super(name, base_salary)                                   
+      59 -    @school = school                                           
+      60 -  end                                                          
+      58 +    def initialize(name, base_salary, school)                  
+      59 +      super(name, base_salary)                                 
+      60 +      @school = school                                         
+      61 +    end                                                        
+      62  
+      62 -  def salary_info                                              
+      63 -    "Name: #{name}, Salary: $#{@base_salary}, School: #{school}
+         -"                                                              
+      63 +    def salary_info                                            
+      64 +      "Name: #{name}, Salary: $#{@base_salary}, School: #{schoo
+         +l}"                                                            
+      65 +    end                                                        
+      66    end
+      67  end
+
+⏺ Update(lib/chapter_03_inheritance/04_shape.rb)
+  ⎿  Added 36 lines, removed 34 lines                                    
+      17  # - area returns side^2
+      18  # - perimeter returns 4 * side
+      19  
+      20 -##                                                             
+      21 -# A shape is a base class for geometric objects                
+      22 -class Shape                                                    
+      23 -  def area                                                     
+      24 -    raise NotImplementedError                                  
+      25 -  end                                                          
+      20 +module Chapter03                                               
+      21 +  ##                                                           
+      22 +  # A shape is a base class for geometric objects              
+      23 +  class Shape                                                  
+      24 +    def area                                                   
+      25 +      raise NotImplementedError                                
+      26 +    end                                                        
+      27  
+      27 -  def perimeter                                                
+      28 -    raise NotImplementedError                                  
+      28 +    def perimeter                                              
+      29 +      raise NotImplementedError                                
+      30 +    end                                                        
+      31    end
+      30 -end                                                            
+      32  
+      32 -##                                                             
+      33 -# A circle is a shape with a radius                            
+      34 -class Circle < Shape                                           
+      35 -  def initialize(radius)                                       
+      36 -    super()                                                    
+      37 -    @radius = radius                                           
+      38 -  end                                                          
+      33 +  ##                                                           
+      34 +  # A circle is a shape with a radius                          
+      35 +  class Circle < Shape                                         
+      36 +    def initialize(radius)                                     
+      37 +      super()                                                  
+      38 +      @radius = radius                                         
+      39 +    end                                                        
+      40  
+      40 -  def perimeter                                                
+      41 -    2 * Math::PI * @radius                                     
+      42 -  end                                                          
+      41 +    def perimeter                                              
+      42 +      2 * Math::PI * @radius                                   
+      43 +    end                                                        
+      44  
+      44 -  def area                                                     
+      45 -    Math::PI * (@radius**2)                                    
+      45 +    def area                                                   
+      46 +      Math::PI * (@radius**2)                                  
+      47 +    end                                                        
+      48    end
+      47 -end                                                            
+      49  
+      49 -##                                                             
+      50 -# A square is a shape with a side length                       
+      51 -class Square < Shape                                           
+      52 -  def initialize(side_length)                                  
+      53 -    super()                                                    
+      54 -    @side_length = side_length                                 
+      55 -  end                                                          
+      50 +  ##                                                           
+      51 +  # A square is a shape with a side length                     
+      52 +  class Square < Shape                                         
+      53 +    def initialize(side_length)                                
+      54 +      super()                                                  
+      55 +      @side_length = side_length                               
+      56 +    end                                                        
+      57  
+      57 -  def perimeter                                                
+      58 -    4 * @side_length                                           
+      59 -  end                                                          
+      58 +    def perimeter                                              
+      59 +      4 * @side_length                                         
+      60 +    end                                                        
+      61  
+      61 -  def area                                                     
+      62 -    @side_length**2                                            
+      62 +    def area                                                   
+      63 +      @side_length**2                                          
+      64 +    end                                                        
+      65    end
+      66  end
+
+⏺ Update(lib/chapter_03_inheritance/05_game_character.rb)
+  ⎿  Added 52 lines, removed 50 lines                                    
+      23  # - special_move returns "#{name} casts Arcane Blast!" (costs 1
+          0 mana)
+      24  # - special_move returns "#{name} is out of mana!" if mana < 10
+      25  
+      26 -##                                                             
+      27 -# A character with a name and health                           
+      28 -class Character                                                
+      29 -  attr_reader :name, :health                                   
+      26 +module Chapter03                                               
+      27 +  ##                                                           
+      28 +  # A character with a name and health                         
+      29 +  class Character                                              
+      30 +    attr_reader :name, :health                                 
+      31  
+      31 -  def initialize(name, health)                                 
+      32 -    @name = name                                               
+      33 -    @health = health                                           
+      34 -  end                                                          
+      32 +    def initialize(name, health)                               
+      33 +      @name = name                                             
+      34 +      @health = health                                         
+      35 +    end                                                        
+      36  
+      36 -  def attack                                                   
+      37 -    "#{name} attacks!"                                         
+      38 -  end                                                          
+      37 +    def attack                                                 
+      38 +      "#{name} attacks!"                                       
+      39 +    end                                                        
+      40  
+      40 -  def defend                                                   
+      41 -    "#{name} defends!"                                         
+      42 -  end                                                          
+      41 +    def defend                                                 
+      42 +      "#{name} defends!"                                       
+      43 +    end                                                        
+      44  
+      44 -  def take_damage(amount)                                      
+      45 -    @health -= amount                                          
+      46 -    @health = 0 if @health.negative?                           
+      47 -  end                                                          
+      45 +    def take_damage(amount)                                    
+      46 +      @health -= amount                                        
+      47 +      @health = 0 if @health.negative?                         
+      48 +    end                                                        
+      49  
+      49 -  def alive?                                                   
+      50 -    @health.positive?                                          
+      50 +    def alive?                                                 
+      51 +      @health.positive?                                        
+      52 +    end                                                        
+      53    end
+      52 -end                                                            
+      54  
+      54 -##                                                             
+      55 -# A warrior is a character with strength and a special move    
+      56 -class Warrior < Character                                      
+      57 -  attr_reader :strength                                        
+      55 +  ##                                                           
+      56 +  # A warrior is a character with strength and a special move  
+      57 +  class Warrior < Character                                    
+      58 +    attr_reader :strength                                      
+      59  
+      59 -  def initialize(name, health, strength)                       
+      60 -    super(name, health)                                        
+      61 -    @strength = strength                                       
+      62 -  end                                                          
+      60 +    def initialize(name, health, strength)                     
+      61 +      super(name, health)                                      
+      62 +      @strength = strength                                     
+      63 +    end                                                        
+      64  
+      64 -  def attack                                                   
+      65 -    "#{name} swings sword for #{strength} damage!"             
+      66 -  end                                                          
+      65 +    def attack                                                 
+      66 +      "#{name} swings sword for #{strength} damage!"           
+      67 +    end                                                        
+      68  
+      68 -  def special_move                                             
+      69 -    "#{name} uses Shield Bash!"                                
+      69 +    def special_move                                           
+      70 +      "#{name} uses Shield Bash!"                              
+      71 +    end                                                        
+      72    end
+      71 -end                                                            
+      73  
+      73 -##                                                             
+      74 -# A mage is a character with mana and a special move           
+      75 -class Mage < Character                                         
+      76 -  attr_reader :mana                                            
+      74 +  ##                                                           
+      75 +  # A mage is a character with mana and a special move         
+      76 +  class Mage < Character                                       
+      77 +    attr_reader :mana                                          
+      78  
+      78 -  def initialize(name, health, mana)                           
+      79 -    super(name, health)                                        
+      80 -    @mana = mana                                               
+      81 -  end                                                          
+      79 +    def initialize(name, health, mana)                         
+      80 +      super(name, health)                                      
+      81 +      @mana = mana                                             
+      82 +    end                                                        
+      83  
+      83 -  def attack                                                   
+      84 -    "#{name} casts fireball!"                                  
+      85 -  end                                                          
+      84 +    def attack                                                 
+      85 +      "#{name} casts fireball!"                                
+      86 +    end                                                        
+      87  
+      87 -  def special_move                                             
+      88 -    return "#{name} is out of mana!" if @mana < 10             
+      88 +    def special_move                                           
+      89 +      return "#{name} is out of mana!" if @mana < 10           
+      90  
+      90 -    @mana -= 10                                                
+      91 -    "#{name} casts Arcane Blast!"                              
+      91 +      @mana -= 10                                              
+      92 +      "#{name} casts Arcane Blast!"                            
+      93 +    end                                                        
+      94    end
+      95  end
+
+⏺ Now updating Chapter 03 spec files:
+
+⏺ Update(spec/chapter_03_inheritance/01_animal_spec.rb)
+  ⎿  Added 15 lines, removed 15 lines                                    
+       3  require 'chapter_03_inheritance/01_animal'
+       4  
+       5  RSpec.describe 'Animal hierarchy' do
+       6 -  describe Animal do                                           
+       6 +  describe Chapter03::Animal do                                
+       7      it 'can be created with a name' do
+       8 -      animal = Animal.new('Generic')                           
+       8 +      animal = described_class.new('Generic')                  
+       9        expect(animal.name).to eq('Generic')
+      10      end
+      11  
+      12      it 'has a default speak method' do
+      13 -      animal = Animal.new('Generic')                           
+      13 +      animal = described_class.new('Generic')                  
+      14        expect(animal.speak).to eq('Some sound')
+      15      end
+      16    end
+      17  
+      18 -  describe Wolf do                                             
+      18 +  describe Chapter03::Wolf do                                  
+      19      it 'inherits from Animal' do
+      20 -      expect(Wolf.superclass).to eq(Animal)                    
+      20 +      expect(described_class.superclass).to eq(Chapter03::Anima
+         +l)                                                             
+      21      end
+      22  
+      23      it 'can be created with a name' do
+      24 -      wolf = Wolf.new('Grey')                                  
+      24 +      wolf = described_class.new('Grey')                       
+      25        expect(wolf.name).to eq('Grey')
+      26      end
+      27  
+      28      it 'overrides speak to return "Howl!"' do
+      29 -      wolf = Wolf.new('Grey')                                  
+      29 +      wolf = described_class.new('Grey')                       
+      30        expect(wolf.speak).to eq('Howl!')
+      31      end
+      32  
+      33      it 'is an Animal' do
+      34 -      wolf = Wolf.new('Grey')                                  
+      35 -      expect(wolf).to be_a(Animal)                             
+      34 +      wolf = described_class.new('Grey')                       
+      35 +      expect(wolf).to be_a(Chapter03::Animal)                  
+      36      end
+      37    end
+      38  
+      39 -  describe Tiger do                                            
+      39 +  describe Chapter03::Tiger do                                 
+      40      it 'inherits from Animal' do
+      41 -      expect(Tiger.superclass).to eq(Animal)                   
+      41 +      expect(described_class.superclass).to eq(Chapter03::Anima
+         +l)                                                             
+      42      end
+      43  
+      44      it 'can be created with a name' do
+      45 -      tiger = Tiger.new('Stripes')                             
+      45 +      tiger = described_class.new('Stripes')                   
+      46        expect(tiger.name).to eq('Stripes')
+      47      end
+      48  
+      49      it 'overrides speak to return "Roar!"' do
+      50 -      tiger = Tiger.new('Stripes')                             
+      50 +      tiger = described_class.new('Stripes')                   
+      51        expect(tiger.speak).to eq('Roar!')
+      52      end
+      53  
+      54      it 'is an Animal' do
+      55 -      tiger = Tiger.new('Stripes')                             
+      56 -      expect(tiger).to be_a(Animal)                            
+      55 +      tiger = described_class.new('Stripes')                   
+      56 +      expect(tiger).to be_a(Chapter03::Animal)                 
+      57      end
+      58    end
+      59  end
+
+⏺ Update(spec/chapter_03_inheritance/02_vehicle_spec.rb)
+  ⎿  Added 15 lines, removed 15 lines                                    
+       3  require 'chapter_03_inheritance/02_vehicle'
+       4  
+       5  RSpec.describe 'Vehicle hierarchy' do
+       6 -  describe Vehicle do                                          
+       6 +  describe Chapter03::Vehicle do                               
+       7      it 'can be created with make, model, and year' do
+       8 -      vehicle = Vehicle.new('Toyota', 'Camry', 2020)           
+       8 +      vehicle = described_class.new('Toyota', 'Camry', 2020)   
+       9        expect(vehicle.make).to eq('Toyota')
+      10        expect(vehicle.model).to eq('Camry')
+      11        expect(vehicle.year).to eq(2020)
+      12      end
+      13  
+      14      it 'has an info method' do
+      15 -      vehicle = Vehicle.new('Toyota', 'Camry', 2020)           
+      15 +      vehicle = described_class.new('Toyota', 'Camry', 2020)   
+      16        expect(vehicle.info).to eq('2020 Toyota Camry')
+      17      end
+      18    end
+      19  
+      20 -  describe Car do                                              
+      20 +  describe Chapter03::Car do                                   
+      21      it 'inherits from Vehicle' do
+      22 -      expect(Car.superclass).to eq(Vehicle)                    
+      22 +      expect(described_class.superclass).to eq(Chapter03::Vehic
+         +le)                                                            
+      23      end
+      24  
+      25      it 'can be created with make, model, year, and num_doors' d
+          o
+      26 -      car = Car.new('Honda', 'Civic', 2021, 4)                 
+      26 +      car = described_class.new('Honda', 'Civic', 2021, 4)     
+      27        expect(car.make).to eq('Honda')
+      28        expect(car.model).to eq('Civic')
+      29        expect(car.year).to eq(2021)
+     ...
+      31      end
+      32  
+      33      it 'inherits the info method' do
+      34 -      car = Car.new('Honda', 'Civic', 2021, 4)                 
+      34 +      car = described_class.new('Honda', 'Civic', 2021, 4)     
+      35        expect(car.info).to eq('2021 Honda Civic')
+      36      end
+      37  
+      38      it 'is a Vehicle' do
+      39 -      car = Car.new('Honda', 'Civic', 2021, 4)                 
+      40 -      expect(car).to be_a(Vehicle)                             
+      39 +      car = described_class.new('Honda', 'Civic', 2021, 4)     
+      40 +      expect(car).to be_a(Chapter03::Vehicle)                  
+      41      end
+      42    end
+      43  
+      44 -  describe Motorcycle do                                       
+      44 +  describe Chapter03::Motorcycle do                            
+      45      it 'inherits from Vehicle' do
+      46 -      expect(Motorcycle.superclass).to eq(Vehicle)             
+      46 +      expect(described_class.superclass).to eq(Chapter03::Vehic
+         +le)                                                            
+      47      end
+      48  
+      49      it 'can be created with make, model, year, and sidecar opti
+          on' do
+      50 -      bike = Motorcycle.new('Harley-Davidson', 'Sportster', 202
+         -2, false)                                                      
+      50 +      bike = described_class.new('Harley-Davidson', 'Sportster'
+         +, 2022, false)                                                 
+      51        expect(bike.make).to eq('Harley-Davidson')
+      52        expect(bike.model).to eq('Sportster')
+      53        expect(bike.year).to eq(2022)
+      54      end
+      55  
+      56      it 'has a has_sidecar? method' do
+      57 -      bike_with = Motorcycle.new('Ural', 'Gear Up', 2021, true)
+      58 -      bike_without = Motorcycle.new('Harley-Davidson', 'Sportst
+         -er', 2022, false)                                              
+      57 +      bike_with = described_class.new('Ural', 'Gear Up', 2021, 
+         +true)                                                          
+      58 +      bike_without = described_class.new('Harley-Davidson', 'Sp
+         +ortster', 2022, false)                                         
+      59        expect(bike_with.has_sidecar?).to be true
+      60        expect(bike_without.has_sidecar?).to be false
+      61      end
+      62  
+      63      it 'inherits the info method' do
+      64 -      bike = Motorcycle.new('Ducati', 'Monster', 2023, false)  
+      64 +      bike = described_class.new('Ducati', 'Monster', 2023, fal
+         +se)                                                            
+      65        expect(bike.info).to eq('2023 Ducati Monster')
+      66      end
+      67    end
+
+⏺ Update(spec/chapter_03_inheritance/03_employee_spec.rb)
+  ⎿  Added 16 lines, removed 16 lines                                    
+       3  require 'chapter_03_inheritance/03_employee'
+       4  
+       5  RSpec.describe 'Employee hierarchy' do
+       6 -  describe Employee do                                         
+       6 +  describe Chapter03::Employee do                              
+       7      it 'can be created with name and base salary' do
+       8 -      emp = Employee.new('John', 50_000)                       
+       8 +      emp = described_class.new('John', 50_000)                
+       9        expect(emp.name).to eq('John')
+      10      end
+      11  
+      12      it 'has a salary_info method' do
+      13 -      emp = Employee.new('John', 50_000)                       
+      13 +      emp = described_class.new('John', 50_000)                
+      14        expect(emp.salary_info).to eq('Name: John, Salary: $50000
+          ')
+      15      end
+      16    end
+      17  
+      18 -  describe Manager do                                          
+      18 +  describe Chapter03::Manager do                               
+      19      it 'inherits from Employee' do
+      20 -      expect(Manager.superclass).to eq(Employee)               
+      20 +      expect(described_class.superclass).to eq(Chapter03::Emplo
+         +yee)                                                           
+      21      end
+      22  
+      23      it 'can be created with name, base salary, and bonus' do
+      24 -      manager = Manager.new('Sarah', 80_000, 15_000)           
+      24 +      manager = described_class.new('Sarah', 80_000, 15_000)   
+      25        expect(manager.name).to eq('Sarah')
+      26      end
+      27  
+      28      it 'overrides salary_info to include bonus' do
+      29 -      manager = Manager.new('Sarah', 80_000, 15_000)           
+      29 +      manager = described_class.new('Sarah', 80_000, 15_000)   
+      30        expect(manager.salary_info).to eq('Name: Sarah, Salary: $
+          80000, Bonus: $15000')
+      31      end
+      32  
+      33      it 'has a total_compensation method' do
+      34 -      manager = Manager.new('Sarah', 80_000, 15_000)           
+      34 +      manager = described_class.new('Sarah', 80_000, 15_000)   
+      35        expect(manager.total_compensation).to eq(95_000)
+      36      end
+      37  
+      38      it 'is an Employee' do
+      39 -      manager = Manager.new('Sarah', 80_000, 15_000)           
+      40 -      expect(manager).to be_a(Employee)                        
+      39 +      manager = described_class.new('Sarah', 80_000, 15_000)   
+      40 +      expect(manager).to be_a(Chapter03::Employee)             
+      41      end
+      42    end
+      43  
+      44 -  describe Intern do                                           
+      44 +  describe Chapter03::Intern do                                
+      45      it 'inherits from Employee' do
+      46 -      expect(Intern.superclass).to eq(Employee)                
+      46 +      expect(described_class.superclass).to eq(Chapter03::Emplo
+         +yee)                                                           
+      47      end
+      48  
+      49      it 'can be created with name, base salary, and school' do
+      50 -      intern = Intern.new('Alex', 30_000, 'MIT')               
+      50 +      intern = described_class.new('Alex', 30_000, 'MIT')      
+      51        expect(intern.name).to eq('Alex')
+      52        expect(intern.school).to eq('MIT')
+      53      end
+      54  
+      55      it 'overrides salary_info to include school' do
+      56 -      intern = Intern.new('Alex', 30_000, 'MIT')               
+      56 +      intern = described_class.new('Alex', 30_000, 'MIT')      
+      57        expect(intern.salary_info).to eq('Name: Alex, Salary: $30
+          000, School: MIT')
+      58      end
+      59  
+      60      it 'is an Employee' do
+      61 -      intern = Intern.new('Alex', 30_000, 'MIT')               
+      62 -      expect(intern).to be_a(Employee)                         
+      61 +      intern = described_class.new('Alex', 30_000, 'MIT')      
+      62 +      expect(intern).to be_a(Chapter03::Employee)              
+      63      end
+      64    end
+      65  end
+
+⏺ Update(spec/chapter_03_inheritance/04_shape_spec.rb)
+  ⎿  Added 19 lines, removed 19 lines                                    
+       3  require 'chapter_03_inheritance/04_shape'
+       4  
+       5  RSpec.describe 'Shape hierarchy' do
+       6 -  describe Shape do                                            
+       6 +  describe Chapter03::Shape do                                 
+       7      it 'raises NotImplementedError for area' do
+       8 -      shape = Shape.new                                        
+       8 +      shape = described_class.new                              
+       9        expect { shape.area }.to raise_error(NotImplementedError)
+      10      end
+      11  
+      12      it 'raises NotImplementedError for perimeter' do
+      13 -      shape = Shape.new                                        
+      13 +      shape = described_class.new                              
+      14        expect { shape.perimeter }.to raise_error(NotImplementedE
+          rror)
+      15      end
+      16    end
+      17  
+      18 -  describe Circle do                                           
+      18 +  describe Chapter03::Circle do                                
+      19      it 'inherits from Shape' do
+      20 -      expect(Circle.superclass).to eq(Shape)                   
+      20 +      expect(described_class.superclass).to eq(Chapter03::Shape
+         +)                                                              
+      21      end
+      22  
+      23      it 'can be created with a radius' do
+      24 -      circle = Circle.new(5)                                   
+      25 -      expect(circle).to be_a(Circle)                           
+      24 +      circle = described_class.new(5)                          
+      25 +      expect(circle).to be_a(described_class)                  
+      26      end
+      27  
+      28      it 'calculates area correctly' do
+      29 -      circle = Circle.new(5)                                   
+      29 +      circle = described_class.new(5)                          
+      30        expected_area = Math::PI * 25 # PI * r^2
+      31        expect(circle.area).to be_within(0.001).of(expected_area)
+      32      end
+      33  
+      34      it 'calculates perimeter (circumference) correctly' do
+      35 -      circle = Circle.new(5)                                   
+      35 +      circle = described_class.new(5)                          
+      36        expected_perimeter = 2 * Math::PI * 5 # 2 * PI * r
+      37        expect(circle.perimeter).to be_within(0.001).of(expected_
+          perimeter)
+      38      end
+      39  
+      40      it 'is a Shape' do
+      41 -      circle = Circle.new(5)                                   
+      42 -      expect(circle).to be_a(Shape)                            
+      41 +      circle = described_class.new(5)                          
+      42 +      expect(circle).to be_a(Chapter03::Shape)                 
+      43      end
+      44    end
+      45  
+      46 -  describe Square do                                           
+      46 +  describe Chapter03::Square do                                
+      47      it 'inherits from Shape' do
+      48 -      expect(Square.superclass).to eq(Shape)                   
+      48 +      expect(described_class.superclass).to eq(Chapter03::Shape
+         +)                                                              
+      49      end
+      50  
+      51      it 'can be created with a side length' do
+      52 -      square = Square.new(4)                                   
+      53 -      expect(square).to be_a(Square)                           
+      52 +      square = described_class.new(4)                          
+      53 +      expect(square).to be_a(described_class)                  
+      54      end
+      55  
+      56      it 'calculates area correctly' do
+      57 -      square = Square.new(4)                                   
+      57 +      square = described_class.new(4)                          
+      58        expect(square.area).to eq(16)
+      59      end
+      60  
+      61      it 'calculates perimeter correctly' do
+      62 -      square = Square.new(4)                                   
+      62 +      square = described_class.new(4)                          
+      63        expect(square.perimeter).to eq(16)
+      64      end
+      65  
+      66      it 'is a Shape' do
+      67 -      square = Square.new(4)                                   
+      68 -      expect(square).to be_a(Shape)                            
+      67 +      square = described_class.new(4)                          
+      68 +      expect(square).to be_a(Chapter03::Shape)                 
+      69      end
+      70    end
+      71  end
+
+⏺ Update(spec/chapter_03_inheritance/05_game_character_spec.rb)
+  ⎿  Added 24 lines, removed 24 lines                                    
+        3  require 'chapter_03_inheritance/05_game_character'
+        4  
+        5  RSpec.describe 'GameCharacter hierarchy' do
+        6 -  describe Character do                                       
+        6 +  describe Chapter03::Character do                            
+        7      it 'can be created with name and health' do
+        8 -      char = Character.new('Hero', 100)                       
+        8 +      char = described_class.new('Hero', 100)                 
+        9        expect(char.name).to eq('Hero')
+       10        expect(char.health).to eq(100)
+       11      end
+       12  
+       13      it 'has an attack method' do
+       14 -      char = Character.new('Hero', 100)                       
+       14 +      char = described_class.new('Hero', 100)                 
+       15        expect(char.attack).to eq('Hero attacks!')
+       16      end
+       17  
+       18      it 'has a defend method' do
+       19 -      char = Character.new('Hero', 100)                       
+       19 +      char = described_class.new('Hero', 100)                 
+       20        expect(char.defend).to eq('Hero defends!')
+       21      end
+       22  
+       23      it 'can take damage' do
+       24 -      char = Character.new('Hero', 100)                       
+       24 +      char = described_class.new('Hero', 100)                 
+       25        char.take_damage(30)
+       26        expect(char.health).to eq(70)
+       27      end
+       28  
+       29      it 'health cannot go below 0' do
+       30 -      char = Character.new('Hero', 50)                        
+       30 +      char = described_class.new('Hero', 50)                  
+       31        char.take_damage(100)
+       32        expect(char.health).to eq(0)
+       33      end
+       34  
+       35      it 'knows if character is alive' do
+       36 -      char = Character.new('Hero', 100)                       
+       36 +      char = described_class.new('Hero', 100)                 
+       37        expect(char.alive?).to be true
+       38        char.take_damage(100)
+       39        expect(char.alive?).to be false
+       40      end
+       41    end
+       42  
+       43 -  describe Warrior do                                         
+       43 +  describe Chapter03::Warrior do                              
+       44      it 'inherits from Character' do
+       45 -      expect(Warrior.superclass).to eq(Character)             
+       45 +      expect(described_class.superclass).to eq(Chapter03::Char
+          +acter)                                                        
+       46      end
+       47  
+       48      it 'can be created with name, health, and strength' do
+       49 -      warrior = Warrior.new('Conan', 150, 25)                 
+       49 +      warrior = described_class.new('Conan', 150, 25)         
+       50        expect(warrior.name).to eq('Conan')
+       51        expect(warrior.health).to eq(150)
+       52        expect(warrior.strength).to eq(25)
+       53      end
+       54  
+       55      it 'overrides attack method' do
+       56 -      warrior = Warrior.new('Conan', 150, 25)                 
+       56 +      warrior = described_class.new('Conan', 150, 25)         
+       57        expect(warrior.attack).to eq('Conan swings sword for 25 
+           damage!')
+       58      end
+       59  
+       60      it 'has a special_move method' do
+       61 -      warrior = Warrior.new('Conan', 150, 25)                 
+       61 +      warrior = described_class.new('Conan', 150, 25)         
+       62        expect(warrior.special_move).to eq('Conan uses Shield Ba
+           sh!')
+       63      end
+       64  
+       65      it 'inherits defend method' do
+       66 -      warrior = Warrior.new('Conan', 150, 25)                 
+       66 +      warrior = described_class.new('Conan', 150, 25)         
+       67        expect(warrior.defend).to eq('Conan defends!')
+       68      end
+       69  
+       70      it 'is a Character' do
+       71 -      warrior = Warrior.new('Conan', 150, 25)                 
+       72 -      expect(warrior).to be_a(Character)                      
+       71 +      warrior = described_class.new('Conan', 150, 25)         
+       72 +      expect(warrior).to be_a(Chapter03::Character)           
+       73      end
+       74    end
+       75  
+       76 -  describe Mage do                                            
+       76 +  describe Chapter03::Mage do                                 
+       77      it 'inherits from Character' do
+       78 -      expect(Mage.superclass).to eq(Character)                
+       78 +      expect(described_class.superclass).to eq(Chapter03::Char
+          +acter)                                                        
+       79      end
+       80  
+       81      it 'can be created with name, health, and mana' do
+       82 -      mage = Mage.new('Gandalf', 80, 100)                     
+       82 +      mage = described_class.new('Gandalf', 80, 100)          
+       83        expect(mage.name).to eq('Gandalf')
+       84        expect(mage.health).to eq(80)
+       85        expect(mage.mana).to eq(100)
+       86      end
+       87  
+       88      it 'overrides attack method' do
+       89 -      mage = Mage.new('Gandalf', 80, 100)                     
+       89 +      mage = described_class.new('Gandalf', 80, 100)          
+       90        expect(mage.attack).to eq('Gandalf casts fireball!')
+       91      end
+       92  
+       93      it 'has a special_move that costs mana' do
+       94 -      mage = Mage.new('Gandalf', 80, 50)                      
+       94 +      mage = described_class.new('Gandalf', 80, 50)           
+       95        expect(mage.special_move).to eq('Gandalf casts Arcane Bl
+           ast!')
+       96        expect(mage.mana).to eq(40)
+       97      end
+       98  
+       99      it 'cannot use special_move without enough mana' do
+      100 -      mage = Mage.new('Gandalf', 80, 5)                       
+      100 +      mage = described_class.new('Gandalf', 80, 5)            
+      101        expect(mage.special_move).to eq('Gandalf is out of mana!
+           ')
+      102        expect(mage.mana).to eq(5) # mana unchanged
+      103      end
+      104  
+      105      it 'inherits defend method' do
+      106 -      mage = Mage.new('Gandalf', 80, 100)                     
+      106 +      mage = described_class.new('Gandalf', 80, 100)          
+      107        expect(mage.defend).to eq('Gandalf defends!')
+      108      end
+      109  
+      110      it 'is a Character' do
+      111 -      mage = Mage.new('Gandalf', 80, 100)                     
+      112 -      expect(mage).to be_a(Character)                         
+      111 +      mage = described_class.new('Gandalf', 80, 100)          
+      112 +      expect(mage).to be_a(Chapter03::Character)              
+      113      end
+      114    end
+      115  end
+
+⏺ Chapter 03 done. Let me continue with the remaining chapters more efficiently by reading all files at once:
+
+⏺ Search(pattern: "lib/chapter_04_modules_and_mixins/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_04_modules_and_mixins/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Read(lib/chapter_04_modules_and_mixins/01_greetable.rb)
+  ⎿  Read 34 lines
+
+⏺ Read(lib/chapter_04_modules_and_mixins/02_loggable.rb)
+  ⎿  Read 56 lines
+
+⏺ Read(lib/chapter_04_modules_and_mixins/03_math_utils.rb)
+  ⎿  Read 49 lines
+
+⏺ Read(lib/chapter_04_modules_and_mixins/04_taggable.rb)
+  ⎿  Read 79 lines
+
+⏺ Read(lib/chapter_04_modules_and_mixins/05_serializable.rb)
+  ⎿  Read 88 lines
+
+⏺ Read(spec/chapter_04_modules_and_mixins/01_greetable_spec.rb)
+  ⎿  Read 44 lines
+
+⏺ Read(spec/chapter_04_modules_and_mixins/02_loggable_spec.rb)
+  ⎿  Read 102 lines
+
+⏺ Read(spec/chapter_04_modules_and_mixins/03_math_utils_spec.rb)
+  ⎿  Read 80 lines
+
+⏺ Read(spec/chapter_04_modules_and_mixins/04_taggable_spec.rb)
+  ⎿  Read 165 lines
+
+⏺ Read(spec/chapter_04_modules_and_mixins/05_serializable_spec.rb)
+  ⎿  Read 86 lines
+
+⏺ Now let me update Chapter 04 files:
+
+⏺ Update(lib/chapter_04_modules_and_mixins/01_greetable.rb)
+  ⎿  Added 16 lines, removed 14 lines                                    
+      11  # - Accept a name in the constructor
+      12  # - Have a `name` reader method
+      13  
+      14 -##                                                             
+      15 -# A module that provides greeting functionality                
+      16 -module Greetable                                               
+      17 -  def greet                                                    
+      18 -    # NOTE: Delegates to the #name method                      
+      19 -    "Hello, I'm #{name}!"                                      
+      14 +module Chapter04                                               
+      15 +  ##                                                           
+      16 +  # A module that provides greeting functionality              
+      17 +  module Greetable                                             
+      18 +    def greet                                                  
+      19 +      # NOTE: Delegates to the #name method                    
+      20 +      "Hello, I'm #{name}!"                                    
+      21 +    end                                                        
+      22    end
+      21 -end                                                            
+      23  
+      23 -##                                                             
+      24 -# A person who can greet others                                
+      25 -class Person                                                   
+      26 -  include Greetable                                            
+      24 +  ##                                                           
+      25 +  # A person who can greet others                              
+      26 +  class Person                                                 
+      27 +    include Greetable                                          
+      28  
+      28 -  attr_reader :name                                            
+      29 +    attr_reader :name                                          
+      30  
+      30 -  def initialize(name)                                         
+      31 -    @name = name                                               
+      31 +    def initialize(name)                                       
+      32 +      @name = name                                             
+      33 +    end                                                        
+      34    end
+      35  end
+
+⏺ Update(lib/chapter_04_modules_and_mixins/02_loggable.rb)
+  ⎿  Added 30 lines, removed 28 lines                                    
+      14  # - Have a `start` method that logs "Application #{name} starte
+          d"
+      15  # - Have a `stop` method that logs "Application #{name} stopped
+          "
+      16  
+      17 -##                                                             
+      18 -# A module that provides logging functionality                 
+      19 -module Loggable                                                
+      20 -  def log(message)                                             
+      21 -    # NOTE: We utilize #tap to not expose the internal messages
+      22 -    # array to callers                                         
+      23 -    tap { log_messages << "[#{Time.now}] #{message}" }         
+      24 -  end                                                          
+      17 +module Chapter04                                               
+      18 +  ##                                                           
+      19 +  # A module that provides logging functionality               
+      20 +  module Loggable                                              
+      21 +    def log(message)                                           
+      22 +      # NOTE: We utilize #tap to not expose the internal messag
+         +es                                                             
+      23 +      # array to callers                                       
+      24 +      tap { log_messages << "[#{Time.now}] #{message}" }       
+      25 +    end                                                        
+      26  
+      26 -  def log_history                                              
+      27 -    log_messages.dup                                           
+      28 -  end                                                          
+      27 +    def log_history                                            
+      28 +      log_messages.dup                                         
+      29 +    end                                                        
+      30  
+      30 -  private                                                      
+      31 +    private                                                    
+      32  
+      32 -  def log_messages                                             
+      33 -    @log_messages ||= []                                       
+      33 +    def log_messages                                           
+      34 +      @log_messages ||= []                                     
+      35 +    end                                                        
+      36    end
+      35 -end                                                            
+      37  
+      37 -##                                                             
+      38 -# An application that can log its activity                     
+      39 -class Application                                              
+      40 -  include Loggable                                             
+      38 +  ##                                                           
+      39 +  # An application that can log its activity                   
+      40 +  class Application                                            
+      41 +    include Loggable                                           
+      42  
+      42 -  attr_reader :name                                            
+      43 +    attr_reader :name                                          
+      44  
+      44 -  def initialize(name)                                         
+      45 -    @name = name                                               
+      46 -  end                                                          
+      45 +    def initialize(name)                                       
+      46 +      @name = name                                             
+      47 +    end                                                        
+      48  
+      48 -  def start                                                    
+      49 -    log("Application #{name} started")                         
+      50 -  end                                                          
+      49 +    def start                                                  
+      50 +      log("Application #{name} started")                       
+      51 +    end                                                        
+      52  
+      52 -  def stop                                                     
+      53 -    log("Application #{name} stopped")                         
+      53 +    def stop                                                   
+      54 +      log("Application #{name} stopped")                       
+      55 +    end                                                        
+      56    end
+      57  end
+
+⏺ Update(lib/chapter_04_modules_and_mixins/03_math_utils.rb)
+  ⎿  Added 24 lines, removed 22 lines                                    
+      14  # - Have a class method `power_summary(n)` that returns a hash:
+      15  #   { square: n², cube: n³ }
+      16  
+      17 -##                                                             
+      18 -# A module providing mathematical utilities                    
+      19 -module MathUtils                                               
+      20 -  # NOTE: This makes the methods below callable at the module l
+         -evel                                                           
+      21 -  # such as MathUtils.square                                   
+      17 +module Chapter04                                               
+      18 +  ##                                                           
+      19 +  # A module providing mathematical utilities                  
+      20 +  module MathUtils                                             
+      21 +    # NOTE: This makes the methods below callable at the module
+         + level                                                         
+      22 +    # such as MathUtils.square                                 
+      23  
+      23 -  module_function                                              
+      24 +    module_function                                            
+      25  
+      25 -  def square(num)                                              
+      26 -    num * num                                                  
+      27 -  end                                                          
+      26 +    def square(num)                                            
+      27 +      num * num                                                
+      28 +    end                                                        
+      29  
+      29 -  def cube(num)                                                
+      30 -    num * num * num                                            
+      31 -  end                                                          
+      30 +    def cube(num)                                              
+      31 +      num * num * num                                          
+      32 +    end                                                        
+      33  
+      33 -  def factorial(num)                                           
+      34 -    return 1 if num.zero?                                      
+      34 +    def factorial(num)                                         
+      35 +      return 1 if num.zero?                                    
+      36  
+      36 -    (1..num).inject :*                                         
+      37 +      (1..num).inject :*                                       
+      38 +    end                                                        
+      39    end
+      38 -end                                                            
+      40  
+      40 -##                                                             
+      41 -# A calculator that uses MathUtils                             
+      42 -class Calculator                                               
+      43 -  extend MathUtils                                             
+      41 +  ##                                                           
+      42 +  # A calculator that uses MathUtils                           
+      43 +  class Calculator                                             
+      44 +    extend MathUtils                                           
+      45  
+      45 -  def self.power_summary(num)                                  
+      46 -    { square: square(num), cube: cube(num) }                   
+      46 +    def self.power_summary(num)                                
+      47 +      { square: square(num), cube: cube(num) }                 
+      48 +    end                                                        
+      49    end
+      50  end
+
+⏺ Update(lib/chapter_04_modules_and_mixins/04_taggable.rb)
+  ⎿  Added 43 lines, removed 41 lines                                    
+      19  # - Accept a filename in the constructor
+      20  # - Have a `filename` reader method
+      21  
+      22 -##                                                             
+      23 -# A module that provides tagging functionality                 
+      24 -module Taggable                                                
+      25 -  # NOTE: These methods are wrapped in #tap so they do not     
+      26 -  # expose the underlying set                                  
+      27 -  def add_tag(tag)                                             
+      28 -    tap { tag_set.add(tag) }                                   
+      29 -  end                                                          
+      22 +module Chapter04                                               
+      23 +  ##                                                           
+      24 +  # A module that provides tagging functionality               
+      25 +  module Taggable                                              
+      26 +    # NOTE: These methods are wrapped in #tap so they do not   
+      27 +    # expose the underlying set                                
+      28 +    def add_tag(tag)                                           
+      29 +      tap { tag_set.add(tag) }                                 
+      30 +    end                                                        
+      31  
+      31 -  def remove_tag(tag)                                          
+      32 -    tap { tag_set.delete(tag) }                                
+      33 -  end                                                          
+      32 +    def remove_tag(tag)                                        
+      33 +      tap { tag_set.delete(tag) }                              
+      34 +    end                                                        
+      35  
+      35 -  def clear_tags                                               
+      36 -    tap { tag_set.clear }                                      
+      37 -  end                                                          
+      36 +    def clear_tags                                             
+      37 +      tap { tag_set.clear }                                    
+      38 +    end                                                        
+      39  
+      39 -  def tags                                                     
+      40 -    tag_set.to_a                                               
+      41 -  end                                                          
+      40 +    def tags                                                   
+      41 +      tag_set.to_a                                             
+      42 +    end                                                        
+      43  
+      43 -  def tagged_with?(tag)                                        
+      44 -    tag_set.include? tag                                       
+      45 -  end                                                          
+      44 +    def tagged_with?(tag)                                      
+      45 +      tag_set.include? tag                                     
+      46 +    end                                                        
+      47  
+      47 -  private                                                      
+      48 +    private                                                    
+      49  
+      49 -  ##                                                           
+      50 -  # Store the tags as a set internally                         
+      51 -  def tag_set                                                  
+      52 -    @tag_set ||= Set.new                                       
+      50 +    ##                                                         
+      51 +    # Store the tags as a set internally                       
+      52 +    def tag_set                                                
+      53 +      @tag_set ||= Set.new                                     
+      54 +    end                                                        
+      55    end
+      54 -end                                                            
+      56  
+      56 -##                                                             
+      57 -# An article that can be tagged                                
+      58 -class Article                                                  
+      59 -  include Taggable                                             
+      57 +  ##                                                           
+      58 +  # An article that can be tagged                              
+      59 +  class Article                                                
+      60 +    include Taggable                                           
+      61  
+      61 -  attr_reader :title                                           
+      62 +    attr_reader :title                                         
+      63  
+      63 -  def initialize(title)                                        
+      64 -    @title = title                                             
+      64 +    def initialize(title)                                      
+      65 +      @title = title                                           
+      66 +    end                                                        
+      67    end
+      66 -end                                                            
+      68  
+      68 -##                                                             
+      69 -# A photo that can be tagged                                   
+      70 -class Photo                                                    
+      71 -  include Taggable                                             
+      69 +  ##                                                           
+      70 +  # A photo that can be tagged                                 
+      71 +  class Photo                                                  
+      72 +    include Taggable                                           
+      73  
+      73 -  attr_reader :filename                                        
+      74 +    attr_reader :filename                                      
+      75  
+      75 -  def initialize(filename)                                     
+      76 -    @filename = filename                                       
+      76 +    def initialize(filename)                                   
+      77 +      @filename = filename                                     
+      78 +    end                                                        
+      79    end
+      80  end
+
+⏺ Update(lib/chapter_04_modules_and_mixins/05_serializable.rb)
+  ⎿  Added 43 lines, removed 41 lines                                    
+      26  
+      27  require 'json'
+      28  
+      29 -##                                                             
+      30 -# A module that provides serialization functionality           
+      31 -module Serializable                                            
+      32 -  def to_hash                                                  
+      33 -    self.class.serializable_attrs.to_h { |sym| [sym, send(sym)]
+         - }                                                             
+      34 -  end                                                          
+      29 +module Chapter04                                               
+      30 +  ##                                                           
+      31 +  # A module that provides serialization functionality         
+      32 +  module Serializable                                          
+      33 +    def to_hash                                                
+      34 +      self.class.serializable_attrs.to_h { |sym| [sym, send(sym
+         +)] }                                                           
+      35 +    end                                                        
+      36  
+      36 -  def to_json(*_args)                                          
+      37 -    to_hash.to_json                                            
+      38 -  end                                                          
+      37 +    def to_json(*_args)                                        
+      38 +      to_hash.to_json                                          
+      39 +    end                                                        
+      40  
+      40 -  def self.included(base)                                      
+      41 -    base.extend(ClassMethods)                                  
+      42 -  end                                                          
+      41 +    def self.included(base)                                    
+      42 +      base.extend(ClassMethods)                                
+      43 +    end                                                        
+      44  
+      44 -  ##                                                           
+      45 -  # Class methods to enable the serializable_attributes DSL    
+      46 -  module ClassMethods                                          
+      47 -    attr_reader :serializable_attrs                            
+      45 +    ##                                                         
+      46 +    # Class methods to enable the serializable_attributes DSL  
+      47 +    module ClassMethods                                        
+      48 +      attr_reader :serializable_attrs                          
+      49  
+      49 -    def serializable_attributes(*attrs)                        
+      50 -      @serializable_attrs = attrs                              
+      50 +      def serializable_attributes(*attrs)                      
+      51 +        @serializable_attrs = attrs                            
+      52 +      end                                                      
+      53      end
+      54    end
+      53 -end                                                            
+      55  
+      55 -##                                                             
+      56 -# A user that can be serialized                                
+      57 -class User                                                     
+      58 -  include Serializable                                         
+      56 +  ##                                                           
+      57 +  # A user that can be serialized                              
+      58 +  class User                                                   
+      59 +    include Serializable                                       
+      60  
+      60 -  attr_reader :name, :email                                    
+      61 +    attr_reader :name, :email                                  
+      62  
+      62 -  serializable_attributes :name, :email                        
+      63 +    serializable_attributes :name, :email                      
+      64  
+      64 -  def initialize(name, email)                                  
+      65 -    @name = name                                               
+      66 -    @email = email                                             
+      67 -  end                                                          
+      65 +    def initialize(name, email)                                
+      66 +      @name = name                                             
+      67 +      @email = email                                           
+      68 +    end                                                        
+      69  
+      69 -  def self.serializable_attrs                                  
+      70 -    %i[name email]                                             
+      70 +    def self.serializable_attrs                                
+      71 +      %i[name email]                                           
+      72 +    end                                                        
+      73    end
+      72 -end                                                            
+      74  
+      74 -##                                                             
+      75 -# A product that can be serialized                             
+      76 -class Product                                                  
+      77 -  include Serializable                                         
+      75 +  ##                                                           
+      76 +  # A product that can be serialized                           
+      77 +  class Product                                                
+      78 +    include Serializable                                       
+      79  
+      79 -  attr_reader :name, :price                                    
+      80 +    attr_reader :name, :price                                  
+      81  
+      81 -  serializable_attributes :name, :price                        
+      82 +    serializable_attributes :name, :price                      
+      83  
+      83 -  def initialize(name, price)                                  
+      84 -    @name = name                                               
+      85 -    @price = price                                             
+      84 +    def initialize(name, price)                                
+      85 +      @name = name                                             
+      86 +      @price = price                                           
+      87 +    end                                                        
+      88    end
+      89  end
+
+⏺ Now updating Chapter 04 spec files:
+
+⏺ Update(spec/chapter_04_modules_and_mixins/01_greetable_spec.rb)
+  ⎿  Added 7 lines, removed 7 lines                                      
+       2  
+       3  require 'chapter_04_modules_and_mixins/01_greetable'
+       4  
+       5 -RSpec.describe Greetable do                                    
+       5 +RSpec.describe Chapter04::Greetable do                         
+       6    describe '#greet' do
+       7      it 'returns a greeting with the name' do
+       8 -      person = Person.new('Alice')                             
+       8 +      person = Chapter04::Person.new('Alice')                  
+       9  
+      10        expect(person.greet).to eq("Hello, I'm Alice!")
+      11      end
+      12    end
+      13  end
+      14  
+      15 -RSpec.describe Person do                                       
+      15 +RSpec.describe Chapter04::Person do                            
+      16    describe '#initialize' do
+      17      it 'accepts a name' do
+      18 -      person = Person.new('Bob')                               
+      18 +      person = described_class.new('Bob')                      
+      19  
+      20        expect(person.name).to eq('Bob')
+      21      end
+     ...
+      23  
+      24    describe '#name' do
+      25      it 'returns the person name' do
+      26 -      person = Person.new('Charlie')                           
+      26 +      person = described_class.new('Charlie')                  
+      27  
+      28        expect(person.name).to eq('Charlie')
+      29      end
+     ...
+      31  
+      32    describe 'module inclusion' do
+      33      it 'includes the Greetable module' do
+      34 -      expect(Person.included_modules).to include(Greetable)    
+      34 +      expect(described_class.included_modules).to include(Chapt
+         +er04::Greetable)                                               
+      35      end
+      36  
+      37      it 'can use the greet method from Greetable' do
+      38 -      person = Person.new('Diana')                             
+      38 +      person = described_class.new('Diana')                    
+      39  
+      40        expect(person.greet).to eq("Hello, I'm Diana!")
+      41      end
+
+⏺ Update(spec/chapter_04_modules_and_mixins/02_loggable_spec.rb)
+  ⎿  Added 12 lines, removed 12 lines                                    
+       2  
+       3  require 'chapter_04_modules_and_mixins/02_loggable'
+       4  
+       5 -RSpec.describe Loggable do                                     
+       5 +RSpec.describe Chapter04::Loggable do                          
+       6    describe '#log' do
+       7      it 'adds a timestamped message to the log history' do
+       8 -      app = Application.new('TestApp')                         
+       8 +      app = Chapter04::Application.new('TestApp')              
+       9  
+      10        app.log('Test message')
+      11  
+     ...
+      14      end
+      15  
+      16      it 'adds multiple messages to the log history' do
+      17 -      app = Application.new('TestApp')                         
+      17 +      app = Chapter04::Application.new('TestApp')              
+      18  
+      19        app.log('First')
+      20        app.log('Second')
+     ...
+      25  
+      26    describe '#log_history' do
+      27      it 'returns an empty array when no messages logged' do
+      28 -      app = Application.new('TestApp')                         
+      28 +      app = Chapter04::Application.new('TestApp')              
+      29  
+      30        expect(app.log_history).to eq([])
+      31      end
+      32  
+      33      it 'returns all logged messages in order' do
+      34 -      app = Application.new('TestApp')                         
+      34 +      app = Chapter04::Application.new('TestApp')              
+      35  
+      36        app.log('One')
+      37        app.log('Two')
+     ...
+      45    end
+      46  end
+      47  
+      48 -RSpec.describe Application do                                  
+      48 +RSpec.describe Chapter04::Application do                       
+      49    describe '#initialize' do
+      50      it 'accepts a name' do
+      51 -      app = Application.new('MyApp')                           
+      51 +      app = described_class.new('MyApp')                       
+      52  
+      53        expect(app.name).to eq('MyApp')
+      54      end
+     ...
+      56  
+      57    describe '#start' do
+      58      it 'logs that the application started' do
+      59 -      app = Application.new('WebServer')                       
+      59 +      app = described_class.new('WebServer')                   
+      60  
+      61        app.start
+      62  
+     ...
+      66  
+      67    describe '#stop' do
+      68      it 'logs that the application stopped' do
+      69 -      app = Application.new('WebServer')                       
+      69 +      app = described_class.new('WebServer')                   
+      70  
+      71        app.stop
+      72  
+     ...
+      76  
+      77    describe 'module inclusion' do
+      78      it 'includes the Loggable module' do
+      79 -      expect(Application.included_modules).to include(Loggable)
+      79 +      expect(described_class.included_modules).to include(Chapt
+         +er04::Loggable)                                                
+      80      end
+      81    end
+      82  
+      83    describe 'encapsulation' do
+      84      it 'returns a copy from log_history so internal state canno
+          t be mutated' do
+      85 -      app = Application.new('TestApp')                         
+      85 +      app = described_class.new('TestApp')                     
+      86        app.log('original')
+      87  
+      88        app.log_history << '[INJECTED] sneaky message'
+     ...
+      91      end
+      92  
+      93      it 'does not leak internal state from log' do
+      94 -      app = Application.new('TestApp')                         
+      94 +      app = described_class.new('TestApp')                     
+      95  
+      96        result = app.log('test message')
+      97  
+
+⏺ Update(spec/chapter_04_modules_and_mixins/03_math_utils_spec.rb)
+  ⎿  Added 16 lines, removed 16 lines                                    
+       2  
+       3  require 'chapter_04_modules_and_mixins/03_math_utils'
+       4  
+       5 -RSpec.describe MathUtils do                                    
+       5 +RSpec.describe Chapter04::MathUtils do                         
+       6    describe '.square' do
+       7      it 'returns the square of a number' do
+       8 -      expect(MathUtils.square(4)).to eq(16)                    
+       8 +      expect(described_class.square(4)).to eq(16)              
+       9      end
+      10  
+      11      it 'handles zero' do
+      12 -      expect(MathUtils.square(0)).to eq(0)                     
+      12 +      expect(described_class.square(0)).to eq(0)               
+      13      end
+      14  
+      15      it 'handles negative numbers' do
+      16 -      expect(MathUtils.square(-3)).to eq(9)                    
+      16 +      expect(described_class.square(-3)).to eq(9)              
+      17      end
+      18    end
+      19  
+      20    describe '.cube' do
+      21      it 'returns the cube of a number' do
+      22 -      expect(MathUtils.cube(3)).to eq(27)                      
+      22 +      expect(described_class.cube(3)).to eq(27)                
+      23      end
+      24  
+      25      it 'handles zero' do
+      26 -      expect(MathUtils.cube(0)).to eq(0)                       
+      26 +      expect(described_class.cube(0)).to eq(0)                 
+      27      end
+      28  
+      29      it 'handles negative numbers' do
+      30 -      expect(MathUtils.cube(-2)).to eq(-8)                     
+      30 +      expect(described_class.cube(-2)).to eq(-8)               
+      31      end
+      32    end
+      33  
+      34    describe '.factorial' do
+      35      it 'returns 1 for factorial of 0' do
+      36 -      expect(MathUtils.factorial(0)).to eq(1)                  
+      36 +      expect(described_class.factorial(0)).to eq(1)            
+      37      end
+      38  
+      39      it 'returns 1 for factorial of 1' do
+      40 -      expect(MathUtils.factorial(1)).to eq(1)                  
+      40 +      expect(described_class.factorial(1)).to eq(1)            
+      41      end
+      42  
+      43      it 'returns the factorial of a number' do
+      44 -      expect(MathUtils.factorial(5)).to eq(120)                
+      44 +      expect(described_class.factorial(5)).to eq(120)          
+      45      end
+      46  
+      47      it 'handles larger numbers' do
+      48 -      expect(MathUtils.factorial(10)).to eq(3_628_800)         
+      48 +      expect(described_class.factorial(10)).to eq(3_628_800)   
+      49      end
+      50    end
+      51  end
+      52  
+      53 -RSpec.describe Calculator do                                   
+      53 +RSpec.describe Chapter04::Calculator do                        
+      54    describe '.power_summary' do
+      55      it 'returns a hash with square and cube' do
+      56 -      result = Calculator.power_summary(3)                     
+      56 +      result = described_class.power_summary(3)                
+      57  
+      58        expect(result).to eq({ square: 9, cube: 27 })
+      59      end
+      60  
+      61      it 'works with different numbers' do
+      62 -      result = Calculator.power_summary(5)                     
+      62 +      result = described_class.power_summary(5)                
+      63  
+      64        expect(result).to eq({ square: 25, cube: 125 })
+      65      end
+      66  
+      67      it 'handles zero' do
+      68 -      result = Calculator.power_summary(0)                     
+      68 +      result = described_class.power_summary(0)                
+      69  
+      70        expect(result).to eq({ square: 0, cube: 0 })
+      71      end
+     ...
+      73  
+      74    describe 'module extension' do
+      75      it 'extends MathUtils for class-level access' do
+      76 -      expect(Calculator.singleton_class.included_modules).to in
+         -clude(MathUtils)                                               
+      76 +      expect(described_class.singleton_class.included_modules).
+         +to include(Chapter04::MathUtils)                               
+      77      end
+      78    end
+      79  end
+
+⏺ Update(spec/chapter_04_modules_and_mixins/04_taggable_spec.rb)
+  ⎿  Added 21 lines, removed 21 lines                                    
+       2  
+       3  require 'chapter_04_modules_and_mixins/04_taggable'
+       4  
+       5 -RSpec.describe Taggable do                                     
+       5 +RSpec.describe Chapter04::Taggable do                          
+       6    describe '#add_tag' do
+       7      it 'adds a tag' do
+       8 -      article = Article.new('Ruby Tips')                       
+       8 +      article = Chapter04::Article.new('Ruby Tips')            
+       9  
+      10        article.add_tag('ruby')
+      11  
+     ...
+      13      end
+      14  
+      15      it 'does not add duplicate tags' do
+      16 -      article = Article.new('Ruby Tips')                       
+      16 +      article = Chapter04::Article.new('Ruby Tips')            
+      17  
+      18        article.add_tag('ruby')
+      19        article.add_tag('ruby')
+     ...
+      24  
+      25    describe '#remove_tag' do
+      26      it 'removes a tag' do
+      27 -      article = Article.new('Ruby Tips')                       
+      27 +      article = Chapter04::Article.new('Ruby Tips')            
+      28        article.add_tag('ruby')
+      29        article.add_tag('programming')
+      30  
+     ...
+      37  
+      38    describe '#tags' do
+      39      it 'returns an empty array initially' do
+      40 -      article = Article.new('Empty Article')                   
+      40 +      article = Chapter04::Article.new('Empty Article')        
+      41  
+      42        expect(article.tags).to eq([])
+      43      end
+      44  
+      45      it 'returns all tags' do
+      46 -      article = Article.new('Tagged Article')                  
+      46 +      article = Chapter04::Article.new('Tagged Article')       
+      47        article.add_tag('tech')
+      48        article.add_tag('news')
+      49  
+     ...
+      53  
+      54    describe '#tagged_with?' do
+      55      it 'returns true if the tag exists' do
+      56 -      article = Article.new('Test')                            
+      56 +      article = Chapter04::Article.new('Test')                 
+      57        article.add_tag('important')
+      58  
+      59        expect(article.tagged_with?('important')).to be true
+      60      end
+      61  
+      62      it 'returns false if the tag does not exist' do
+      63 -      article = Article.new('Test')                            
+      63 +      article = Chapter04::Article.new('Test')                 
+      64  
+      65        expect(article.tagged_with?('missing')).to be false
+      66      end
+     ...
+      68  
+      69    describe '#clear_tags' do
+      70      it 'removes all tags' do
+      71 -      article = Article.new('Test')                            
+      71 +      article = Chapter04::Article.new('Test')                 
+      72        article.add_tag('one')
+      73        article.add_tag('two')
+      74        article.add_tag('three')
+     ...
+      81  
+      82    describe 'encapsulation' do
+      83      it 'does not expose tag_set publicly' do
+      84 -      article = Article.new('Test')                            
+      84 +      article = Chapter04::Article.new('Test')                 
+      85  
+      86        expect { article.tag_set }.to raise_error(NoMethodError, 
+          /private method/)
+      87      end
+      88  
+      89      it 'returns a copy from tags so internal state cannot be mu
+          tated' do
+      90 -      article = Article.new('Test')                            
+      90 +      article = Chapter04::Article.new('Test')                 
+      91        article.add_tag('original')
+      92  
+      93        article.tags << 'injected'
+     ...
+       96      end
+       97  
+       98      it 'does not leak internal state from add_tag' do
+       99 -      article = Article.new('Test')                           
+       99 +      article = Chapter04::Article.new('Test')                
+      100  
+      101        result = article.add_tag('ruby')
+      102  
+     ...
+      104      end
+      105  
+      106      it 'does not leak internal state from remove_tag' do
+      107 -      article = Article.new('Test')                           
+      107 +      article = Chapter04::Article.new('Test')                
+      108        article.add_tag('ruby')
+      109  
+      110        result = article.remove_tag('ruby')
+     ...
+      113      end
+      114  
+      115      it 'does not leak internal state from clear_tags' do
+      116 -      article = Article.new('Test')                           
+      116 +      article = Chapter04::Article.new('Test')                
+      117        article.add_tag('ruby')
+      118  
+      119        result = article.clear_tags
+     ...
+      123    end
+      124  end
+      125  
+      126 -RSpec.describe Article do                                     
+      126 +RSpec.describe Chapter04::Article do                          
+      127    describe '#initialize' do
+      128      it 'accepts a title' do
+      129 -      article = Article.new('My Article')                     
+      129 +      article = described_class.new('My Article')             
+      130  
+      131        expect(article.title).to eq('My Article')
+      132      end
+     ...
+      134  
+      135    describe 'module inclusion' do
+      136      it 'includes the Taggable module' do
+      137 -      expect(Article.included_modules).to include(Taggable)   
+      137 +      expect(described_class.included_modules).to include(Chap
+          +ter04::Taggable)                                              
+      138      end
+      139    end
+      140  end
+      141  
+      142 -RSpec.describe Photo do                                       
+      142 +RSpec.describe Chapter04::Photo do                            
+      143    describe '#initialize' do
+      144      it 'accepts a filename' do
+      145 -      photo = Photo.new('sunset.jpg')                         
+      145 +      photo = described_class.new('sunset.jpg')               
+      146  
+      147        expect(photo.filename).to eq('sunset.jpg')
+      148      end
+     ...
+      150  
+      151    describe 'module inclusion' do
+      152      it 'includes the Taggable module' do
+      153 -      expect(Photo.included_modules).to include(Taggable)     
+      153 +      expect(described_class.included_modules).to include(Chap
+          +ter04::Taggable)                                              
+      154      end
+      155  
+      156      it 'can use tagging functionality' do
+      157 -      photo = Photo.new('beach.png')                          
+      157 +      photo = described_class.new('beach.png')                
+      158        photo.add_tag('vacation')
+      159        photo.add_tag('summer')
+      160  
+
+⏺ Update(spec/chapter_04_modules_and_mixins/05_serializable_spec.rb)
+  ⎿  Added 13 lines, removed 13 lines                                    
+       2  
+       3  require 'chapter_04_modules_and_mixins/05_serializable'
+       4  
+       5 -RSpec.describe Serializable do                                 
+       5 +RSpec.describe Chapter04::Serializable do                      
+       6    describe '#to_hash' do
+       7      it 'returns a hash of serializable attributes for User' do
+       8 -      user = User.new('Alice', 'alice@example.com')            
+       8 +      user = Chapter04::User.new('Alice', 'alice@example.com') 
+       9  
+      10        result = user.to_hash
+      11  
+     ...
+      13      end
+      14  
+      15      it 'returns a hash of serializable attributes for Product' 
+          do
+      16 -      product = Product.new('Widget', 29.99)                   
+      16 +      product = Chapter04::Product.new('Widget', 29.99)        
+      17  
+      18        result = product.to_hash
+      19  
+     ...
+      23  
+      24    describe '#to_json' do
+      25      it 'returns a JSON string for User' do
+      26 -      user = User.new('Bob', 'bob@example.com')                
+      26 +      user = Chapter04::User.new('Bob', 'bob@example.com')     
+      27  
+      28        result = user.to_json
+      29  
+     ...
+      31      end
+      32  
+      33      it 'returns a JSON string for Product' do
+      34 -      product = Product.new('Gadget', 49.99)                   
+      34 +      product = Chapter04::Product.new('Gadget', 49.99)        
+      35  
+      36        result = product.to_json
+      37  
+     ...
+      41  
+      42    describe '.serializable_attributes' do
+      43      it 'defines which attributes are serializable' do
+      44 -      expect(User.serializable_attrs).to contain_exactly(:name,
+         - :email)                                                       
+      44 +      expect(Chapter04::User.serializable_attrs).to contain_exa
+         +ctly(:name, :email)                                            
+      45      end
+      46  
+      47      it 'can define different attributes for different classes' 
+          do
+      48 -      expect(Product.serializable_attrs).to contain_exactly(:na
+         -me, :price)                                                    
+      48 +      expect(Chapter04::Product.serializable_attrs).to contain_
+         +exactly(:name, :price)                                         
+      49      end
+      50    end
+      51  end
+      52  
+      53 -RSpec.describe User do                                         
+      53 +RSpec.describe Chapter04::User do                              
+      54    describe '#initialize' do
+      55      it 'accepts name and email' do
+      56 -      user = User.new('Charlie', 'charlie@example.com')        
+      56 +      user = described_class.new('Charlie', 'charlie@example.co
+         +m')                                                            
+      57  
+      58        expect(user.name).to eq('Charlie')
+      59        expect(user.email).to eq('charlie@example.com')
+     ...
+      62  
+      63    describe 'module inclusion' do
+      64      it 'includes the Serializable module' do
+      65 -      expect(User.included_modules).to include(Serializable)   
+      65 +      expect(described_class.included_modules).to include(Chapt
+         +er04::Serializable)                                            
+      66      end
+      67    end
+      68  end
+      69  
+      70 -RSpec.describe Product do                                      
+      70 +RSpec.describe Chapter04::Product do                           
+      71    describe '#initialize' do
+      72      it 'accepts name and price' do
+      73 -      product = Product.new('Book', 19.99)                     
+      73 +      product = described_class.new('Book', 19.99)             
+      74  
+      75        expect(product.name).to eq('Book')
+      76        expect(product.price).to eq(19.99)
+     ...
+      79  
+      80    describe 'module inclusion' do
+      81      it 'includes the Serializable module' do
+      82 -      expect(Product.included_modules).to include(Serializable)
+      82 +      expect(described_class.included_modules).to include(Chapt
+         +er04::Serializable)                                            
+      83      end
+      84    end
+      85  end
+
+⏺ Chapter 04 done. Let me now handle chapters 05, 06, and 07 in parallel by using agents:
+
+⏺ Search(pattern: "lib/chapter_05_composition/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_05_composition/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "lib/chapter_06_polymorphism_and_duck_typing/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_06_polymorphism_and_duck_typing/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "lib/chapter_07_solid_principles/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Search(pattern: "spec/chapter_07_solid_principles/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ Let me use agents to process the remaining chapters in parallel:
+
+⏺ 3 Task agents finished (ctrl+o to expand)
+   ├─ Namespace Chapter 05 classes · 21 tool uses · 43.3k tokens
+   │  ⎿  Done
+   ├─ Namespace Chapter 06 classes · 21 tool uses · 53.4k tokens
+   │  ⎿  Done
+   └─ Namespace Chapter 07 classes · 21 tool uses · 70.1k tokens
+      ⎿  Done
+
+⏺ All chapters namespaced. Let me update the todo list and run the final test:
+
+⏺ Bash(rake spec 2>&1)
+  ⎿ /Users/jordan/.local/share/mise/installs/ruby/4.0.0/bin/ruby -I/Users/j
+    ordan/.local/share/mise/installs/ruby/4.0.0/lib/ruby/gems/4.0.0/gems/rs
+    pec-support-3.13.6/lib:/Users/jordan/.local/share/mise/installs/ruby/4.
+    … +946 lines (ctrl+o to expand)
+
+
+
+
+⏺ All 456 tests pass. Let me finalize the todo list:
+
+⏺ Done! All 456 tests pass with rake spec.
+
+  The fix was to namespace all classes by chapter:
+  - Chapter01::Dog, Chapter01::Rectangle, etc.
+  - Chapter06::Dog, Chapter06::Circle, Chapter06::Rectangle
+
+  This eliminates the class name collisions that were causing the failures. When running the full test suite, each chapter's classes are now isolated in their own namespace, so Chapter01::Dog (a pet that barks) doesn't conflict with Chapter06::Dog (a duck-typing example that speaks).
+
+
+

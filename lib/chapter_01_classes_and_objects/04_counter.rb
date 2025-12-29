@@ -9,27 +9,29 @@
 # - Have a decrement method that decreases count by 1
 # - Have a reset method that sets count back to the initial value
 
-##
-# A counter which tracks its state
-class Counter
-  # attr_reader gives us a `value` getter method
-  # but tightly couples the instance variable name
-  attr_reader :value
+module Chapter01
+  ##
+  # A counter which tracks its state
+  class Counter
+    # attr_reader gives us a `value` getter method
+    # but tightly couples the instance variable name
+    attr_reader :value
 
-  def initialize(start_value = 0)
-    @start_value = start_value
-    @value = start_value
-  end
+    def initialize(start_value = 0)
+      @start_value = start_value
+      @value = start_value
+    end
 
-  def increment
-    @value += 1
-  end
+    def increment
+      @value += 1
+    end
 
-  def decrement
-    @value -= 1
-  end
+    def decrement
+      @value -= 1
+    end
 
-  def reset
-    @value = @start_value
+    def reset
+      @value = @start_value
+    end
   end
 end

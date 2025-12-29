@@ -2,10 +2,10 @@
 
 require 'chapter_06_polymorphism_and_duck_typing/02_payment_processor'
 
-RSpec.describe CreditCard do
+RSpec.describe Chapter06::CreditCard do
   describe '#initialize' do
     it 'creates a credit card with number and cvv' do
-      card = CreditCard.new('4111111111111111', '123')
+      card = described_class.new('4111111111111111', '123')
 
       expect(card.masked_number).to eq('****1111')
     end
@@ -13,7 +13,7 @@ RSpec.describe CreditCard do
 
   describe '#process_payment' do
     it 'returns success message with amount and masked number' do
-      card = CreditCard.new('4111111111111111', '123')
+      card = described_class.new('4111111111111111', '123')
 
       result = card.process_payment(99.99)
 
@@ -23,7 +23,7 @@ RSpec.describe CreditCard do
 
   describe '#refund' do
     it 'returns refund message' do
-      card = CreditCard.new('4111111111111111', '123')
+      card = described_class.new('4111111111111111', '123')
 
       result = card.refund(25.00)
 
@@ -32,10 +32,10 @@ RSpec.describe CreditCard do
   end
 end
 
-RSpec.describe PayPal do
+RSpec.describe Chapter06::PayPal do
   describe '#initialize' do
     it 'creates PayPal with email' do
-      paypal = PayPal.new('user@example.com')
+      paypal = described_class.new('user@example.com')
 
       expect(paypal.email).to eq('user@example.com')
     end
@@ -43,7 +43,7 @@ RSpec.describe PayPal do
 
   describe '#process_payment' do
     it 'returns success message with amount and email' do
-      paypal = PayPal.new('user@example.com')
+      paypal = described_class.new('user@example.com')
 
       result = paypal.process_payment(50.00)
 
@@ -53,7 +53,7 @@ RSpec.describe PayPal do
 
   describe '#refund' do
     it 'returns refund message' do
-      paypal = PayPal.new('user@example.com')
+      paypal = described_class.new('user@example.com')
 
       result = paypal.refund(15.00)
 
@@ -62,10 +62,10 @@ RSpec.describe PayPal do
   end
 end
 
-RSpec.describe BankTransfer do
+RSpec.describe Chapter06::BankTransfer do
   describe '#initialize' do
     it 'creates bank transfer with account and routing numbers' do
-      transfer = BankTransfer.new('12345678', '987654321')
+      transfer = described_class.new('12345678', '987654321')
 
       expect(transfer.masked_account).to eq('****5678')
     end
@@ -73,7 +73,7 @@ RSpec.describe BankTransfer do
 
   describe '#process_payment' do
     it 'returns success message with amount' do
-      transfer = BankTransfer.new('12345678', '987654321')
+      transfer = described_class.new('12345678', '987654321')
 
       result = transfer.process_payment(200.00)
 
@@ -83,7 +83,7 @@ RSpec.describe BankTransfer do
 
   describe '#refund' do
     it 'returns refund message' do
-      transfer = BankTransfer.new('12345678', '987654321')
+      transfer = described_class.new('12345678', '987654321')
 
       result = transfer.refund(75.00)
 
@@ -92,11 +92,11 @@ RSpec.describe BankTransfer do
   end
 end
 
-RSpec.describe Checkout do
+RSpec.describe Chapter06::Checkout do
   describe '#initialize' do
     it 'creates checkout with a payment method' do
-      card = CreditCard.new('4111111111111111', '123')
-      checkout = Checkout.new(card)
+      card = Chapter06::CreditCard.new('4111111111111111', '123')
+      checkout = described_class.new(card)
 
       expect(checkout.payment_method).to eq(card)
     end
@@ -104,8 +104,8 @@ RSpec.describe Checkout do
 
   describe '#complete_purchase' do
     it 'processes payment through credit card' do
-      card = CreditCard.new('4111111111111111', '123')
-      checkout = Checkout.new(card)
+      card = Chapter06::CreditCard.new('4111111111111111', '123')
+      checkout = described_class.new(card)
 
       result = checkout.complete_purchase(99.99)
 
@@ -113,8 +113,8 @@ RSpec.describe Checkout do
     end
 
     it 'processes payment through PayPal' do
-      paypal = PayPal.new('user@example.com')
-      checkout = Checkout.new(paypal)
+      paypal = Chapter06::PayPal.new('user@example.com')
+      checkout = described_class.new(paypal)
 
       result = checkout.complete_purchase(50.00)
 
@@ -122,8 +122,8 @@ RSpec.describe Checkout do
     end
 
     it 'processes payment through bank transfer' do
-      transfer = BankTransfer.new('12345678', '987654321')
-      checkout = Checkout.new(transfer)
+      transfer = Chapter06::BankTransfer.new('12345678', '987654321')
+      checkout = described_class.new(transfer)
 
       result = checkout.complete_purchase(200.00)
 
@@ -133,8 +133,8 @@ RSpec.describe Checkout do
 
   describe '#process_refund' do
     it 'processes refund through any payment method' do
-      paypal = PayPal.new('user@example.com')
-      checkout = Checkout.new(paypal)
+      paypal = Chapter06::PayPal.new('user@example.com')
+      checkout = described_class.new(paypal)
 
       result = checkout.process_refund(25.00)
 
@@ -144,9 +144,9 @@ RSpec.describe Checkout do
 
   describe '#change_payment_method' do
     it 'allows switching payment methods' do
-      card = CreditCard.new('4111111111111111', '123')
-      paypal = PayPal.new('user@example.com')
-      checkout = Checkout.new(card)
+      card = Chapter06::CreditCard.new('4111111111111111', '123')
+      paypal = Chapter06::PayPal.new('user@example.com')
+      checkout = described_class.new(card)
 
       checkout.change_payment_method(paypal)
 

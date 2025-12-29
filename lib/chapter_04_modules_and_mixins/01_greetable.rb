@@ -11,23 +11,25 @@
 # - Accept a name in the constructor
 # - Have a `name` reader method
 
-##
-# A module that provides greeting functionality
-module Greetable
-  def greet
-    # NOTE: Delegates to the #name method
-    "Hello, I'm #{name}!"
+module Chapter04
+  ##
+  # A module that provides greeting functionality
+  module Greetable
+    def greet
+      # NOTE: Delegates to the #name method
+      "Hello, I'm #{name}!"
+    end
   end
-end
 
-##
-# A person who can greet others
-class Person
-  include Greetable
+  ##
+  # A person who can greet others
+  class Person
+    include Greetable
 
-  attr_reader :name
+    attr_reader :name
 
-  def initialize(name)
-    @name = name
+    def initialize(name)
+      @name = name
+    end
   end
 end

@@ -14,53 +14,55 @@ require 'forwardable'
 # - start method (sets running to true)
 # - stop method (sets running to false)
 
-##
-# An engine with horsepower
-class Engine
-  attr_reader :horsepower
+module Chapter05
+  ##
+  # An engine with horsepower
+  class Engine
+    attr_reader :horsepower
 
-  def initialize(horsepower)
-    @horsepower = horsepower
-    @running = false
+    def initialize(horsepower)
+      @horsepower = horsepower
+      @running = false
+    end
+
+    def running?
+      @running
+    end
+
+    def start
+      @running = true
+    end
+
+    def stop
+      @running = false
+    end
   end
 
-  def running?
-    @running
-  end
+  # Car class:
+  # - initialize(model, engine)
+  # - model reader
+  # - engine reader
+  # - start method (delegates to engine)
+  # - stop method (delegates to engine)
+  # - running? method (delegates to engine)
+  # - specs method (returns "#{model} with #{horsepower}hp engine")
 
-  def start
-    @running = true
-  end
+  ##
+  # A car with an engine
+  class Car
+    attr_reader :model, :engine
 
-  def stop
-    @running = false
-  end
-end
+    extend Forwardable
 
-# Car class:
-# - initialize(model, engine)
-# - model reader
-# - engine reader
-# - start method (delegates to engine)
-# - stop method (delegates to engine)
-# - running? method (delegates to engine)
-# - specs method (returns "#{model} with #{horsepower}hp engine")
+    def_delegators :@engine, :start, :stop, :running?
 
-##
-# A car with an engine
-class Car
-  attr_reader :model, :engine
+    def initialize(model, engine)
+      @model = model
+      @engine = engine
+    end
 
-  extend Forwardable
-
-  def_delegators :@engine, :start, :stop, :running?
-
-  def initialize(model, engine)
-    @model = model
-    @engine = engine
-  end
-
-  def specs
-    "#{model} with #{engine.horsepower}hp engine"
+    def specs
+      "#{model} with #{engine.horsepower}hp engine"
+    end
   end
 end

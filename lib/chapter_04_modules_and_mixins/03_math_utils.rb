@@ -14,35 +14,37 @@
 # - Have a class method `power_summary(n)` that returns a hash:
 #   { square: n², cube: n³ }
 
-##
-# A module providing mathematical utilities
-module MathUtils
-  # NOTE: This makes the methods below callable at the module level
-  # such as MathUtils.square
+module Chapter04
+  ##
+  # A module providing mathematical utilities
+  module MathUtils
+    # NOTE: This makes the methods below callable at the module level
+    # such as MathUtils.square
 
-  module_function
+    module_function
 
-  def square(num)
-    num * num
+    def square(num)
+      num * num
+    end
+
+    def cube(num)
+      num * num * num
+    end
+
+    def factorial(num)
+      return 1 if num.zero?
+
+      (1..num).inject :*
+    end
   end
 
-  def cube(num)
-    num * num * num
-  end
+  ##
+  # A calculator that uses MathUtils
+  class Calculator
+    extend MathUtils
 
-  def factorial(num)
-    return 1 if num.zero?
-
-    (1..num).inject :*
-  end
-end
-
-##
-# A calculator that uses MathUtils
-class Calculator
-  extend MathUtils
-
-  def self.power_summary(num)
-    { square: square(num), cube: cube(num) }
+    def self.power_summary(num)
+      { square: square(num), cube: cube(num) }
+    end
   end
 end

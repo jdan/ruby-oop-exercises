@@ -10,32 +10,34 @@
 # - Have a transaction_history method that returns all transactions
 # - Use a private log_transaction method to record each transaction
 
-##
-# A Bank acount which logs transactions
-class BankAccount
-  attr_reader :balance, :transaction_history
+module Chapter02
+  ##
+  # A Bank acount which logs transactions
+  class BankAccount
+    attr_reader :balance, :transaction_history
 
-  def initialize(_owner, balance = 0)
-    @balance = balance
-    @transaction_history = []
-  end
+    def initialize(_owner, balance = 0)
+      @balance = balance
+      @transaction_history = []
+    end
 
-  def deposit(amount)
-    @balance += amount
-    log_transaction("Deposit: #{amount}")
-  end
+    def deposit(amount)
+      @balance += amount
+      log_transaction("Deposit: #{amount}")
+    end
 
-  def withdraw(amount)
-    return false if @balance < amount
+    def withdraw(amount)
+      return false if @balance < amount
 
-    @balance -= amount
-    log_transaction("Withdrawal: #{amount}")
-    true
-  end
+      @balance -= amount
+      log_transaction("Withdrawal: #{amount}")
+      true
+    end
 
-  private
+    private
 
-  def log_transaction(log)
-    @transaction_history << log
+    def log_transaction(log)
+      @transaction_history << log
+    end
   end
 end

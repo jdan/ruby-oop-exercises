@@ -2,38 +2,38 @@
 
 require 'chapter_05_composition/02_renderer'
 
-RSpec.describe HtmlRenderer do
+RSpec.describe Chapter05::HtmlRenderer do
   describe '#render' do
     it 'wraps content in HTML tags' do
-      renderer = HtmlRenderer.new
+      renderer = described_class.new
       expect(renderer.render('Hello')).to eq('<html><body>Hello</body></html>')
     end
   end
 end
 
-RSpec.describe MarkdownRenderer do
+RSpec.describe Chapter05::MarkdownRenderer do
   describe '#render' do
     it 'returns content as-is with markdown header' do
-      renderer = MarkdownRenderer.new
+      renderer = described_class.new
       expect(renderer.render('Hello')).to eq("# Document\n\nHello")
     end
   end
 end
 
-RSpec.describe PlainTextRenderer do
+RSpec.describe Chapter05::PlainTextRenderer do
   describe '#render' do
     it 'returns content as-is' do
-      renderer = PlainTextRenderer.new
+      renderer = described_class.new
       expect(renderer.render('Hello')).to eq('Hello')
     end
   end
 end
 
-RSpec.describe Document do
+RSpec.describe Chapter05::Document do
   describe '#initialize' do
     it 'creates a document with content and a renderer' do
-      renderer = PlainTextRenderer.new
-      doc = Document.new('My content', renderer)
+      renderer = Chapter05::PlainTextRenderer.new
+      doc = described_class.new('My content', renderer)
 
       expect(doc.content).to eq('My content')
     end
@@ -41,22 +41,22 @@ RSpec.describe Document do
 
   describe '#render' do
     it 'delegates rendering to the injected renderer' do
-      html_renderer = HtmlRenderer.new
-      doc = Document.new('Hello World', html_renderer)
+      html_renderer = Chapter05::HtmlRenderer.new
+      doc = described_class.new('Hello World', html_renderer)
 
       expect(doc.render).to eq('<html><body>Hello World</body></html>')
     end
 
     it 'can use different renderers via dependency injection' do
-      markdown_renderer = MarkdownRenderer.new
-      doc = Document.new('Hello World', markdown_renderer)
+      markdown_renderer = Chapter05::MarkdownRenderer.new
+      doc = described_class.new('Hello World', markdown_renderer)
 
       expect(doc.render).to eq("# Document\n\nHello World")
     end
 
     it 'works with plain text renderer' do
-      plain_renderer = PlainTextRenderer.new
-      doc = Document.new('Hello World', plain_renderer)
+      plain_renderer = Chapter05::PlainTextRenderer.new
+      doc = described_class.new('Hello World', plain_renderer)
 
       expect(doc.render).to eq('Hello World')
     end
@@ -64,9 +64,9 @@ RSpec.describe Document do
 
   describe '#change_renderer' do
     it 'allows changing the renderer at runtime' do
-      html_renderer = HtmlRenderer.new
-      markdown_renderer = MarkdownRenderer.new
-      doc = Document.new('Content', html_renderer)
+      html_renderer = Chapter05::HtmlRenderer.new
+      markdown_renderer = Chapter05::MarkdownRenderer.new
+      doc = described_class.new('Content', html_renderer)
 
       expect(doc.render).to eq('<html><body>Content</body></html>')
 

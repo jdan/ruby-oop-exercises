@@ -2,10 +2,10 @@
 
 require 'chapter_05_composition/03_notifier'
 
-RSpec.describe EmailSender do
+RSpec.describe Chapter05::EmailSender do
   describe '#send_message' do
     it 'returns a formatted email message' do
-      sender = EmailSender.new
+      sender = described_class.new
       result = sender.send_message('user@example.com', 'Hello!')
 
       expect(result).to eq('Email to user@example.com: Hello!')
@@ -13,10 +13,10 @@ RSpec.describe EmailSender do
   end
 end
 
-RSpec.describe SmsSender do
+RSpec.describe Chapter05::SmsSender do
   describe '#send_message' do
     it 'returns a formatted SMS message' do
-      sender = SmsSender.new
+      sender = described_class.new
       result = sender.send_message('555-1234', 'Hello!')
 
       expect(result).to eq('SMS to 555-1234: Hello!')
@@ -24,10 +24,10 @@ RSpec.describe SmsSender do
   end
 end
 
-RSpec.describe PushNotificationSender do
+RSpec.describe Chapter05::PushNotificationSender do
   describe '#send_message' do
     it 'returns a formatted push notification' do
-      sender = PushNotificationSender.new
+      sender = described_class.new
       result = sender.send_message('device_token_123', 'Hello!')
 
       expect(result).to eq('Push to device_token_123: Hello!')
@@ -35,12 +35,12 @@ RSpec.describe PushNotificationSender do
   end
 end
 
-RSpec.describe NotificationService do
+RSpec.describe Chapter05::NotificationService do
   describe '#initialize' do
     it 'creates a service with multiple senders' do
-      email = EmailSender.new
-      sms = SmsSender.new
-      service = NotificationService.new([email, sms])
+      email = Chapter05::EmailSender.new
+      sms = Chapter05::SmsSender.new
+      service = described_class.new([email, sms])
 
       expect(service.senders).to contain_exactly(email, sms)
     end
@@ -48,9 +48,9 @@ RSpec.describe NotificationService do
 
   describe '#notify' do
     it 'sends message through all registered senders' do
-      email = EmailSender.new
-      sms = SmsSender.new
-      service = NotificationService.new([email, sms])
+      email = Chapter05::EmailSender.new
+      sms = Chapter05::SmsSender.new
+      service = described_class.new([email, sms])
 
       results = service.notify('recipient', 'Important update!')
 
@@ -61,8 +61,8 @@ RSpec.describe NotificationService do
     end
 
     it 'works with a single sender' do
-      push = PushNotificationSender.new
-      service = NotificationService.new([push])
+      push = Chapter05::PushNotificationSender.new
+      service = described_class.new([push])
 
       results = service.notify('device_abc', 'New message')
 
@@ -70,7 +70,7 @@ RSpec.describe NotificationService do
     end
 
     it 'returns empty array when no senders configured' do
-      service = NotificationService.new([])
+      service = described_class.new([])
 
       results = service.notify('anyone', 'Hello')
 
@@ -80,10 +80,10 @@ RSpec.describe NotificationService do
 
   describe '#add_sender' do
     it 'adds a new sender to the service' do
-      email = EmailSender.new
-      service = NotificationService.new([email])
+      email = Chapter05::EmailSender.new
+      service = described_class.new([email])
 
-      sms = SmsSender.new
+      sms = Chapter05::SmsSender.new
       service.add_sender(sms)
 
       expect(service.senders).to contain_exactly(email, sms)
@@ -92,9 +92,9 @@ RSpec.describe NotificationService do
 
   describe '#remove_sender' do
     it 'removes a sender from the service' do
-      email = EmailSender.new
-      sms = SmsSender.new
-      service = NotificationService.new([email, sms])
+      email = Chapter05::EmailSender.new
+      sms = Chapter05::SmsSender.new
+      service = described_class.new([email, sms])
 
       service.remove_sender(email)
 

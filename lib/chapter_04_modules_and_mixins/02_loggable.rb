@@ -14,42 +14,44 @@
 # - Have a `start` method that logs "Application #{name} started"
 # - Have a `stop` method that logs "Application #{name} stopped"
 
-##
-# A module that provides logging functionality
-module Loggable
-  def log(message)
-    # NOTE: We utilize #tap to not expose the internal messages
-    # array to callers
-    tap { log_messages << "[#{Time.now}] #{message}" }
+module Chapter04
+  ##
+  # A module that provides logging functionality
+  module Loggable
+    def log(message)
+      # NOTE: We utilize #tap to not expose the internal messages
+      # array to callers
+      tap { log_messages << "[#{Time.now}] #{message}" }
+    end
+
+    def log_history
+      log_messages.dup
+    end
+
+    private
+
+    def log_messages
+      @log_messages ||= []
+    end
   end
 
-  def log_history
-    log_messages.dup
-  end
+  ##
+  # An application that can log its activity
+  class Application
+    include Loggable
 
-  private
+    attr_reader :name
 
-  def log_messages
-    @log_messages ||= []
-  end
-end
+    def initialize(name)
+      @name = name
+    end
 
-##
-# An application that can log its activity
-class Application
-  include Loggable
+    def start
+      log("Application #{name} started")
+    end
 
-  attr_reader :name
-
-  def initialize(name)
-    @name = name
-  end
-
-  def start
-    log("Application #{name} started")
-  end
-
-  def stop
-    log("Application #{name} stopped")
+    def stop
+      log("Application #{name} stopped")
+    end
   end
 end
