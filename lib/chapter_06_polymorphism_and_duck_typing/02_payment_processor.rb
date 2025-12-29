@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 # Implement the payment method classes and Checkout here
 #
 # This exercise demonstrates polymorphism: different payment methods
@@ -86,16 +88,13 @@ end
 class Checkout
   attr_reader :payment_method
 
+  extend Forwardable
+
+  def_delegator :@payment_method, :process_payment, :complete_purchase
+  def_delegator :@payment_method, :refund, :process_refund
+
   def initialize(payment_method)
     @payment_method = payment_method
-  end
-
-  def complete_purchase(amount)
-    @payment_method.process_payment(amount)
-  end
-
-  def process_refund(amount)
-    @payment_method.refund(amount)
   end
 
   def change_payment_method(new_method)
