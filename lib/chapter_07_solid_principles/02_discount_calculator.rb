@@ -16,6 +16,18 @@
 ##
 # Applies a percentage discount
 class PercentageDiscount
+  attr_reader :percent
+
+  def initialize(percent)
+    @percent = percent
+  end
+
+  def name = "Percentage Discount (#{percent}%)"
+  def description = "#{percent}% off"
+
+  def apply(price)
+    price * (1 - (percent / 100.0))
+  end
 end
 
 # FlatDiscount class:
@@ -28,6 +40,20 @@ end
 ##
 # Applies a fixed amount discount
 class FlatDiscount
+  attr_reader :amount
+
+  def initialize(amount)
+    @amount = amount
+  end
+
+  def name = "Flat Discount ($#{amount})"
+  def description = "$#{amount} off"
+
+  def apply(price)
+    return 0 if amount > price
+
+    price - amount
+  end
 end
 
 # BuyOneGetOneFree class:
@@ -38,6 +64,12 @@ end
 ##
 # Effectively 50% off
 class BuyOneGetOneFree
+  def name = 'Buy One Get One Free'
+  def description = 'Buy one, get one free'
+
+  def apply(price)
+    price * 0.5
+  end
 end
 
 # SeasonalDiscount class:
@@ -50,6 +82,25 @@ end
 ##
 # Applies discount only during certain months
 class SeasonalDiscount
+  attr_reader :percent, :valid_months
+
+  def initialize(percent, valid_months)
+    @percent = percent
+    @valid_months = valid_months
+  end
+
+  def name = 'Seasonal Discount'
+
+  def applicable?(current_month)
+    valid_months.include? current_month
+  end
+
+  def apply(price, current_month:)
+    return price unless applicable?(current_month)
+
+    # Composition
+    PercentageDiscount.new(percent).apply(price)
+  end
 end
 
 # PriceCalculator class:
@@ -61,4 +112,17 @@ end
 ##
 # Calculates final price using any discount type (duck typing)
 class PriceCalculator
+  attr_reader :discount
+
+  def initialize(discount)
+    @discount = discount
+  end
+
+  def calculate(original_price)
+    @discount.apply(original_price)
+  end
+
+  def calculate_with_month(original_price, month)
+    @discount.apply(original_price, current_month: month)
+  end
 end

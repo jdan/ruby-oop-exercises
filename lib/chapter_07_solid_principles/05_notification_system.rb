@@ -29,6 +29,17 @@ end
 ##
 # Concrete implementation for email
 class EmailSender
+  include MessageSender
+
+  attr_reader :smtp_server
+
+  def initialize(smtp_server: 'smtp.default.com')
+    @smtp_server = smtp_server
+  end
+
+  def send_message(recipient, message)
+    "Email sent to #{recipient} via #{smtp_server}: #{message}"
+  end
 end
 
 # SmsSender class:
@@ -40,6 +51,17 @@ end
 ##
 # Concrete implementation for SMS
 class SmsSender
+  include MessageSender
+
+  attr_reader :api_key
+
+  def initialize(api_key: 'default_key')
+    @api_key = api_key
+  end
+
+  def send_message(recipient, message)
+    "SMS sent to #{recipient}: #{message}"
+  end
 end
 
 # PushSender class:
@@ -51,6 +73,17 @@ end
 ##
 # Concrete implementation for push notifications
 class PushSender
+  include MessageSender
+
+  attr_reader :app_id
+
+  def initialize(app_id: 'default_app')
+    @app_id = app_id
+  end
+
+  def send_message(recipient, message)
+    "Push sent to #{recipient} from #{app_id}: #{message}"
+  end
 end
 
 # MockSender class:
@@ -62,6 +95,19 @@ end
 ##
 # Test double for unit testing (demonstrates easy testing with DIP)
 class MockSender
+  include MessageSender
+
+  attr_reader :messages
+
+  def initialize
+    @messages = []
+  end
+
+  def send_message(recipient, message)
+    sent = "Mock: #{message}"
+    @messages << { recipient:, message: }
+    sent
+  end
 end
 
 # NotificationService class:
@@ -74,6 +120,26 @@ end
 ##
 # High-level module depending on abstraction
 class NotificationService
+  attr_reader :sender
+
+  # NOTE: A MessageSender is passed in via dependency injection
+  def initialize(sender)
+    @sender = sender
+  end
+
+  def notify(recipient, message)
+    @sender.send_message(recipient, message)
+  end
+
+  def notify_all(recipients, message)
+    recipients.map do |recipient|
+      notify(recipient, message)
+    end
+  end
+
+  def change_sender(new_sender)
+    @sender = new_sender
+  end
 end
 
 # UserAlertSystem class:
@@ -85,4 +151,20 @@ end
 ##
 # Higher-level module using NotificationService
 class UserAlertSystem
+  def initialize(notification_service)
+    @notification_service = notification_service
+  end
+
+  def send_alert(user, alert_type, details)
+    message = "[#{alert_type}] #{details}"
+    @notification_service.notify(user, message)
+  end
+
+  def send_welcome(user)
+    @notification_service.notify(user, "Welcome, #{user}!")
+  end
+
+  def send_password_reset(user)
+    @notification_service.notify(user, "Hi, #{user}. Please change your password")
+  end
 end

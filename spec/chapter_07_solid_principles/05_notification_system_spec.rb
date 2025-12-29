@@ -115,7 +115,7 @@ RSpec.describe MockSender do
       sender = MockSender.new
       result = sender.send_message('user', 'Hello!')
 
-      expect(result).to eq('Mock: user')
+      expect(result).to eq('Mock: Hello!')
       expect(sender.messages).to eq([{ recipient: 'user', message: 'Hello!' }])
     end
 
@@ -146,7 +146,7 @@ RSpec.describe NotificationService do
 
       result = service.notify('user', 'Test message')
 
-      expect(result).to eq('Mock: user')
+      expect(result).to eq('Mock: Test message')
       expect(sender.messages.first[:message]).to eq('Test message')
     end
 

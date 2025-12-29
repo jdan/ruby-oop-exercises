@@ -17,7 +17,14 @@
 
 ##
 # Handles sales data storage and calculations
-class SalesData
+SalesData = Struct.new(:records) do
+  def total_revenue
+    records.sum { |record| record[:quantity] * record[:price] }
+  end
+
+  def top_seller
+    records.max_by { |record| record[:quantity] }
+  end
 end
 
 # ReportFormatter class:
@@ -30,6 +37,16 @@ end
 ##
 # Formats sales data as plain text
 class ReportFormatter
+  def format(sales_data)
+    sales_data
+      .records
+      .map { |record| "#{record[:product]}: #{record[:quantity]} @ #{record[:price]}" }
+      .join("\n")
+  end
+
+  def format_summary(sales_data)
+    "Total Revenue: $#{sales_data.total_revenue}"
+  end
 end
 
 # FileWriter class:
@@ -39,6 +56,9 @@ end
 ##
 # Handles file output operations
 class FileWriter
+  def write(filename, content)
+    "Wrote #{content.length} bytes to #{filename}"
+  end
 end
 
 # SalesReportGenerator class:
@@ -50,4 +70,19 @@ end
 ##
 # Orchestrates report generation using injected dependencies
 class SalesReportGenerator
+  attr_reader :sales_data, :formatter, :writer
+
+  def initialize(sales_data, formatter, writer)
+    @sales_data = sales_data
+    @formatter = formatter
+    @writer = writer
+  end
+
+  def generate(filename)
+    writer.write filename, <<~CONTENTS.chomp
+      #{formatter.format(sales_data)}
+
+      #{formatter.format_summary(sales_data)}
+    CONTENTS
+  end
 end

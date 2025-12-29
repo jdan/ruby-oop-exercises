@@ -1,0 +1,74 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Pro
+ *  ▘▘ ▝▝  *   ~/Projects/ruby-oop-exercises
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> how are my chapter 7 solutions 
+
+⏺ I'll review your chapter 7 SOLID principles solutions. Let me first run the tests and then look at your implementations.
+
+⏺ Bash(bundle exec rspec spec/chapter_07_solid_principles/ --format
+      documentation)
+  ⎿  Randomized with seed 51372     
+
+     ReportFormatter
+     … +266 lines (ctrl+o to expand)
+
+⏺ Search(pattern: "lib/chapter_07_solid_principles/*.rb")
+  ⎿  Found 5 files (ctrl+o to expand)
+
+⏺ All 115 tests pass. Let me read your implementations to give you feedback on code quality and SOLID adherence.
+
+⏺ Read(lib/chapter_07_solid_principles/01_report_generator.rb)
+  ⎿  Read 89 lines
+
+⏺ Read(lib/chapter_07_solid_principles/02_discount_calculator.rb)
+  ⎿  Read 129 lines
+
+⏺ Read(lib/chapter_07_solid_principles/03_media_player.rb)
+  ⎿  Read 128 lines
+
+⏺ Read(lib/chapter_07_solid_principles/04_worker_system.rb)
+  ⎿  Read 166 lines
+
+⏺ Read(lib/chapter_07_solid_principles/05_notification_system.rb)
+  ⎿  Read 171 lines
+
+⏺ Chapter 7 Review: SOLID Principles
+
+  All 115 tests pass. Your solutions are well-structured and demonstrate strong understanding of SOLID. Here's my assessment:
+
+  01_report_generator.rb (SRP) ✓
+
+  Clean separation of concerns. Using Struct for SalesData is idiomatic Ruby. The heredoc in generate is elegant.
+
+  02_discount_calculator.rb (OCP) ✓
+
+  New discount types are extensible without modifying PriceCalculator. Nice touch using composition in SeasonalDiscount (line 102) by delegating to PercentageDiscount.
+
+  The endless method definitions (def name = ...) are clean and modern Ruby.
+
+  03_media_player.rb (LSP) ✓
+
+  All MediaFile subtypes are properly substitutable. The three-level inheritance (PodcastEpisode → AudioFile → MediaFile) works cleanly.
+
+  Minor: Line 84 has a redundant @artist = artist since super already handles it via AudioFile.
+
+  04_worker_system.rb (ISP) ✓
+
+  Small, focused interfaces that classes mix in selectively. RobotWorker only includes what it needs.
+
+  Your comment on line 158 is spot-on — respond_to?(:take_break) would be the duck-typing approach vs. the current is_a? Feedable.
+
+  05_notification_system.rb (DIP) ✓
+
+  Proper dependency injection at two levels. MockSender demonstrates the testability benefit of DIP. The change_sender method shows runtime flexibility.
+
+  ---
+  Overall: These are well-crafted, idiomatic Ruby solutions. You've demonstrated not just how to apply SOLID principles, but also good Ruby style — Struct, endless methods, heredocs, and module composition. Nice work.
+
+
+

@@ -58,6 +58,20 @@ end
 ##
 # A human employee with all capabilities
 class HumanWorker
+  include Sleepable
+  include Feedable
+  include Workable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def work = "#{name} is working"
+  def eat = "#{name} is eating lunch"
+  def take_break = "#{name} is taking a break"
+  def sleep = "#{name} is sleeping"
 end
 
 # RobotWorker class:
@@ -70,6 +84,15 @@ end
 ##
 # A robot that only works (no breaks or sleep needed)
 class RobotWorker
+  include Workable
+
+  attr_reader :model
+
+  def initialize(model)
+    @model = model
+  end
+
+  def work = "Robot #{model} is working"
 end
 
 # ContractWorker class:
@@ -83,6 +106,18 @@ end
 ##
 # A contractor with work and break capabilities
 class ContractWorker
+  include Feedable
+  include Workable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def work = "#{name} (contractor) is working"
+  def eat = "#{name} is eating"
+  def take_break = "#{name} is on break"
 end
 
 # WorkScheduler class:
@@ -93,6 +128,15 @@ end
 ##
 # Schedules work for any Workable entity
 class WorkScheduler
+  attr_reader :workers
+
+  def initialize(workers)
+    @workers = workers
+  end
+
+  def assign_work
+    @workers.map &:work
+  end
 end
 
 # BreakScheduler class:
@@ -104,4 +148,18 @@ end
 ##
 # Schedules breaks only for Feedable entities
 class BreakScheduler
+  attr_reader :workers
+
+  def initialize(workers)
+    @workers = workers
+  end
+
+  def feedable_workers
+    # NOTE: For duck typing, one can also check if it responds to take_break
+    @workers.select { |worker| worker.is_a? Feedable }
+  end
+
+  def schedule_breaks
+    feedable_workers.map &:take_break
+  end
 end
