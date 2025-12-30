@@ -7,7 +7,7 @@ A TDD-based learning repository for practicing Object-Oriented Programming in Ru
 1. Run `bundle install` to install dependencies
 2. Run `rake spec` to see failing tests
 3. Implement the classes in `lib/` to make tests pass
-4. Work through chapters in order (01 → 07)
+4. Work through chapters in order (01 → 10)
 
 ## Running Tests
 
@@ -44,14 +44,11 @@ lib/
   chapter_05_composition/              # Has-a relationships, delegation
   chapter_06_polymorphism_and_duck_typing/  # Interface compatibility
   chapter_07_solid_principles/         # SRP, OCP, LSP, ISP, DIP
+  chapter_08_design_patterns/          # Factory, Singleton, Observer, etc.
+  chapter_09_metaprogramming_basics/   # define_method, method_missing, DSLs
+  chapter_10_more_design_patterns/     # Template Method, State, Command, etc.
 spec/
-  chapter_01_classes_and_objects/      # Tests for chapter 1
-  chapter_02_encapsulation/            # Tests for chapter 2
-  chapter_03_inheritance/              # Tests for chapter 3
-  chapter_04_modules_and_mixins/       # Tests for chapter 4
-  chapter_05_composition/              # Tests for chapter 5
-  chapter_06_polymorphism_and_duck_typing/  # Tests for chapter 6
-  chapter_07_solid_principles/         # Tests for chapter 7
+  (mirrors lib/ structure)
 ```
 
 ## Conventions
@@ -78,8 +75,3 @@ Add a new chapter on Modules and Mixins. Include 5 exercises:
 Follow the existing project conventions.
 ```
 
-## Chapter Ideas for Future
-
-- Chapter 08: Design Patterns (Factory, Singleton, Observer)
-- Chapter 09: Metaprogramming Basics
-- Chapter 10: Testing and TDD Patterns

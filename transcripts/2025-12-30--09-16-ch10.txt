@@ -1,0 +1,521 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Pro
+ *  ▘▘ ▝▝  *   ~/Projects/ruby-oop-exercises
+
+  A gift for you
+  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!
+
+> /clear 
+  ⎿  (no content)
+
+> You have instructions for a chapter 10, but take stock of what's currently
+ in this "book".
+
+1. Is a chapter 10 necessary?
+2. What should it cover? 
+
+⏺ I'll explore the current state of the repository to understand what's already covered and assess whether a chapter 10 is needed.
+
+⏺ Explore(Explore current chapter structure)
+  ⎿  01_animal_spec.rb
+     Waiting… chapter in /Users/jdan/Projects/ruby-oop-exercises/lib/chapter_*/;
+     · What should Claude do instead?
+     +8 more tool uses (ctrl+o to expand)
+  ⎿  Interrupted · What should Claude do instead?
+
+> resume 
+
+⏺ Explore(Explore current chapter structure)
+  ⎿  Done (30 tool uses · 45.6k tokens · 31s)                              
+
+⏺ Excellent analysis. Based on this exploration, here's my assessment:
+
+  Current State
+
+  The repository has 9 chapters with 45 exercises covering a comprehensive OOP curriculum:
+
+  | Chapter | Topic                             | Focus                                                           |
+  |---------|-----------------------------------|-----------------------------------------------------------------|
+  | 1-2     | Classes, Encapsulation            | Object fundamentals                                             |
+  | 3-5     | Inheritance, Modules, Composition | Object relationships                                            |
+  | 6       | Polymorphism & Duck Typing        | Interface design                                                |
+  | 7       | SOLID Principles                  | Design quality                                                  |
+  | 8       | Design Patterns                   | GoF patterns (Factory, Singleton, Observer, Decorator, Builder) |
+  | 9       | Metaprogramming                   | Dynamic Ruby (define_method, method_missing, DSLs)              |
+
+  My Assessment
+
+  1. Is Chapter 10 necessary?
+
+  Not strictly necessary. The 9 chapters already provide a very complete OOP education—from basic classes through metaprogramming. Most OOP courses/books stop well before covering patterns and metaprogramming.
+
+  However, a Chapter 10 could add value depending on the goal.
+
+  2. What should it cover?
+
+  The CLAUDE.md suggests "Testing and TDD Patterns," but I have reservations:
+  - Testing is a practice, not really an OOP concept
+  - The irony of teaching TDD in a TDD-based repo is interesting, but feels out of scope
+
+  Alternative ideas that stay within OOP scope:
+  - More Design Patterns - Command, State, Adapter, Facade, Template Method
+  - Error Handling as OOP - Custom exception hierarchies, rescue patterns
+  - Practical Project - A capstone combining multiple concepts
+                                                                           
+⏺ User answered Claude's questions:
+  ⎿  · What's your goal for this repository - is it purely OOP concepts, or 
+     are you open to broader Ruby/software engineering topics? → The goal is
+      to learn OOP, WITH ruby, so some ruby specific things are welcomed if 
+     they are applicable
+
+
+⏺ Good to know. Given that Ruby-specific OOP concepts are welcome, here are my top candidates for Chapter 10:
+
+  | Topic                              | OOP Relevance                                                                      | Ruby-Specific                                     |
+  |------------------------------------|------------------------------------------------------------------------------------|---------------------------------------------------|
+  | Error Handling & Custom Exceptions | Exception classes form hierarchies, custom exceptions are OOP design               | Ruby's exception hierarchy, raise/rescue patterns |
+  | Blocks, Procs & Lambdas as Objects | These are callable objects, closures, demonstrate Ruby's "everything is an object" | Very Ruby-specific, fundamental to Ruby idioms    |
+  | More Design Patterns               | Command, State, Adapter, Template Method                                           | Implementation is Ruby-flavored                   |
+                                                                           
+⏺ User answered Claude's questions:
+  ⎿  · Which topic appeals most for Chapter 10? → More design patterns is 
+     interesting! But elaborate on them - are they different enough from the
+      content already in this book? Are they "advanced"?
+
+⏺ Good question. Let me compare what's already covered vs. what could be added:
+
+  Chapter 8 (Already Covered)
+
+  | Pattern   | Category   | Teaches                              |
+  |-----------|------------|--------------------------------------|
+  | Factory   | Creational | Encapsulating object creation        |
+  | Singleton | Creational | Controlling instance count           |
+  | Observer  | Behavioral | Loose coupling, pub/sub              |
+  | Decorator | Structural | Dynamic behavior without inheritance |
+  | Builder   | Creational | Step-by-step complex construction    |
+
+  Potential Additions
+
+  | Pattern         | Category   | Different From Ch 8?                                       | Complexity |
+  |-----------------|------------|------------------------------------------------------------|------------|
+  | Command         | Behavioral | Yes - encapsulates actions as objects (undo/redo, queuing) | Moderate   |
+  | State           | Behavioral | Yes - object changes behavior based on internal state      | Moderate   |
+  | Template Method | Behavioral | Yes - skeleton in parent, details in children              | Simple     |
+  | Adapter         | Structural | Somewhat - like Decorator but for interface compatibility  | Simple     |
+  | Null Object     | Behavioral | Yes - avoid nil checks with polymorphism                   | Simple     |
+
+  My honest assessment:
+
+  These patterns are not more advanced than Chapter 8—they're different problems, similar complexity. The question is whether more patterns add pedagogical value or become redundant.
+
+  Concern: Chapter 8 already teaches "patterns are reusable solutions." More patterns may feel like "more of the same."
+
+  Alternative framing: A Chapter 10 on "Putting It All Together" with a capstone project that combines patterns, SOLID, composition, etc. could be more valuable than isolated pattern exercises.
+                                                                           
+⏺ User answered Claude's questions:
+  ⎿  · Given this analysis, what direction interests you? → More patterns 
+     anyway
+
+⏺ Got it. Let me design Chapter 10 with additional design patterns that complement Chapter 8.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ I've drafted the plan. Let me verify the format by checking an existing Chapter 8 spec file to ensure consistency:
+
+⏺ Read(spec/chapter_08_design_patterns/01_factory_spec.rb)
+  ⎿  Read 116 lines
+
+⏺ Read(lib/chapter_08_design_patterns/01_factory.rb)
+  ⎿  Read 62 lines
+
+⏺ I've verified the format. The plan is complete and follows the existing conventions:
+  - Chapter10 module namespace
+  - Detailed comments in lib files with TODO stubs
+  - Comprehensive specs testing each class
+
+  Summary
+
+  Chapter 10: More Design Patterns will add 5 exercises:
+
+  1. Template Method - Algorithm skeleton in base class, subclasses fill in steps
+  2. Null Object - Polymorphic "do nothing" object to avoid nil checks
+  3. Adapter - Make incompatible interfaces work together
+  4. State - Object behavior changes based on internal state
+  5. Command - Encapsulate actions as objects with undo/redo
+
+  These complement Chapter 8 by covering different pattern categories (more behavioral/structural vs Chapter 8's creational focus).
+                                                                           
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/tender-noodling-crystal.md · /plan to 
+     edit
+     Plan: Chapter 10 - More Design Patterns
+
+     Overview
+
+     Add Chapter 10 covering 5 additional design patterns that solve 
+     different problems than Chapter 8. These patterns will follow the
+     existing format: progressive difficulty, TDD-based with spec files
+     driving implementation.
+
+     Chapter 8 Recap (for context)
+
+     - Factory, Singleton, Observer, Decorator, Builder
+
+     Chapter 10: More Design Patterns (5 exercises)
+
+     Exercise Order (simple → complex)
+
+     | #   | Pattern         | What It Teaches                              
+                        | Real-World Example                 |
+     |-----|-----------------|----------------------------------------------
+     -------------------|------------------------------------|
+     | 01  | Template Method | Base class defines algorithm skeleton, 
+     subclasses fill in steps | Report generators, data processors |
+     | 02  | Null Object     | Avoid nil checks with polymorphic "do 
+     nothing" object           | Guest user, missing logger         |
+     | 03  | Adapter         | Make incompatible interfaces work together   
+                        | Legacy system integration          |
+     | 04  | State           | Object behavior changes based on internal 
+     state                 | Order status, vending machine      |
+     | 05  | Command         | Encapsulate actions as objects (undo/redo, 
+     queuing)             | Text editor, remote control        |
+
+     Files to Create
+
+     Spec Files
+
+     spec/chapter_10_more_design_patterns/
+       01_template_method_spec.rb
+       02_null_object_spec.rb
+       03_adapter_spec.rb
+       04_state_spec.rb
+       05_command_spec.rb
+
+     Lib Files (empty scaffolds for user to implement)
+
+     lib/chapter_10_more_design_patterns/
+       01_template_method.rb
+       02_null_object.rb
+       03_adapter.rb
+       04_state.rb
+       05_command.rb
+
+     Exercise Details
+
+     01 - Template Method
+
+     Scenario: Data export system
+     - DataExporter base class with export method that calls: fetch_data, 
+     format_data, write_output
+     - CsvExporter and JsonExporter implement the specific steps
+     - Tests verify the algorithm runs in order and subclasses customize 
+     behavior
+
+     02 - Null Object
+
+     Scenario: Logging system
+     - ConsoleLogger with log(message) method
+     - NullLogger that responds to log but does nothing
+     - Application class that accepts a logger (defaults to NullLogger)
+     - Tests verify no nil checks needed, code works with either logger
+
+     03 - Adapter
+
+     Scenario: Payment gateway integration
+     - ModernPaymentGateway with process_payment(amount:, currency:) 
+     interface
+     - LegacyPaymentSystem with different interface charge(dollars, cents)
+     - LegacyPaymentAdapter makes legacy system work with modern interface
+     - Tests verify adapter translates calls correctly
+
+     04 - State
+
+     Scenario: Order processing
+     - Order with states: pending, paid, shipped, delivered
+     - Each state is a class: PendingState, PaidState, ShippedState, 
+     DeliveredState
+     - State-specific behavior: pay, ship, deliver, cancel
+     - Tests verify state transitions and state-appropriate behavior
+
+     05 - Command
+
+     Scenario: Text editor with undo
+     - TextEditor with a document string
+     - Commands: InsertCommand, DeleteCommand with execute and undo
+     - CommandHistory to track and undo commands
+     - Tests verify execute/undo works, multiple undos work in order
+
+     Implementation Steps
+
+     1. Create lib/chapter_10_more_design_patterns/ directory
+     2. Create spec/chapter_10_more_design_patterns/ directory
+     3. Create spec files with comprehensive tests (01-05)
+     4. Create empty/minimal lib files for user to implement
+     5. Run rake spec to verify tests fail appropriately
+     6. Run rake lint to ensure code style compliance
+
+
+
+⏺ Bash(mkdir -p /Users/jdan/Projects/ruby-oop-exercises/lib/chapter_10_more_desi
+      gn_patterns /Users/jdan/Projects/ruby-oop-exercises/spec/chapter_10_more_d
+      esign_pattern…)
+  ⎿  (No content)
+
+⏺ Write(spec/chapter_10_more_design_patterns/01_template_method_spec.rb)
+  ⎿  Wrote 141 lines to                                                    
+     spec/chapter_10_more_design_patterns/01_template_method_spec.rb
+     # frozen_string_literal: true
+     require 'chapter_10_more_design_patterns/01_template_method'
+     RSpec.describe Chapter10::DataExporter do
+       # DataExporter is an abstract base class that defines the template 
+     method
+       # Subclasses should implement: fetch_data, format_data, write_output
+       describe '#export' do
+         it 'calls the steps in the correct order' do
+     … +131 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_10_more_design_patterns/01_template_method.rb)
+  ⎿  Wrote 54 lines to                                                     
+     lib/chapter_10_more_design_patterns/01_template_method.rb
+     # frozen_string_literal: true
+     # Chapter 10: More Design Patterns
+     # Exercise 01: Template Method Pattern
+     #
+     # The Template Method pattern defines the skeleton of an algorithm in 
+     a base
+     # class, letting subclasses override specific steps without changing 
+     the
+     # algorithm's structure.
+     #
+     # Implement the following:
+     … +44 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_10_more_design_patterns/02_null_object_spec.rb)
+  ⎿  Wrote 119 lines to                                         
+     spec/chapter_10_more_design_patterns/02_null_object_spec.rb
+     # frozen_string_literal: true
+     require 'chapter_10_more_design_patterns/02_null_object'
+     RSpec.describe Chapter10::ConsoleLogger do
+       let(:logger) { described_class.new }
+       describe '#log' do
+         it 'returns the logged message' do
+           result = logger.log('Hello, World!')
+     … +109 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_10_more_design_patterns/02_null_object.rb)
+  ⎿  Wrote 52 lines to lib/chapter_10_more_design_patterns/02_null_object.r
+
+     # frozen_string_literal: true
+     # Chapter 10: More Design Patterns
+     # Exercise 02: Null Object Pattern
+     #
+     # The Null Object pattern provides an object with neutral ("do 
+     nothing")
+     # behavior as a surrogate for the absence of an object. This 
+     eliminates
+     # the need for nil checks throughout your code.
+     #
+     # Implement the following:
+     … +42 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_10_more_design_patterns/03_adapter_spec.rb)
+  ⎿  Wrote 129 lines to                                                    
+     spec/chapter_10_more_design_patterns/03_adapter_spec.rb
+     # frozen_string_literal: true
+     require 'chapter_10_more_design_patterns/03_adapter'
+     RSpec.describe Chapter10::ModernPaymentGateway do
+       let(:gateway) { described_class.new }
+       describe '#process_payment' do
+         it 'processes a payment and returns a success hash' do
+           result = gateway.process_payment(amount: 99.99, currency: 'USD')
+     … +119 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_10_more_design_patterns/03_adapter.rb)
+  ⎿  Wrote 65 lines to lib/chapter_10_more_design_patterns/03_adapter.rb   
+     # frozen_string_literal: true
+     # Chapter 10: More Design Patterns
+     # Exercise 03: Adapter Pattern
+     #
+     # The Adapter pattern allows objects with incompatible interfaces to 
+     work
+     # together. It wraps an object and translates calls to its interface.
+     #
+     # Scenario: You have a modern payment system interface, but need to 
+     integrate
+     # with a legacy payment system that has a different API.
+     … +55 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_10_more_design_patterns/04_state_spec.rb)
+  ⎿  Wrote 224 lines to                                                    
+     spec/chapter_10_more_design_patterns/04_state_spec.rb
+     # frozen_string_literal: true
+     require 'chapter_10_more_design_patterns/04_state'
+     RSpec.describe Chapter10::Order do
+       let(:order) { described_class.new }
+       describe '#initialize' do
+         it 'starts in pending state' do
+           expect(order.status).to eq('pending')
+     … +214 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_10_more_design_patterns/04_state.rb)
+  ⎿  Wrote 87 lines to lib/chapter_10_more_design_patterns/04_state.rb     
+     # frozen_string_literal: true
+     # Chapter 10: More Design Patterns
+     # Exercise 04: State Pattern
+     #
+     # The State pattern allows an object to alter its behavior when its 
+     internal
+     # state changes. The object will appear to change its class.
+     #
+     # Scenario: An Order that progresses through states: pending -> paid 
+     -> shipped -> delivered
+     # Each state has different rules about what operations are valid.
+     … +77 lines (ctrl+o to expand)
+
+⏺ Write(spec/chapter_10_more_design_patterns/05_command_spec.rb)
+  ⎿  Wrote 209 lines to                                                    
+     spec/chapter_10_more_design_patterns/05_command_spec.rb
+     # frozen_string_literal: true
+     require 'chapter_10_more_design_patterns/05_command'
+     RSpec.describe Chapter10::TextEditor do
+       let(:editor) { described_class.new }
+       describe '#initialize' do
+         it 'starts with empty content' do
+           expect(editor.content).to eq('')
+     … +199 lines (ctrl+o to expand)
+
+⏺ Write(lib/chapter_10_more_design_patterns/05_command.rb)
+  ⎿  Wrote 61 lines to lib/chapter_10_more_design_patterns/05_command.rb   
+     # frozen_string_literal: true
+     # Chapter 10: More Design Patterns
+     # Exercise 05: Command Pattern
+     #
+     # The Command pattern encapsulates a request as an object, allowing you
+      to
+     # parameterize clients with different requests, queue or log requests, 
+     and
+     # support undoable operations.
+     #
+     # Scenario: A text editor with undo functionality
+
+     … +51 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rspec spec/chapter_10_more_design_patterns/ --format
+      documentation 2>&1 | head -100)
+  ⎿  Randomized with seed 22938    
+
+     Chapter10::Application
+     … +98 lines (ctrl+o to expand)
+
+⏺ Bash(bundle exec rubocop lib/chapter_10_more_design_patterns/
+      spec/chapter_10_more_design_patterns/)
+  ⎿  Inspecting 10 files                     
+     ..........
+
+     10 files inspected, no offenses detected
+
+⏺ Bash(bundle exec rspec spec/chapter_10_more_design_patterns/ --format progress
+       2>&1 | tail -10)
+  ⎿ rspec ./spec/chapter_10_more_design_patterns/05_command_spec.rb:86 # Ch
+    apter10::InsertCommand#initialize stores the editor and text to insert
+    rspec ./spec/chapter_10_more_design_patterns/05_command_spec.rb:183 # C
+    … +14 lines (ctrl+o to expand)
+
+
+
+⏺ Bash(bundle exec rspec spec/chapter_10_more_design_patterns/ --format json
+      2>/dev/null | ruby -rjson -e 'data = JSON.parse(STDIN.read); puts
+      "Examples: #{data["summa…)
+  ⎿  Examples: 90, Failures: 90
+
+⏺ Read(CLAUDE.md)
+  ⎿  Read 86 lines
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 1 line, removed 1 line                                        
+       7  1. Run `bundle install` to install dependencies                
+       8  2. Run `rake spec` to see failing tests                        
+       9  3. Implement the classes in `lib/` to make tests pass          
+      10 -4. Work through chapters in order (01 → 07)                    
+      10 +4. Work through chapters in order (01 → 10)                    
+      11                                                                 
+      12  ## Running Tests                                               
+      13                                                                 
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 4 lines, removed 7 lines                                      
+      44    chapter_05_composition/              # Has-a relationships,  
+          delegation                                                     
+      45    chapter_06_polymorphism_and_duck_typing/  # Interface        
+          compatibility                                                  
+      46    chapter_07_solid_principles/         # SRP, OCP, LSP, ISP,   
+          DIP                                                            
+      47 +  chapter_08_design_patterns/          # Factory, Singleton,   
+         +Observer, etc.                                                 
+      48 +  chapter_09_metaprogramming_basics/   # define_method,        
+         +method_missing, DSLs                                           
+      49 +  chapter_10_more_design_patterns/     # Template Method,      
+         +State, Command, etc.                                           
+      50  spec/                                                          
+      51 -  chapter_01_classes_and_objects/      # Tests for chapter 1   
+      52 -  chapter_02_encapsulation/            # Tests for chapter 2   
+      53 -  chapter_03_inheritance/              # Tests for chapter 3   
+      54 -  chapter_04_modules_and_mixins/       # Tests for chapter 4   
+      55 -  chapter_05_composition/              # Tests for chapter 5   
+      56 -  chapter_06_polymorphism_and_duck_typing/  # Tests for        
+         -chapter 6                                                      
+      57 -  chapter_07_solid_principles/         # Tests for chapter 7   
+      51 +  (mirrors lib/ structure)                                     
+      52  ```                                                            
+      53                                                                 
+      54  ## Conventions                                                 
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 3 lines, removed 3 lines                                      
+      77                                                                 
+      78  ## Chapter Ideas for Future                                    
+      79                                                                 
+      80 -- Chapter 08: Design Patterns (Factory, Singleton, Observer)   
+      81 -- Chapter 09: Metaprogramming Basics                           
+      82 -- Chapter 10: Testing and TDD Patterns                         
+      80 +- Chapter 11: Error Handling & Custom Exceptions               
+      81 +- Chapter 12: Blocks, Procs & Lambdas as Objects               
+      82 +- Chapter 13: Testing and TDD Patterns                         
+
+⏺ Chapter 10 is complete. Here's the summary:
+
+  Chapter 10: More Design Patterns
+
+  | Exercise | Pattern         | Scenario                                          |
+  |----------|-----------------|---------------------------------------------------|
+  | 01       | Template Method | Data exporters (CSV/JSON) with shared algorithm   |
+  | 02       | Null Object     | Logger system with "do nothing" alternative       |
+  | 03       | Adapter         | Modern/Legacy payment gateway integration         |
+  | 04       | State           | Order processing (pending→paid→shipped→delivered) |
+  | 05       | Command         | Text editor with undo/redo                        |
+
+  Stats:
+  - 90 tests (all failing, ready for implementation)
+  - 10 files, lint passes
+
+  Files created:
+  lib/chapter_10_more_design_patterns/
+    01_template_method.rb
+    02_null_object.rb
+    03_adapter.rb
+    04_state.rb
+    05_command.rb
+
+  spec/chapter_10_more_design_patterns/
+    01_template_method_spec.rb
+    02_null_object_spec.rb
+    03_adapter_spec.rb
+    04_state_spec.rb
+    05_command_spec.rb
+
+  Also updated CLAUDE.md to reflect the full 10-chapter structure and moved future chapter ideas to 11+.
+
+
+
