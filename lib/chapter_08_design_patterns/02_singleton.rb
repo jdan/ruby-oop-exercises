@@ -20,11 +20,36 @@ module Chapter08
   ##
   # A singleton configuration store
   class Configuration
-    # TODO: Implement Singleton pattern
-    #
-    # Hints:
-    # - Use private_class_method :new to hide the constructor
-    # - Store the instance in a class instance variable (@instance)
-    # - Use a Mutex for thread safety (optional but good practice)
+    private_class_method :new
+
+    @mutex = Mutex.new
+
+    def initialize
+      @hash = {}
+    end
+
+    def self.instance
+      @mutex.synchronize do
+        @instance ||= new
+      end
+    end
+
+    def set(key, value)
+      @hash[key] = value
+    end
+
+    def get(key)
+      @hash[key]
+    end
+
+    def all
+      @hash
+    end
+
+    def self.reset!
+      @mutex.synchronize do
+        @instance = new
+      end
+    end
   end
 end
