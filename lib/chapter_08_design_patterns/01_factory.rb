@@ -37,25 +37,48 @@
 module Chapter08
   ##
   # A circle shape with a radius
-  class Circle
-    # TODO: Implement Circle
+  Circle = Struct.new(:radius) do
+    def name = 'Circle'
+
+    def area
+      Math::PI * (radius**2)
+    end
   end
 
   ##
   # A square shape with a side length
-  class Square
-    # TODO: Implement Square
+  Square = Struct.new(:side) do
+    def name = 'Square'
+
+    def area
+      side**2
+    end
   end
 
   ##
   # A triangle shape with base and height
-  class Triangle
-    # TODO: Implement Triangle
+  Triangle = Struct.new(:base, :height) do
+    def name = 'Triangle'
+
+    def area
+      0.5 * base * height
+    end
   end
 
   ##
   # Factory for creating shapes without knowing their concrete classes
   class ShapeFactory
-    # TODO: Implement ShapeFactory.create(type, **options)
+    def self.create(type, **options)
+      case type
+      when :circle
+        Circle.new(options[:radius])
+      when :square
+        Square.new(options[:side])
+      when :triangle
+        Triangle.new(options[:base], options[:height])
+      else
+        raise ArgumentError.new 'Unknown shape'
+      end
+    end
   end
 end
