@@ -29,26 +29,72 @@ module Chapter08
   ##
   # A mixin that provides publish-subscribe event functionality
   module EventEmitter
-    # TODO: Implement subscribe, unsubscribe, emit
-    #
-    # Hints:
-    # - Store callbacks in a Hash where keys are event names
-    # - Each event maps to an array of callback procs
+    def callbacks
+      @callbacks ||= {}
+    end
+
+    def subscribe(event, &block)
+      callbacks[event] ||= []
+      callbacks[event] << block
+    end
+
+    def unsubscribe(event, &block)
+      return unless callbacks[event]
+
+      callbacks[event].delete(block)
+    end
+
+    def emit(event, *)
+      return unless callbacks[event]
+
+      callbacks[event].each do |cb|
+        cb.call(*)
+      end
+    end
   end
 
   ##
   # A news publisher that emits articles to subscribers
   class NewsPublisher
-    # TODO: Include EventEmitter and implement publisher
+    include EventEmitter
+
+    attr_reader :name
+
+    def initialize(name)
+      @name = name
+    end
+
+    def publish(article)
+      emit(:news, article)
+    end
   end
 
   ##
   # A subscriber that follows publishers and collects articles
   class NewsSubscriber
-    # TODO: Implement subscriber
-    #
-    # Hints:
-    # - Store a reference to callbacks so you can unsubscribe later
-    # - Use method(:receive_article).to_proc to create a callback
+    attr_reader :name, :received_articles
+
+    def initialize(name)
+      @name = name
+      @subscriptions = {}
+      @received_articles = []
+    end
+
+    def follow(publisher)
+      method = method(:receive_article).to_proc
+
+      @subscriptions[publisher] = method
+      publisher.subscribe(:news, &method)
+    end
+
+    def receive_article(article)
+      @received_articles << article
+    end
+
+    def unfollow(publisher)
+      method = @subscriptions[publisher]
+      @subscriptions.delete publisher
+      publisher.unsubscribe(:news, &method)
+    end
   end
 end
