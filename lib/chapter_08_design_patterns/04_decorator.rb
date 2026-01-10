@@ -36,38 +36,67 @@
 module Chapter08
   ##
   # Base coffee beverage
-  class Coffee
-    # TODO: Implement Coffee
+  Coffee = Struct.new do
+    def cost = 2.00
+    def description = 'Coffee'
   end
 
   ##
   # Espresso beverage
-  class Espresso
-    # TODO: Implement Espresso
+  Espresso = Struct.new do
+    def cost = 3.00
+    def description = 'Espresso'
   end
 
   ##
   # Base decorator that wraps a beverage (optional - you can also implement
   # each decorator independently)
-  class BeverageDecorator
-    # TODO: Implement base decorator (optional)
-  end
 
   ##
   # Adds milk to a beverage
   class MilkDecorator
-    # TODO: Implement MilkDecorator
+    def initialize(beverage)
+      @beverage = beverage
+    end
+
+    def cost
+      @beverage.cost + 0.50
+    end
+
+    def description
+      "#{@beverage.description} with Milk"
+    end
   end
 
   ##
   # Adds sugar to a beverage
   class SugarDecorator
-    # TODO: Implement SugarDecorator
+    def initialize(beverage)
+      @beverage = beverage
+    end
+
+    def cost
+      @beverage.cost + 0.25
+    end
+
+    def description
+      "#{@beverage.description} with Sugar"
+    end
   end
 
   ##
   # Adds whipped cream to a beverage
   class WhipDecorator
-    # TODO: Implement WhipDecorator
+    def initialize(beverage)
+      @beverage = beverage
+    end
+
+    def cost
+      @beverage.cost + 0.75
+    end
+
+    def description
+      "#{@beverage.description} with Whipped Cream"
+    end
   end
 end
