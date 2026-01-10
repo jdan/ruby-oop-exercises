@@ -26,14 +26,26 @@ module Chapter09
   # Module that provides custom attribute accessor functionality
   # Extend this module to get the my_attr_accessor class method
   module AttributeAccessor
-    # TODO: Implement my_attr_accessor(*names)
-    # Hint: Use define_method to create getter and setter methods
-    # Hint: Use instance_variable_get/set with "@#{name}" for storage
+    def my_attr_accessor(*names)
+      names.each do |name|
+        define_method(name) do
+          # NOTE: It's very confusing that I need to specify `@`
+          instance_variable_get("@#{name}")
+        end
+
+        define_method("#{name}=") do |new_value|
+          # NOTE: It's very confusing that I need to specify `@`
+          instance_variable_set("@#{name}", new_value)
+        end
+      end
+    end
   end
 
   ##
   # A simple person class using our custom attribute accessor
   class Person
-    # TODO: Extend AttributeAccessor and use my_attr_accessor :name, :age
+    extend AttributeAccessor
+
+    my_attr_accessor :name, :age
   end
 end

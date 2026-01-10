@@ -28,17 +28,28 @@ module Chapter09
   ##
   # Module providing dynamic finder methods via method_missing
   module DynamicFinders
-    # TODO: Implement method_missing to handle find_by_* calls
-    # Hint: Use method_name.to_s.start_with?('find_by_') to check pattern
-    # Hint: Extract attribute with method_name.to_s.sub('find_by_', '').to_sym
+    def method_missing(method_name, *args)
+      # NOTE: Not sure if this abstraction is safe
+      raise NoMethodError unless respond_to_missing?(method_name)
 
-    # TODO: Implement respond_to_missing? for find_by_* methods
-    # This is important for proper Ruby behavior (e.g., respond_to? returns true)
+      field = method_name.to_s.sub('find_by_', '').to_sym
+      @records.find do |record|
+        record[field] == args.first
+      end
+    end
+
+    def respond_to_missing?(method_name, _include_private = false)
+      /^find_by_/ =~ method_name
+    end
   end
 
   ##
   # Repository for finding users by any attribute dynamically
   class UserRepository
-    # TODO: Include DynamicFinders and implement initialize(records)
+    include DynamicFinders
+
+    def initialize(records)
+      @records = records
+    end
   end
 end

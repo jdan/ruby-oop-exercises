@@ -33,20 +33,41 @@ module Chapter09
   ##
   # Module providing a delegate class method for easy method forwarding
   module Delegatable
-    # TODO: Use self.included(base) to extend the including class
-    # Hint: base.extend(ClassMethods)
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
 
-    # module ClassMethods
-    #   TODO: Implement delegate(*methods, to:, prefix: false)
-    #   Hint: Use define_method to create forwarding methods
-    #   Hint: Use public_send(method_name) to call the method on target
-    # end
+    ##
+    # Helper module which defines the delegation logic
+    module ClassMethods
+      #   TODO: Implement delegate(*methods, to:, prefix: false)
+      #   Hint: Use define_method to create forwarding methods
+      #   Hint: Use public_send(method_name) to call the method on target
+      def delegate(*methods, to:, prefix: false)
+        methods.each do |method|
+          method_name = if prefix
+                          "#{to}_#{method}"
+                        else
+                          method.to_s
+                        end
+
+          define_method(method_name) do
+            # NOTE: TWO public sends (to grab .author, then .name)
+            public_send(to).public_send(method)
+          end
+        end
+      end
+    end
   end
 
   ##
   # Simple author class with a name
   class Author
-    # TODO: Implement initialize(name) and name reader
+    attr_accessor :name
+
+    def initialize(name)
+      @name = name
+    end
   end
 
   ##
@@ -55,5 +76,15 @@ module Chapter09
     # TODO: Include Delegatable
     # TODO: Implement initialize(title, author), title, and author readers
     # TODO: Use delegate :name, to: :author, prefix: true
+    include Delegatable
+
+    delegate :name, to: :author, prefix: true
+
+    attr_accessor :title, :author
+
+    def initialize(title, author)
+      @title = title
+      @author = author
+    end
   end
 end

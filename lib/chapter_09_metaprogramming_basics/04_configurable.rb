@@ -33,27 +33,52 @@ module Chapter09
   ##
   # Stores configuration settings dynamically using method_missing
   class Configuration
-    # TODO: Initialize with an empty settings hash
-    # TODO: Implement method_missing to handle dynamic getters/setters
-    # TODO: Implement respond_to_missing?
+    def initialize
+      @config = {}
+    end
+
+    def method_missing(method, *args)
+      if method.to_s.end_with?('=')
+        @config[method.to_s[..-2].to_sym] = args.first
+      else
+        @config[method]
+      end
+    end
+
+    def respond_to_missing?(_method_name, _include_private = false)
+      true
+    end
   end
 
   ##
   # Module that adds configuration DSL to any class
   module Configurable
-    # TODO: Use self.included(base) to extend the including class
-    # Hint: base.extend(ClassMethods)
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
 
-    # module ClassMethods
-    #   TODO: Implement configure { |config| ... }
-    #   TODO: Implement config (returns the Configuration instance)
-    #   TODO: Implement reset_configuration
-    # end
+    ##
+    # Utility module to define configuration
+    module ClassMethods
+      def config
+        @config ||= Configuration.new
+      end
+
+      def configure
+        @config ||= Configuration.new
+        # NOTE: We simply yield to the `configure do |config| .. end` block with `@config`
+        yield @config
+      end
+
+      def reset_configuration
+        @config = Configuration.new
+      end
+    end
   end
 
   ##
   # Example class using the Configurable module
   class AppSettings
-    # TODO: Include Configurable
+    include Configurable
   end
 end
