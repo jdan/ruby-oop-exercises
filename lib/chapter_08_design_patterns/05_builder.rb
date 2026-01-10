@@ -36,7 +36,18 @@ module Chapter08
   ##
   # A computer with various components
   class Computer
-    # TODO: Implement Computer
+    attr_reader :cpu, :ram, :storage, :gpu
+
+    def initialize(cpu:, ram:, storage:, gpu:)
+      @cpu = cpu
+      @ram = ram
+      @storage = storage
+      @gpu = gpu
+    end
+
+    def specs
+      "CPU: #{cpu}, RAM: #{ram}, Storage: #{storage}, GPU: #{gpu || 'None'}"
+    end
   end
 
   ##
@@ -47,11 +58,81 @@ module Chapter08
     # Hints:
     # - Each set_* method should return self for chaining
     # - build should validate required fields before creating Computer
+    def initialize
+      @cpu = nil
+      @ram = nil
+      @storage = nil
+      @gpu = nil
+    end
+
+    def set_cpu(cpu)
+      @cpu = cpu
+      self
+    end
+
+    def set_ram(ram)
+      @ram = ram
+      self
+    end
+
+    def set_storage(storage)
+      @storage = storage
+      self
+    end
+
+    def set_gpu(gpu)
+      @gpu = gpu
+      self
+    end
+
+    def build
+      raise ArgumentError, 'CPU is required' unless @cpu
+      raise ArgumentError, 'RAM is required' unless @ram
+      raise ArgumentError, 'Storage is required' unless @storage
+
+      Computer.new(cpu: @cpu, ram: @ram, storage: @storage, gpu: @gpu)
+    end
+
+    def reset
+      @cpu = nil
+      @ram = nil
+      @storage = nil
+      @gpu = nil
+      self
+    end
   end
 
   ##
   # Director that knows how to build specific computer configurations
   class ComputerDirector
-    # TODO: Implement ComputerDirector
+    def initialize(builder)
+      @builder = builder
+    end
+
+    def build_gaming_pc
+      @builder
+        .set_cpu('Intel i9-13900K')
+        .set_ram('32GB DDR5')
+        .set_storage('2TB NVMe SSD')
+        .set_gpu('NVIDIA RTX 4090')
+        .build
+    end
+
+    def build_office_pc
+      @builder
+        .set_cpu('Intel i5-13400')
+        .set_ram('16GB DDR4')
+        .set_storage('512GB SSD')
+        .build
+    end
+
+    def build_workstation
+      @builder
+        .set_cpu('AMD Threadripper PRO')
+        .set_ram('128GB ECC DDR5')
+        .set_storage('4TB NVMe SSD')
+        .set_gpu('NVIDIA RTX A6000')
+        .build
+    end
   end
 end
