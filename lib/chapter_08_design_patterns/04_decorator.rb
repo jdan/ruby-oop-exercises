@@ -51,52 +51,43 @@ module Chapter08
   ##
   # Base decorator that wraps a beverage (optional - you can also implement
   # each decorator independently)
-
-  ##
-  # Adds milk to a beverage
-  class MilkDecorator
-    def initialize(beverage)
+  class BaseDecorator
+    def initialize(beverage, additional_cost, additional_description)
       @beverage = beverage
+      @additional_cost = additional_cost
+      @additional_description = additional_description
     end
 
     def cost
-      @beverage.cost + 0.50
+      @beverage.cost + @additional_cost
     end
 
     def description
-      "#{@beverage.description} with Milk"
+      "#{@beverage.description}#{@additional_description}"
+    end
+  end
+
+  ##
+  # Adds milk to a beverage
+  class MilkDecorator < BaseDecorator
+    def initialize(beverage)
+      super(beverage, 0.50, ' with Milk')
     end
   end
 
   ##
   # Adds sugar to a beverage
-  class SugarDecorator
+  class SugarDecorator < BaseDecorator
     def initialize(beverage)
-      @beverage = beverage
-    end
-
-    def cost
-      @beverage.cost + 0.25
-    end
-
-    def description
-      "#{@beverage.description} with Sugar"
+      super(beverage, 0.25, ' with Sugar')
     end
   end
 
   ##
   # Adds whipped cream to a beverage
-  class WhipDecorator
+  class WhipDecorator < BaseDecorator
     def initialize(beverage)
-      @beverage = beverage
-    end
-
-    def cost
-      @beverage.cost + 0.75
-    end
-
-    def description
-      "#{@beverage.description} with Whipped Cream"
+      super(beverage, 0.75, ' with Whipped Cream')
     end
   end
 end
