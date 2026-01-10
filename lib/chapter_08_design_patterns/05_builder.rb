@@ -53,11 +53,6 @@ module Chapter08
   ##
   # Fluent builder for constructing Computer instances
   class ComputerBuilder
-    # TODO: Implement ComputerBuilder
-    #
-    # Hints:
-    # - Each set_* method should return self for chaining
-    # - build should validate required fields before creating Computer
     def initialize
       @cpu = nil
       @ram = nil

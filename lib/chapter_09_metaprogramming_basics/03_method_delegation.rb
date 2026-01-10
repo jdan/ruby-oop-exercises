@@ -40,9 +40,6 @@ module Chapter09
     ##
     # Helper module which defines the delegation logic
     module ClassMethods
-      #   TODO: Implement delegate(*methods, to:, prefix: false)
-      #   Hint: Use define_method to create forwarding methods
-      #   Hint: Use public_send(method_name) to call the method on target
       def delegate(*methods, to:, prefix: false)
         methods.each do |method|
           method_name = if prefix
@@ -73,9 +70,6 @@ module Chapter09
   ##
   # Book class that delegates author_name to its author
   class Book
-    # TODO: Include Delegatable
-    # TODO: Implement initialize(title, author), title, and author readers
-    # TODO: Use delegate :name, to: :author, prefix: true
     include Delegatable
 
     delegate :name, to: :author, prefix: true
