@@ -34,18 +34,45 @@ module Chapter10
   ##
   # A logger that outputs messages to the console
   class ConsoleLogger
-    # TODO: Implement log, warn, and error methods
+    def log(message)
+      "[LOG] #{message}"
+    end
+
+    def warn(message)
+      "[WARN] #{message}"
+    end
+
+    def error(message)
+      "[ERROR] #{message}"
+    end
   end
 
   ##
   # A "do nothing" logger that silently ignores all messages
   class NullLogger
-    # TODO: Implement log, warn, and error methods that do nothing
+    def log(_) = nil
+    def warn(_) = nil
+    def error(_) = nil
   end
 
   ##
   # An application that uses a logger (defaults to NullLogger)
   class Application
-    # TODO: Implement initialize, logger, run, and perform_operation
+    attr_reader :logger
+
+    def initialize(logger: NullLogger.new)
+      @logger = logger
+    end
+
+    def run
+      @logger.log('Application starting')
+      @logger.log('Application finished')
+      'Operation complete'
+    end
+
+    def perform_operation(name)
+      @logger.log("Performing operation: #{name}")
+      name
+    end
   end
 end

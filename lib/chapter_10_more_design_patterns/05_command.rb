@@ -43,18 +43,68 @@ module Chapter10
   ##
   # A simple text editor that supports command-based editing with undo
   class TextEditor
-    # TODO: Implement initialize, content, content=, history, execute, undo
+    attr_accessor :content
+    attr_reader :history
+
+    def initialize
+      @content = ''
+      @history = []
+    end
+
+    def execute(command)
+      history << command
+      command.execute
+    end
+
+    def undo
+      return if history.empty?
+
+      last_command = history.pop
+      last_command.undo
+    end
   end
 
   ##
   # Command to insert text at the end of the document
   class InsertCommand
-    # TODO: Implement initialize, editor, text, execute, undo
+    attr_reader :editor, :text
+
+    def initialize(editor, text)
+      @editor = editor
+      @text = text
+    end
+
+    def execute
+      editor.content += text
+    end
+
+    def undo
+      editor.content = editor.content[..(-text.length - 1)]
+    end
   end
 
   ##
   # Command to delete characters from the end of the document
   class DeleteCommand
-    # TODO: Implement initialize, editor, char_count, deleted_text, execute, undo
+    attr_reader :editor, :char_count, :deleted_text
+
+    def initialize(editor, char_count)
+      @editor = editor
+      @char_count = char_count
+    end
+
+    def execute
+      if char_count >= editor.content.length
+        @deleted_text = editor.content
+        editor.content = ''
+      else
+        @deleted_text = editor.content[-char_count..]
+        editor.content = editor.content[..(-char_count - 1)]
+      end
+    end
+
+    def undo
+      editor.content += @deleted_text
+    end
   end
 end

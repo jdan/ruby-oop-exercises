@@ -36,18 +36,48 @@ module Chapter10
   ##
   # Abstract base class that defines the template method for data export
   class DataExporter
-    # TODO: Implement the template method and abstract methods
+    def export
+      data = fetch_data
+      formatted = format_data(data)
+      write_output(formatted)
+    end
+
+    def fetch_data
+      [
+        {
+          name: 'Alice', email: 'alice@example.com'
+        }
+      ]
+    end
+
+    def format_data(data) = raise NotImplementedError
+    def write_output(formatted) = raise NotImplementedError
   end
 
   ##
   # Exports data in CSV format
   class CsvExporter < DataExporter
-    # TODO: Implement CSV-specific export steps
+    def format_data(data)
+      <<~CSV
+        #{data.first.keys.join(',')}
+        #{data.map { |row| row.values.join(',') }.join("\n")}
+      CSV
+    end
+
+    def write_output(formatted)
+      "Output to export.csv:\n#{formatted}"
+    end
   end
 
   ##
   # Exports data in JSON format
   class JsonExporter < DataExporter
-    # TODO: Implement JSON-specific export steps
+    def format_data(data)
+      JSON.generate(data)
+    end
+
+    def write_output(formatted)
+      "Output to export.json:\n#{formatted}"
+    end
   end
 end

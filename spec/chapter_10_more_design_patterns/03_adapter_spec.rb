@@ -40,7 +40,7 @@ RSpec.describe Chapter10::LegacyPaymentSystem do
 
       expect(result).to be_a(String)
       expect(result).to include('99')
-      expect(result).to include('charged')
+      expect(result).to include('Charged')
     end
 
     it 'returns a confirmation string' do
