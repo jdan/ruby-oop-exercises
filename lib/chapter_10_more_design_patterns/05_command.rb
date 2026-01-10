@@ -94,13 +94,9 @@ module Chapter10
     end
 
     def execute
-      if char_count >= editor.content.length
-        @deleted_text = editor.content
-        editor.content = ''
-      else
-        @deleted_text = editor.content[-char_count..]
-        editor.content = editor.content[..(-char_count - 1)]
-      end
+      content = editor.content
+      @deleted_text = content[-[char_count, content.length].min..]
+      editor.content = content[...(-char_count).clamp(-content.length, 0)] || ''
     end
 
     def undo

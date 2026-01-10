@@ -60,6 +60,7 @@ module Chapter08
       @gpu = nil
     end
 
+    # rubocop:disable Naming/AccessorMethodName
     def set_cpu(cpu)
       @cpu = cpu
       self
@@ -79,6 +80,7 @@ module Chapter08
       @gpu = gpu
       self
     end
+    # rubocop:enable Naming/AccessorMethodName
 
     def build
       raise ArgumentError, 'CPU is required' unless @cpu

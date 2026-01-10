@@ -77,7 +77,7 @@ module Chapter08
       when :triangle
         Triangle.new(options[:base], options[:height])
       else
-        raise ArgumentError.new 'Unknown shape'
+        raise ArgumentError, 'Unknown shape'
       end
     end
   end
